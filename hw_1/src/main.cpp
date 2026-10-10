@@ -3,11 +3,11 @@
 
 #include "../includes/OwnerPark.h"
 
-void getS() {
+std::string getS() {
     int maxSymbol = 200;
     std::string str;
     while(std::cin && maxSymbol--) {
-        char c = std::cin.get_c();
+        char c = std::cin.get();
         if(c == '\n') {
             break;
         }
@@ -18,24 +18,27 @@ void getS() {
 }
 
 int main() {
-    OwnerPark owner = OwnerPark();
+    OwnerPark* owner = new OwnerPark();
+    owner->printCommand();
 
     while(true) {
         int command_id;
-        owner.printCommand();
         std::cin >> command_id;
 
         switch(command_id) {
             case 1: {
-                owner.printCommand();
+                owner->printCommand();
                 break;
             } case 2: {
-                owner.printObjects();
+                owner->printAllObjects();
                 break;
             } case 3: {
-                getS();
+                //getS();
             }
         }
     }
+
+    delete owner;
+
     return 0;
 }

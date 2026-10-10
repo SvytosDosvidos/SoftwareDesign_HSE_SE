@@ -8,7 +8,7 @@ public:
     ~OwnerPark();
 
     void printCommand() const;
-    void printObjects() const;
+    void printAllObjects() const;
 private:
     Park* park_;
 };

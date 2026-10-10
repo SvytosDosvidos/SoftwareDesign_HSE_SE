@@ -22,9 +22,7 @@ void OwnerPark::printCommand() const {
     std::cout << std::format("+{:-^48}+\n", "");
 }
 
-void OwnerPark::printObjects() const {
-    for(const auto &it : objectsEasy_) {
-        std::cout << it->name_ << " " << it->inventoryId_ << " "
-            << it->simplicity_ << " " << it->typeObject_ << "\n";
-    }
+void OwnerPark::printAllObjects() const {
+    park_->printObjectEasy();
+    park_->printObjectNoEasy();
 }
