@@ -8,13 +8,15 @@
 
 #include "ObjectPark.h"
 
-using Creator = std::function<ObjectPark(std::string)>;
+using Creator = std::function<std::optional<ObjectPark>(std::stringstream&)>;
 
 class CreatorObject {
 public:
     CreatorObject();
+
+    void initCreator();
     void addCreator(std::string str, Creator creator);
-    std::optional<ObjectPark> findCreator(std::stringstream ss);
+    std::optional<ObjectPark> createObject(std::stringstream& ss);
 private:
     std::map<std::string, Creator> creators_;
 };

@@ -1,13 +1,14 @@
 #include <iostream>
 #include <string>
+#include <sstream>
 
 #include "../tests/catch.hpp"
 #include "../includes/OwnerPark.h"
 
-
-std::string getS() {
+std::stringstream getS() {
     int maxSymbol = 200;
     std::string str;
+    std::stringstream ss;
     while(std::cin && maxSymbol--) {
         char c = std::cin.get();
         if(c == '\n') {
@@ -16,16 +17,27 @@ std::string getS() {
         str.push_back(c);
     }
 
-    return str;
+    ss << str;
+    return ss;
+}
+
+int getCommand() {
+    std::stringstream ss = getS();
+    int n;
+    if(ss >> n) {
+        return n;
+    }
+
+    return -1;
 }
 
 int main() {
     OwnerPark* owner = new OwnerPark();
     owner->printCommand();
+    bool flagGontinue = true;
 
-    while(true) {
-        int command_id;
-        std::cin >> command_id;
+    while(flagGontinue) {
+        int command_id = getCommand();
 
         switch(command_id) {
             case 1: {
@@ -36,6 +48,9 @@ int main() {
                 break;
             } case 3: {
                 //getS();
+                break;
+            } case 4: {
+                flagGontinue = false;
             }
         }
     }

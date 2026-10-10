@@ -7,6 +7,10 @@ void ObjectPark::printObject() const {
               << simplicity_ << " " << typeObject_ << "\n";
 }
 
+int ObjectPark::getSimplicity() const {
+    return simplicity_;
+}
+
 std::ostream& operator<<(std::ostream& os, TypeObject s) {
     switch (s) {
         using enum TypeObject;

@@ -28,6 +28,8 @@ class ObjectPark {
 public:
     ObjectPark(std::string name, int inventoryId, int simplicity, TypeObject typeObject);
 
+    int getSimplicity() const;
+
     void printObject() const;
 private:
     std::string name_;
