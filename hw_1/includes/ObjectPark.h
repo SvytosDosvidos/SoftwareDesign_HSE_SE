@@ -16,7 +16,6 @@ class ObjectPark {
 public:
     ObjectPark(std::string name, int inventoryId, int simplicity, TypeObject typeObject);
 
-
 private:
     std::string name_;
     int inventoryId_;

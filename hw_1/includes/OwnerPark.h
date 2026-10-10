@@ -3,11 +3,12 @@
 #include "Park.h"
 
 class OwnerPark {
-private:
+public:
     OwnerPark();
     ~OwnerPark();
 
-    void printCommand();
-public:
+    void printCommand() const;
+    void printObjects() const;
+private:
     Park* park_;
 };
