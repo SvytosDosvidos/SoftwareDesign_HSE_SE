@@ -13,13 +13,16 @@ enum class TypeObject : uint8_t {
     Other = 4
 };
 
+std::ostream& operator<<(std::ostream& os, TypeObject s);
+std::istream& operator>>(std::istream& is, TypeObject& s);
+
 enum class TypeWheel : uint8_t {
     ScooterWheel = 1,
     Bicycle = 2
 };
 
-std::ostream& operator<<(std::ostream& os, TypeObject s);
-std::istream& operator>>(std::istream& is, TypeObject& s);
+std::ostream& operator<<(std::ostream& os, TypeWheel s);
+std::istream& operator>>(std::istream& is, TypeWheel& s);
 
 class ObjectPark {
 public:
@@ -39,6 +42,9 @@ private:
 };
 
 class Wheel : public ObjectPark {
+public:
+    Wheel(std::string name, int inventoryId, int simplicity,
+        TypeObject typeObject, TypeWheel typeWheel, Value radius);
 
 private:
     TypeWheel typeWheel_;

@@ -15,4 +15,20 @@ add_executable(hw_1
         src/Park.cpp
         src/ObjectPark.cpp
         src/CreatorObject.cpp
+        tests/test.cpp
+)
+
+add_executable(run_test
+        includes/Park.h
+        includes/ObjectPark.h
+        includes/OwnerPark.h
+
+        src/main.cpp
+        src/OwnerPark.cpp
+        includes/ServiceCenter.h
+        includes/CreatorObject.h
+        src/Park.cpp
+        src/ObjectPark.cpp
+        src/CreatorObject.cpp
+        tests/test.cpp
 )

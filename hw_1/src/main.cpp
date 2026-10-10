@@ -1,7 +1,9 @@
 #include <iostream>
 #include <string>
 
+#include "../tests/catch.hpp"
 #include "../includes/OwnerPark.h"
+
 
 std::string getS() {
     int maxSymbol = 200;

@@ -30,4 +30,12 @@ std::optional<ObjectPark> CreatorWheel(std::stringstream ss) {
     if(!(ss >> typeObject)) {
         return std::nullopt;
     }
+    if(!(ss >> typeWheel)) {
+        return std::nullopt;
+    }
+    if(!(ss >> radius)) {
+        return std::nullopt;
+    }
+
+    return Wheel("wheel", inventoryId, simplicity, typeObject, typeWheel, radius);
 }
