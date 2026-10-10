@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 #include <cstdint>
 
 using Value = long long;
@@ -12,17 +13,13 @@ enum class TypeObject : uint8_t {
     Other = 4
 };
 
-/*
-std::ostream& operator<<(std::ostream& os, TypeObject s) {
-    switch (s) {
-        using enum TypeObject;
-        case TransportElectric:  return os << "TransportElectric";
-        case TransportNoElectric:  return os << "TransportNoElectric";
-        case SparePart: return os << "SparePart";
-        case Other: return os << "Other";
-    }
-    return os << "Unknown";
-}*/
+enum class TypeWheel : uint8_t {
+    ScooterWheel = 1,
+    Bicycle = 2
+};
+
+std::ostream& operator<<(std::ostream& os, TypeObject s);
+std::istream& operator>>(std::istream& is, TypeObject& s);
 
 class ObjectPark {
 public:
@@ -37,8 +34,20 @@ private:
 };
 
 class ITransportElectric : public ObjectPark {
-public:
-
 private:
     Value electricityValue_;
+};
+
+class Wheel : public ObjectPark {
+
+private:
+    TypeWheel typeWheel_;
+    Value radius_;
+};
+
+class Scooter : public ITransportElectric {
+
+private:
+    std::vector<Wheel> wheels_;
+    Value weight_;
 };

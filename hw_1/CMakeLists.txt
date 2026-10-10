@@ -14,4 +14,5 @@ add_executable(hw_1
         includes/CreatorObject.h
         src/Park.cpp
         src/ObjectPark.cpp
+        src/CreatorObject.cpp
 )

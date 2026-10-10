@@ -2,16 +2,19 @@
 
 #include <map>
 #include <string>
+#include <functional>
+#include <optional>
+#include <sstream>
 
 #include "ObjectPark.h"
 
-using creator = std::function<ObjectPark(std::string)>;
+using Creator = std::function<ObjectPark(std::string)>;
 
 class CreatorObject {
 public:
     CreatorObject();
-    void addCreator();
-    std::optional<ObjectPark> findCreator(std::string);
+    void addCreator(std::string str, Creator creator);
+    std::optional<ObjectPark> findCreator(std::stringstream ss);
 private:
-    std::map<std::string, creator> creators_;
+    std::map<std::string, Creator> creators_;
 };
