@@ -80,6 +80,14 @@ int ObjectPark::getSimplicity() const {
     return simplicity_;
 }
 
+std::string ObjectPark::getName() const {
+    return name_;
+}
+
+int ObjectPark::getInventoryId() const {
+    return inventoryId_;
+}
+
 ObjectElectric::ObjectElectric(std::string name, int inventoryId, int simplicity,
     TypeObject typeObject, Value electricityValue) : ObjectPark(name, inventoryId,
         simplicity, typeObject), electricityValue_(electricityValue) {}
@@ -94,14 +102,15 @@ void Wheel::printObject() const {
 }
 
 Scooter::Scooter(std::string name, int inventoryId, int simplicity, TypeObject typeObject,
-    Value electricityValue, std::vector<Wheel> wheels, Value weight) : ObjectElectric(name,
+    Value electricityValue, std::vector<Wheel*> wheels, Value weight) : ObjectElectric(name,
         inventoryId, simplicity, typeObject, electricityValue), wheels_(wheels), weight_(weight) {}
 
 void Scooter::printObject() const {
     std::cout << name_ << " " << inventoryId_ << " " << simplicity_ << " " <<
         typeObject_ << " " << electricityValue_ << " " << weight_ << "\n";
-    std::cout << "Wheels:\n";
+
+    std::cout << "Wheels count = " << wheels_.size() << "\n";
     for(const auto &it : wheels_) {
-        it.printObject();
+        it->printObject();
     }
 }

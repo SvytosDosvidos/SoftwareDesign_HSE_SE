@@ -31,6 +31,8 @@ public:
     virtual ~ObjectPark() = default;
 
     int getSimplicity() const;
+    int getInventoryId() const;
+    std::string getName() const;
     void virtual printObject() const = 0;
 
 protected:
@@ -67,10 +69,10 @@ public:
 
     Scooter(std::string name, int inventoryId, int simplicity,
         TypeObject typeObject, Value electricityValue,
-        std::vector<Wheel> wheels, Value weight);
+        std::vector<Wheel*> wheels, Value weight);
 
     void printObject() const override;
 private:
-    std::vector<Wheel> wheels_;
+    std::vector<Wheel*> wheels_;
     Value weight_;
 };

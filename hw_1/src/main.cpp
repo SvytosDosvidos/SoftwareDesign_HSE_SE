@@ -2,14 +2,15 @@
 #include <string>
 #include <sstream>
 
-#include "../tests/catch.hpp"
 #include "../includes/OwnerPark.h"
 
+const int kMaxSymbols = 200;
+
 std::stringstream getS() {
-    int maxSymbol = 200;
     std::string str;
     std::stringstream ss;
-    while(std::cin && maxSymbol--) {
+
+    while(std::cin && str.size() < kMaxSymbols) {
         char c = std::cin.get();
         if(c == '\n') {
             break;

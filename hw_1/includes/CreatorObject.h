@@ -6,6 +6,7 @@
 #include <functional>
 #include <optional>
 #include <sstream>
+#include <cctype>
 
 #include "ObjectPark.h"
 #include "StorageCenter.h"

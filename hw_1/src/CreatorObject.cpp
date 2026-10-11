@@ -1,9 +1,17 @@
 #include "../includes/CreatorObject.h"
 
+void toLowerSymbols(std::string& str) {
+    for(int i = 0; i < str.size(); ++i) {
+        str[i] = tolower(str[i]);
+    }
+}
+
 std::optional<ObjectPark*> CreatorObject::createObject(std::stringstream& ss,
     StorageCenter* storageCenter) {
     std::string name;
     ss >> name;
+
+    toLowerSymbols(name);
     if(creators_.find(name) == creators_.end()) {
         return std::nullopt;
     }
@@ -22,6 +30,7 @@ std::optional<ObjectPark*> CreatorWheel(std::stringstream& ss,
 
     TypeWheel typeWheel;
     Value radius;
+
     if(!(ss >> inventoryId)) {
         return std::nullopt;
     }
@@ -49,7 +58,6 @@ std::optional<ObjectPark*> CreatorScooter(std::stringstream& ss,
 
     Value electricityValue;
     int ind_1, ind_2;
-    std::vector<Wheel> wheels;
     Value weight;
 
     if(!(ss >> inventoryId)) {
@@ -74,6 +82,13 @@ std::optional<ObjectPark*> CreatorScooter(std::stringstream& ss,
         return std::nullopt;
     }
 
+    std::optional<ObjectPark*> wheel_1 = storageCenter->getObject("wheel", ind_1, simplicity);
+    std::optional<ObjectPark*> wheel_2 = storageCenter->getObject("wheel", ind_2, simplicity);
+    if(!wheel_1.has_value() || !wheel_2.has_value()) {
+        return std::nullopt;
+    }
+
+    std::vector<Wheel*> wheels = {static_cast<Wheel*>(*wheel_1), static_cast<Wheel*>(*wheel_2)};
     return new Scooter("scooter", inventoryId, simplicity, typeObject,
         electricityValue, wheels, weight);
 }

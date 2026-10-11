@@ -25,17 +25,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="db0fbb13-dc1d-4bf5-9ae6-f42dad64a44c" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/StorageCenter.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/includes/CreatorObject.h" beforeDir="false" afterPath="$PROJECT_DIR$/includes/CreatorObject.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/includes/OwnerPark.h" beforeDir="false" afterPath="$PROJECT_DIR$/includes/OwnerPark.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/includes/Park.h" beforeDir="false" afterPath="$PROJECT_DIR$/includes/Park.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/includes/ServiceCenter.h" beforeDir="false" afterPath="$PROJECT_DIR$/includes/StorageCenter.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/includes/ObjectPark.h" beforeDir="false" afterPath="$PROJECT_DIR$/includes/ObjectPark.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/includes/StorageCenter.h" beforeDir="false" afterPath="$PROJECT_DIR$/includes/StorageCenter.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/CreatorObject.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/CreatorObject.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ObjectPark.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ObjectPark.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/OwnerPark.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OwnerPark.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Park.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Park.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/StorageCenter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/StorageCenter.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -93,7 +89,7 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RunManager" selected="CMake Application.hw_1">
+  <component name="RunManager" selected="Catch.run_test">
     <configuration name="run_test" type="CMakeCatchTestRunConfigurationType" factoryName="Catch Test" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="hw_1" TARGET_NAME="run_test" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="hw_1" RUN_TARGET_NAME="run_test" TEST_MODE="SUITE_TEST">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -125,7 +121,7 @@
       <workItem from="1791629564389" duration="7887000" />
       <workItem from="1791641949770" duration="1717000" />
       <workItem from="1791644487999" duration="7333000" />
-      <workItem from="1791715052527" duration="13381000" />
+      <workItem from="1791715052527" duration="15658000" />
     </task>
     <servers />
   </component>
