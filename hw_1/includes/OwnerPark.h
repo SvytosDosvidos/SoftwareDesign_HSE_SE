@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Park.h"
-#include "ServiceCenter.h"
+#include "StorageCenter.h"
 
 class OwnerPark {
 public:
@@ -15,5 +15,4 @@ public:
     bool addObject(std::stringstream& ss);
 private:
     Park* park_;
-    ServiceCenter* serviceCenter_;
 };

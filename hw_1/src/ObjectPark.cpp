@@ -7,6 +7,7 @@ std::ostream& operator<<(std::ostream& os, TypeObject s) {
         using enum TypeObject;
         case TransportElectric:  return os << "TransportElectric";
         case TransportNoElectric:  return os << "TransportNoElectric";
+        case OtherElectric: return os << "OtherElectric";
         case SparePart: return os << "SparePart";
         case Other: return os << "Other";
     }
@@ -25,9 +26,12 @@ std::istream& operator>>(std::istream& is, TypeObject& s) {
                 s = TypeObject::TransportNoElectric;
                 break;
             } case 3: {
-                s = TypeObject::SparePart;
+                s = TypeObject::OtherElectric;
                 break;
             } case 4: {
+                s = TypeObject::SparePart;
+                break;
+            } case 5: {
                 s = TypeObject::Other;
                 break;
             } default: {
@@ -43,7 +47,7 @@ std::ostream& operator<<(std::ostream& os, TypeWheel s) {
     switch (s) {
         using enum TypeWheel;
         case ScooterWheel: return os << "ScooterWheel";
-        case Bicycle: return os << "Bicycle";
+        case BicycleWheel: return os << "Bicycle";
     }
     return os << "Unknown";
 }
@@ -57,7 +61,7 @@ std::istream& operator>>(std::istream& is, TypeWheel& s) {
                 s = TypeWheel::ScooterWheel;
                 break;
             } case 2: {
-                s = TypeWheel::Bicycle;
+                s = TypeWheel::BicycleWheel;
                 break;
             } default: {
                 is.setstate(std::ios_base::failbit);

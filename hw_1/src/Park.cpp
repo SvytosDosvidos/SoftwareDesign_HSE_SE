@@ -4,30 +4,23 @@
 
 Park::Park() {
     creatorObject_ = new CreatorObject();
+    storageCenter_ = new StorageCenter();
 }
 
 void Park::printObjectEasy() const {
-    for(const auto &it : objectsEasy_) {
-        it->printObject();
-    }
+    storageCenter_->printObjectEasy();
 }
 
 void Park::printObjectNoEasy() const {
-    for(const auto &it : objectsNoEasy_) {
-        it->printObject();
-    }
+    storageCenter_->printObjectNoEasy();
 }
 
 bool Park::addObject(std::stringstream& ss) {
-    std::optional<ObjectPark*> obj = creatorObject_->createObject(ss);
+    std::optional<ObjectPark*> obj = creatorObject_->createObject(ss, storageCenter_);
     if(!obj.has_value()) {
         return false;
     }
 
-    if((*obj)->getSimplicity() >= 6) {
-        objectsEasy_.push_back(*obj);
-    } else {
-        objectsNoEasy_.push_back(*obj);
-    }
+    storageCenter_->addObject(*obj);
     return true;
 }

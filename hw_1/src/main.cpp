@@ -56,6 +56,9 @@ int main() {
                 }
                 break;
             } case 4: {
+                owner->printCommand4Add();
+                break;
+            } case 5: {
                 flagGontinue = false;
             }
         }

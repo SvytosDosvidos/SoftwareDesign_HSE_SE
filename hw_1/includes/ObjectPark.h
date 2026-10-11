@@ -19,7 +19,7 @@ std::istream& operator>>(std::istream& is, TypeObject& s);
 
 enum class TypeWheel : uint8_t {
     ScooterWheel = 1,
-    Bicycle = 2
+    BicycleWheel = 2
 };
 
 std::ostream& operator<<(std::ostream& os, TypeWheel s);

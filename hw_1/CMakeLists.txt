@@ -7,7 +7,7 @@ add_executable(hw_1
         includes/Park.h
         includes/ObjectPark.h
         includes/OwnerPark.h
-        includes/ServiceCenter.h
+        includes/StorageCenter.h
         includes/CreatorObject.h
 
         src/main.cpp
@@ -15,18 +15,20 @@ add_executable(hw_1
         src/Park.cpp
         src/ObjectPark.cpp
         src/CreatorObject.cpp
+        src/StorageCenter.cpp
 )
 
 add_executable(run_test
         includes/Park.h
         includes/ObjectPark.h
         includes/OwnerPark.h
-        includes/ServiceCenter.h
+        includes/StorageCenter.h
         includes/CreatorObject.h
 
+        tests/test.cpp
         src/OwnerPark.cpp
+        src/StorageCenter.cpp
         src/Park.cpp
         src/ObjectPark.cpp
         src/CreatorObject.cpp
-        tests/test.cpp
 )
