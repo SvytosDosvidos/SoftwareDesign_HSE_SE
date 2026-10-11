@@ -13,10 +13,10 @@ public:
 
     void printObjectEasy() const;
     void printObjectNoEasy() const;
-    void addObject(std::stringstream ss);
+    bool addObject(std::stringstream& ss);
 private:
-    std::vector<ObjectPark> objectsEasy_;
-    std::vector<ObjectPark> objectsNoEasy_;
+    std::vector<ObjectPark*> objectsEasy_;
+    std::vector<ObjectPark*> objectsNoEasy_;
     Value cntElectrcity_;
 
     CreatorObject* creatorObject_;

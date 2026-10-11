@@ -8,24 +8,26 @@ Park::Park() {
 
 void Park::printObjectEasy() const {
     for(const auto &it : objectsEasy_) {
-        it.printObject();
+        it->printObject();
     }
 }
 
 void Park::printObjectNoEasy() const {
     for(const auto &it : objectsNoEasy_) {
-        it.printObject();
+        it->printObject();
     }
 }
 
-void Park::addObject(std::stringstream ss) {
-    std::optional<ObjectPark> obj = creatorObject_->createObject(ss);
-    if(obj) {
-        return;
+bool Park::addObject(std::stringstream& ss) {
+    std::optional<ObjectPark*> obj = creatorObject_->createObject(ss);
+    if(!obj.has_value()) {
+        return false;
     }
-    if(obj->getSimplicity() >= 6) {
+
+    if((*obj)->getSimplicity() >= 6) {
         objectsEasy_.push_back(*obj);
     } else {
         objectsNoEasy_.push_back(*obj);
     }
+    return true;
 }

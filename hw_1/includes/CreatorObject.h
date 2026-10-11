@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream>
 #include <map>
 #include <string>
 #include <functional>
@@ -8,7 +9,7 @@
 
 #include "ObjectPark.h"
 
-using Creator = std::function<std::optional<ObjectPark>(std::stringstream&)>;
+using Creator = std::function<std::optional<ObjectPark*>(std::stringstream&)>;
 
 class CreatorObject {
 public:
@@ -16,7 +17,7 @@ public:
 
     void initCreator();
     void addCreator(std::string str, Creator creator);
-    std::optional<ObjectPark> createObject(std::stringstream& ss);
+    std::optional<ObjectPark*> createObject(std::stringstream& ss);
 private:
     std::map<std::string, Creator> creators_;
 };

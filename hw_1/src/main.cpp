@@ -47,7 +47,13 @@ int main() {
                 owner->printAllObjects();
                 break;
             } case 3: {
-                //getS();
+                std::cout << "Please input data:\n";
+                std::stringstream input = getS();
+                if(owner->addObject(input)) {
+                    std::cout << "Correct!\n";
+                } else {
+                    std::cout << "No!\n";
+                }
                 break;
             } case 4: {
                 flagGontinue = false;

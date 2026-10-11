@@ -31,3 +31,8 @@ void OwnerPark::printAllObjects() const {
     park_->printObjectEasy();
     park_->printObjectNoEasy();
 }
+
+bool OwnerPark::addObject(std::stringstream& ss) {
+    bool flag = park_->addObject(ss);
+    return flag;
+}
