@@ -2,15 +2,6 @@
 
 #include "../includes/ObjectPark.h"
 
-void ObjectPark::printObject() const {
-    std::cout << name_ << " " << inventoryId_ << " "
-              << simplicity_ << " " << typeObject_ << "\n";
-}
-
-int ObjectPark::getSimplicity() const {
-    return simplicity_;
-}
-
 std::ostream& operator<<(std::ostream& os, TypeObject s) {
     switch (s) {
         using enum TypeObject;
@@ -81,6 +72,32 @@ ObjectPark::ObjectPark(std::string name, int inventoryId, int simplicity,
     TypeObject typeObject) : name_(name), inventoryId_(inventoryId),
         simplicity_(simplicity), typeObject_(typeObject) {}
 
+int ObjectPark::getSimplicity() const {
+    return simplicity_;
+}
+
+ObjectElectric::ObjectElectric(std::string name, int inventoryId, int simplicity,
+    TypeObject typeObject, Value electricityValue) : ObjectPark(name, inventoryId,
+        simplicity, typeObject), electricityValue_(electricityValue) {}
+
 Wheel::Wheel(std::string name, int inventoryId, int simplicity,
     TypeObject typeObject, TypeWheel typeWheel, Value radius) : ObjectPark(name,
         inventoryId, simplicity, typeObject), typeWheel_(typeWheel), radius_(radius) {}
+
+void Wheel::printObject() const {
+    std::cout << name_ << " " << inventoryId_ << " " << simplicity_ << " "
+        << typeObject_ << " " << typeWheel_ << " " << radius_ << "\n";
+}
+
+Scooter::Scooter(std::string name, int inventoryId, int simplicity, TypeObject typeObject,
+    Value electricityValue, std::vector<Wheel> wheels, Value weight) : ObjectElectric(name,
+        inventoryId, simplicity, typeObject, electricityValue), wheels_(wheels), weight_(weight) {}
+
+void Scooter::printObject() const {
+    std::cout << name_ << " " << inventoryId_ << " " << simplicity_ << " " <<
+        typeObject_ << " " << electricityValue_ << " " << weight_ << "\n";
+    std::cout << "Wheels:\n";
+    for(const auto &it : wheels_) {
+        it.printObject();
+    }
+}
