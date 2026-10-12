@@ -12,7 +12,7 @@
 #include "StorageCenter.h"
 
 using Creator = std::function<std::optional<ObjectPark*>
-    (std::stringstream&, StorageCenter* storageCenter)>;
+    (std::stringstream&, StorageCenter* storageCenter, std::string& strError)>;
 
 class CreatorObject {
 public:
@@ -21,7 +21,7 @@ public:
     void initCreator();
     void addCreator(std::string str, Creator creator);
     std::optional<ObjectPark*> createObject(std::stringstream& ss,
-        StorageCenter* storageCenter);
+        StorageCenter* storageCenter, std::string& strError);
 private:
     std::map<std::string, Creator> creators_;
 };

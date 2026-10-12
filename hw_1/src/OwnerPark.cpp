@@ -53,10 +53,11 @@ void OwnerPark::printCommand4Add() const {
 
 void OwnerPark::printAllObjects() const {
     park_->printObjectEasy();
+    std::cout << "\n";
     park_->printObjectNoEasy();
 }
 
-bool OwnerPark::addObject(std::stringstream& ss) {
-    bool flag = park_->addObject(ss);
+bool OwnerPark::addObject(std::stringstream& ss, std::string& strError) {
+    bool flag = park_->addObject(ss, strError);
     return flag;
 }

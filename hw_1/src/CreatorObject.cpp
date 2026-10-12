@@ -7,7 +7,7 @@ void toLowerSymbols(std::string& str) {
 }
 
 std::optional<ObjectPark*> CreatorObject::createObject(std::stringstream& ss,
-    StorageCenter* storageCenter) {
+    StorageCenter* storageCenter, std::string& strError) {
     std::string name;
     ss >> name;
 
@@ -15,7 +15,7 @@ std::optional<ObjectPark*> CreatorObject::createObject(std::stringstream& ss,
     if(creators_.find(name) == creators_.end()) {
         return std::nullopt;
     }
-    return creators_[name](ss, storageCenter);
+    return creators_[name](ss, storageCenter, strError);
 }
 
 void CreatorObject::addCreator(std::string str, Creator creator) {
@@ -23,7 +23,7 @@ void CreatorObject::addCreator(std::string str, Creator creator) {
 }
 
 std::optional<ObjectPark*> CreatorWheel(std::stringstream& ss,
-    StorageCenter* storageCenter) {
+    StorageCenter* storageCenter, std::string& strError) {
     int inventoryId;
     int simplicity;
     TypeObject typeObject;
@@ -32,69 +32,39 @@ std::optional<ObjectPark*> CreatorWheel(std::stringstream& ss,
     Value radius;
 
     if(!(ss >> inventoryId)) {
+        strError += "invalid inventoryId value\n";
         return std::nullopt;
     }
     if(!(ss >> simplicity)) {
+        strError += "invalid simplicity value\n";
         return std::nullopt;
     }
     if(!(ss >> typeObject)) {
+        strError += "invalid typeObject value\n";
         return std::nullopt;
     }
     if(!(ss >> typeWheel)) {
+        strError += "invalid typeWheel value\n";
         return std::nullopt;
     }
     if(!(ss >> radius)) {
+        strError += "invalid radius value\n";
+        return std::nullopt;
+    }
+
+    if(!storageCenter->checkUniqueId(inventoryId, strError)) {
+        return std::nullopt;
+    }
+
+    if(!storageCenter->checkSimplicity(simplicity, strError)) {
         return std::nullopt;
     }
 
     return new Wheel("wheel", inventoryId, simplicity, typeObject, typeWheel, radius);
 }
 
-std::optional<ObjectPark*> CreatorElectricScooter(std::stringstream& ss,
-    StorageCenter* storageCenter) {
-    int inventoryId;
-    int simplicity;
-    TypeObject typeObject;
-
-    Value electricityValue;
-    int ind_1, ind_2;
-    Value weight;
-
-    if(!(ss >> inventoryId)) {
-        return std::nullopt;
-    }
-    if(!(ss >> simplicity)) {
-        return std::nullopt;
-    }
-    if(!(ss >> typeObject)) {
-        return std::nullopt;
-    }
-    if(!(ss >> electricityValue)) {
-        return std::nullopt;
-    }
-    if(!(ss >> ind_1)) {
-        return std::nullopt;
-    }
-    if(!(ss >> ind_2)) {
-        return std::nullopt;
-    }
-    if(!(ss >> weight)) {
-        return std::nullopt;
-    }
-
-    std::optional<ObjectPark*> wheel_1 = storageCenter->getObject("wheel", ind_1, simplicity);
-    std::optional<ObjectPark*> wheel_2 = storageCenter->getObject("wheel", ind_2, simplicity);
-    if(!wheel_1.has_value() || !wheel_2.has_value()) {
-        return std::nullopt;
-    }
-
-    std::vector<Wheel*> wheels = {static_cast<Wheel*>(*wheel_1), static_cast<Wheel*>(*wheel_2)};
-    return new ScooterElectirc("scooter electric", inventoryId, simplicity, typeObject,
-        electricityValue, wheels, weight);
-}
-
 std::optional<ObjectPark*> CreatorScooter(std::stringstream& ss,
-                                                  StorageCenter* storageCenter) {
+    StorageCenter* storageCenter, std::string& strError) {
     int inventoryId;
     int simplicity;
     TypeObject typeObject;
@@ -103,21 +73,35 @@ std::optional<ObjectPark*> CreatorScooter(std::stringstream& ss,
     Value weight;
 
     if(!(ss >> inventoryId)) {
+        strError += "invalid inventoryId value\n";
         return std::nullopt;
     }
     if(!(ss >> simplicity)) {
+        strError += "invalid simplicity value\n";
         return std::nullopt;
     }
     if(!(ss >> typeObject)) {
+        strError += "invalid typeObject value\n";
         return std::nullopt;
     }
     if(!(ss >> ind_1)) {
+        strError += "invalid inventoryIdWheel_1 value\n";
         return std::nullopt;
     }
     if(!(ss >> ind_2)) {
+        strError += "invalid inventoryIdWheel_2 value\n";
         return std::nullopt;
     }
     if(!(ss >> weight)) {
+        strError += "invalid weight value\n";
+        return std::nullopt;
+    }
+
+    if(!storageCenter->checkUniqueId(inventoryId, strError)) {
+        return std::nullopt;
+    }
+
+    if(!storageCenter->checkSimplicity(simplicity, strError)) {
         return std::nullopt;
     }
 
@@ -132,12 +116,75 @@ std::optional<ObjectPark*> CreatorScooter(std::stringstream& ss,
         wheels, weight);
 }
 
+std::optional<ObjectPark*> CreatorElectricScooter(std::stringstream& ss,
+    StorageCenter* storageCenter, std::string& strError) {
+    int inventoryId;
+    int simplicity;
+    TypeObject typeObject;
+
+    Value electricityValue;
+    int ind_1, ind_2;
+    Value weight;
+
+    if(!(ss >> inventoryId)) {
+        strError += "invalid inventoryId value\n";
+        return std::nullopt;
+    }
+    if(!(ss >> simplicity)) {
+        strError += "invalid simplicity value\n";
+        return std::nullopt;
+    }
+    if(!(ss >> typeObject)) {
+        strError += "invalid inventoryId value\n";
+        return std::nullopt;
+    }
+    if(!(ss >> electricityValue)) {
+        strError += "invalid electricityValue value\n";
+        return std::nullopt;
+    }
+    if(!(ss >> ind_1)) {
+        strError += "invalid inventoryIdWheel_1 value\n";
+        return std::nullopt;
+    }
+    if(!(ss >> ind_2)) {
+        strError += "invalid inventoryIdWheel_2 value\n";
+        return std::nullopt;
+    }
+    if(!(ss >> weight)) {
+        strError += "invalid weight value\n";
+        return std::nullopt;
+    }
+
+    if(!storageCenter->checkUniqueId(inventoryId, strError)) {
+        return std::nullopt;
+    }
+
+    if(!storageCenter->checkCntElectrcity(electricityValue, strError)) {
+        return std::nullopt;
+    }
+
+    if(!storageCenter->checkSimplicity(simplicity, strError)) {
+        return std::nullopt;
+    }
+
+    std::optional<ObjectPark*> wheel_1 = storageCenter->getObject("wheel", ind_1, simplicity);
+    std::optional<ObjectPark*> wheel_2 = storageCenter->getObject("wheel", ind_2, simplicity);
+    if(!wheel_1.has_value() || !wheel_2.has_value()) {
+        return std::nullopt;
+    }
+
+    std::vector<Wheel*> wheels = {static_cast<Wheel*>(*wheel_1), static_cast<Wheel*>(*wheel_2)};
+    storageCenter->addCntElectrcity(electricityValue);
+    return new ScooterElectirc("scooter electric", inventoryId, simplicity, typeObject,
+                               electricityValue, wheels, weight);
+}
+
 CreatorObject::CreatorObject() {
     initCreator();
 }
 
 void CreatorObject::initCreator() {
     addCreator("wheel", CreatorWheel);
+    addCreator("scooter", CreatorScooter);
     addCreator("scooter electric", CreatorElectricScooter);
-    addCreator("scooter", CreatorElectricScooter);
 }

@@ -12,7 +12,7 @@ public:
     void printAllObjects() const;
     void printCommand4Add() const;
 
-    bool addObject(std::stringstream& ss);
+    bool addObject(std::stringstream& ss, std::string& strError);
 private:
     Park* park_;
 };

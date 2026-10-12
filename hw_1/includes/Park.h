@@ -13,7 +13,7 @@ public:
 
     void printObjectEasy() const;
     void printObjectNoEasy() const;
-    bool addObject(std::stringstream& ss);
+    bool addObject(std::stringstream& ss, std::string& strError);
 private:
     CreatorObject* creatorObject_;
     StorageCenter* storageCenter_;

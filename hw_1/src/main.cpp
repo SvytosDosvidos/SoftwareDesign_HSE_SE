@@ -48,12 +48,14 @@ int main() {
                 owner->printAllObjects();
                 break;
             } case 3: {
+                std::string strError;
                 std::cout << "Please input data:\n";
                 std::stringstream input = getS();
-                if(owner->addObject(input)) {
-                    std::cout << "The object has been created.!\n";
+                if(owner->addObject(input, strError)) {
+                    std::cout << "The object has been created!!!\n";
                 } else {
-                    std::cout << "Incorrect data!\n";
+                    std::cout << "Incorrect data, because:\n";
+                    std::cout << strError << "\n";
                 }
                 break;
             } case 4: {
