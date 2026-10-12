@@ -38,7 +38,7 @@ std::optional<ObjectPark*> StorageCenter::getObject(std::string name,
         }
     }
 
-    if(simplicity < 6) {
+    if(simplicity < simplicityMin) {
         for(int i = 0; i < objectsNoEasy_.size(); ++i) {
             if(objectsNoEasy_[i]->getName() == name &&
             objectsNoEasy_[i]->getInventoryId() == inventoryId) {

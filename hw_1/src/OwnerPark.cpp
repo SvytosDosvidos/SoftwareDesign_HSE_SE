@@ -25,28 +25,30 @@ void OwnerPark::printCommand() const {
 }
 
 void OwnerPark::printCommand4Add() const {
-    std::cout << std::format("+{:-^108}+\n", "");
-    std::cout << std::format("|{: ^108}|\n", "Instructions on how to add an object:");
-    std::cout << std::format("|{: ^108}|\n", "");
+    std::cout << std::format("+{:-^128}+\n", "");
+    std::cout << std::format("|{: ^128}|\n", "Instructions on how to add an object:");
+    std::cout << std::format("|{: ^128}|\n", "");
 
-    std::cout << std::format("|{: ^108}|\n", "TypeObject:");
-    std::cout << std::format("|{: ^108}|\n", "TransportElectric - 1");
-    std::cout << std::format("|{: ^108}|\n", "TransportNoElectric - 2");
-    std::cout << std::format("|{: ^108}|\n", "OtherElectric - 3");
-    std::cout << std::format("|{: ^108}|\n", "SparePart - 4");
-    std::cout << std::format("|{: ^108}|\n", "Other - 5");
-    std::cout << std::format("|{: ^108}|\n", "");
+    std::cout << std::format("|{: ^128}|\n", "TypeObject:");
+    std::cout << std::format("|{: ^128}|\n", "TransportElectric - 1");
+    std::cout << std::format("|{: ^128}|\n", "TransportNoElectric - 2");
+    std::cout << std::format("|{: ^128}|\n", "OtherElectric - 3");
+    std::cout << std::format("|{: ^128}|\n", "SparePart - 4");
+    std::cout << std::format("|{: ^128}|\n", "Other - 5");
+    std::cout << std::format("|{: ^128}|\n", "");
 
-    std::cout << std::format("|{: ^108}|\n", "TypeWheel:");
-    std::cout << std::format("|{: ^108}|\n", "BicycleScooter - 1");
-    std::cout << std::format("|{: ^108}|\n", "BicycleWheel - 2");
-    std::cout << std::format("|{: ^108}|\n", "");
+    std::cout << std::format("|{: ^128}|\n", "TypeWheel:");
+    std::cout << std::format("|{: ^128}|\n", "BicycleScooter - 1");
+    std::cout << std::format("|{: ^128}|\n", "BicycleWheel - 2");
+    std::cout << std::format("|{: ^128}|\n", "");
 
-    std::cout << std::format("|{: ^108}|\n", "Wheel - [name][inventoryId][simplicity]"
+    std::cout << std::format("|{: ^128}|\n", "Wheel - [name][inventoryId][simplicity]"
         "[typeObject][typeWheel][radius]");
-    std::cout << std::format("|{: ^108}|\n", "Scooter - [name][inventoryId][simplicity]"
+    std::cout << std::format("|{: ^128}|\n", "Scooter Electric - [name][inventoryId][simplicity]"
+        "[typeObject][electricityValue][inventoryIdWheel_1][inventoryIdWheel_2][weigth]");
+    std::cout << std::format("|{: ^128}|\n", "Scooter - [name][inventoryId][simplicity]"
         "[typeObject][inventoryIdWheel_1][inventoryIdWheel_2][weigth]");
-    std::cout << std::format("+{:-^108}+\n", "");
+    std::cout << std::format("+{:-^128}+\n", "");
 }
 
 void OwnerPark::printAllObjects() const {

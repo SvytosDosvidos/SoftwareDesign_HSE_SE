@@ -63,13 +63,27 @@ private:
     Value radius_;
 };
 
-class Scooter : public ObjectElectric {
+class ScooterElectirc : public ObjectElectric {
+public:
+    ~ScooterElectirc() override = default;
+
+    ScooterElectirc(std::string name, int inventoryId, int simplicity,
+        TypeObject typeObject, Value electricityValue,
+        std::vector<Wheel*> wheels, Value weight);
+
+    void printObject() const override;
+private:
+    std::vector<Wheel*> wheels_;
+    Value weight_;
+};
+
+class Scooter : public ObjectPark {
 public:
     ~Scooter() override = default;
 
     Scooter(std::string name, int inventoryId, int simplicity,
-        TypeObject typeObject, Value electricityValue,
-        std::vector<Wheel*> wheels, Value weight);
+            TypeObject typeObject,
+            std::vector<Wheel*> wheels, Value weight);
 
     void printObject() const override;
 private:

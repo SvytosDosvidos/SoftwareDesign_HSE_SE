@@ -50,7 +50,7 @@ std::optional<ObjectPark*> CreatorWheel(std::stringstream& ss,
     return new Wheel("wheel", inventoryId, simplicity, typeObject, typeWheel, radius);
 }
 
-std::optional<ObjectPark*> CreatorScooter(std::stringstream& ss,
+std::optional<ObjectPark*> CreatorElectricScooter(std::stringstream& ss,
     StorageCenter* storageCenter) {
     int inventoryId;
     int simplicity;
@@ -89,8 +89,47 @@ std::optional<ObjectPark*> CreatorScooter(std::stringstream& ss,
     }
 
     std::vector<Wheel*> wheels = {static_cast<Wheel*>(*wheel_1), static_cast<Wheel*>(*wheel_2)};
-    return new Scooter("scooter", inventoryId, simplicity, typeObject,
+    return new ScooterElectirc("scooter electric", inventoryId, simplicity, typeObject,
         electricityValue, wheels, weight);
+}
+
+std::optional<ObjectPark*> CreatorScooter(std::stringstream& ss,
+                                                  StorageCenter* storageCenter) {
+    int inventoryId;
+    int simplicity;
+    TypeObject typeObject;
+
+    int ind_1, ind_2;
+    Value weight;
+
+    if(!(ss >> inventoryId)) {
+        return std::nullopt;
+    }
+    if(!(ss >> simplicity)) {
+        return std::nullopt;
+    }
+    if(!(ss >> typeObject)) {
+        return std::nullopt;
+    }
+    if(!(ss >> ind_1)) {
+        return std::nullopt;
+    }
+    if(!(ss >> ind_2)) {
+        return std::nullopt;
+    }
+    if(!(ss >> weight)) {
+        return std::nullopt;
+    }
+
+    std::optional<ObjectPark*> wheel_1 = storageCenter->getObject("wheel", ind_1, simplicity);
+    std::optional<ObjectPark*> wheel_2 = storageCenter->getObject("wheel", ind_2, simplicity);
+    if(!wheel_1.has_value() || !wheel_2.has_value()) {
+        return std::nullopt;
+    }
+
+    std::vector<Wheel*> wheels = {static_cast<Wheel*>(*wheel_1), static_cast<Wheel*>(*wheel_2)};
+    return new Scooter("scooter", inventoryId, simplicity, typeObject,
+        wheels, weight);
 }
 
 CreatorObject::CreatorObject() {
@@ -99,5 +138,6 @@ CreatorObject::CreatorObject() {
 
 void CreatorObject::initCreator() {
     addCreator("wheel", CreatorWheel);
-    addCreator("scooter", CreatorScooter);
+    addCreator("scooter electric", CreatorElectricScooter);
+    addCreator("scooter", CreatorElectricScooter);
 }

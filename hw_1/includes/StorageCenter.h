@@ -15,6 +15,8 @@ public:
     std::optional<ObjectPark*> getObject(std::string name, int inventoryId,
         int simplicity);
 private:
+    int simplicityMin = 6;
+
     std::vector<ObjectPark*> objectsEasy_;
     std::vector<ObjectPark*> objectsNoEasy_;
     Value cntElectrcity_;

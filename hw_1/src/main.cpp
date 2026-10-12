@@ -51,9 +51,9 @@ int main() {
                 std::cout << "Please input data:\n";
                 std::stringstream input = getS();
                 if(owner->addObject(input)) {
-                    std::cout << "Correct!\n";
+                    std::cout << "The object has been created.!\n";
                 } else {
-                    std::cout << "No!\n";
+                    std::cout << "Incorrect data!\n";
                 }
                 break;
             } case 4: {
