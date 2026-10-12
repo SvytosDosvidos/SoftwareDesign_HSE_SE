@@ -5,11 +5,22 @@
 #include "../includes/OwnerPark.h"
 
 OwnerPark::OwnerPark() {
+    init();
     park_ = new Park();
 }
 
 OwnerPark::~OwnerPark() {
     delete park_;
+}
+
+void OwnerPark::init() {
+    mapCommand_["wheel"] = "[name][inventoryId]"
+        "[simplicity][typeObject][typeWheel][radius]";
+    mapCommand_["scooter electric"] = "[name]"
+        "[inventoryId][simplicity][typeObject][electricityValue][inventoryIdWheel_1]"
+            "[inventoryIdWheel_2][weigth]";
+    mapCommand_["scooter"] = "[name][inventoryId]"
+        "[simplicity][typeObject][inventoryIdWheel_1][inventoryIdWheel_2][weigth]";
 }
 
 void OwnerPark::printCommand() const {
@@ -42,19 +53,17 @@ void OwnerPark::printCommand4Add() const {
     std::cout << std::format("|{: ^128}|\n", "BicycleWheel - 2");
     std::cout << std::format("|{: ^128}|\n", "");
 
-    std::cout << std::format("|{: ^128}|\n", "Wheel - [name][inventoryId][simplicity]"
-        "[typeObject][typeWheel][radius]");
-    std::cout << std::format("|{: ^128}|\n", "Scooter Electric - [name][inventoryId][simplicity]"
-        "[typeObject][electricityValue][inventoryIdWheel_1][inventoryIdWheel_2][weigth]");
-    std::cout << std::format("|{: ^128}|\n", "Scooter - [name][inventoryId][simplicity]"
-        "[typeObject][inventoryIdWheel_1][inventoryIdWheel_2][weigth]");
+    for(const auto &it : mapCommand_) {
+        std::cout <<  std::format("|{: ^128}|\n", it.first + " - " + it.second);
+    }
     std::cout << std::format("+{:-^128}+\n", "");
 }
 
 void OwnerPark::printAllObjects() const {
-    park_->printObjectEasy();
+    std::map<std::string, std::string> mapf;
+    park_->printObjectEasy(mapCommand_);
     std::cout << "\n";
-    park_->printObjectNoEasy();
+    park_->printObjectNoEasy(mapCommand_);
 }
 
 bool OwnerPark::addObject(std::stringstream& ss, std::string& strError) {

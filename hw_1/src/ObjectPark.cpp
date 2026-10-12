@@ -97,8 +97,8 @@ Wheel::Wheel(std::string name, int inventoryId, int simplicity,
         inventoryId, simplicity, typeObject), typeWheel_(typeWheel), radius_(radius) {}
 
 void Wheel::printObject() const {
-    std::cout << name_ << " " << inventoryId_ << " " << simplicity_ << " "
-        << typeObject_ << " " << typeWheel_ << " " << radius_ << "\n";
+    std::cout << "[" << name_ << "][" << inventoryId_ << "][" << simplicity_ << "]["
+        << typeObject_ << "][" << typeWheel_ << "][" << radius_ << "]\n";
 }
 
 ScooterElectirc::ScooterElectirc(std::string name, int inventoryId, int simplicity, TypeObject typeObject,
@@ -106,8 +106,8 @@ ScooterElectirc::ScooterElectirc(std::string name, int inventoryId, int simplici
         inventoryId, simplicity, typeObject, electricityValue), wheels_(wheels), weight_(weight) {}
 
 void ScooterElectirc::printObject() const {
-    std::cout << name_ << " " << inventoryId_ << " " << simplicity_ << " " <<
-        typeObject_ << " " << electricityValue_ << " " << weight_ << "\n";
+    std::cout << "[" << " " << name_ << "][" << inventoryId_ << "][" << simplicity_ << "][" <<
+        typeObject_ << "][" << electricityValue_ << "][" << weight_ << "]\n";
 
     std::cout << "Wheels count = " << wheels_.size() << "\n";
     for(const auto &it : wheels_) {
@@ -120,8 +120,8 @@ Scooter::Scooter(std::string name, int inventoryId, int simplicity, TypeObject t
         wheels_(wheels), weight_(weight) {}
 
 void Scooter::printObject() const {
-    std::cout << name_ << " " << inventoryId_ << " " << simplicity_ << " " <<
-              typeObject_ << " " << weight_ << "\n";
+    std::cout << "[" << name_ << "][" << inventoryId_ << "][" << simplicity_ << "][" <<
+              typeObject_ << "][" << weight_ << "]\n";
 
     std::cout << "Wheels count = " << wheels_.size() << "\n";
     for(const auto &it : wheels_) {

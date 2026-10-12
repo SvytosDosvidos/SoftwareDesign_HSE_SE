@@ -1,6 +1,9 @@
 #pragma once
 
+#include <iostream>
 #include <optional>
+#include <map>
+#include <string>
 
 #include "ObjectPark.h"
 
@@ -8,8 +11,8 @@ class StorageCenter {
 public:
     StorageCenter();
 
-    void printObjectEasy() const;
-    void printObjectNoEasy() const;
+    void printObjectEasy(const std::map<std::string, std::string>& mapCommand) const;
+    void printObjectNoEasy(const std::map<std::string, std::string>& mapCommand) const;
 
     void addObject(ObjectPark* objectPark);
     std::optional<ObjectPark*> getObject(std::string name, int inventoryId,
@@ -26,4 +29,6 @@ private:
     std::vector<ObjectPark*> objectsEasy_;
     std::vector<ObjectPark*> objectsNoEasy_;
     Value cntElectrcity_;
+
+    std::vector<std::string> orderPrint_ = {"wheel", "scooter", "scooter electric"};
 };

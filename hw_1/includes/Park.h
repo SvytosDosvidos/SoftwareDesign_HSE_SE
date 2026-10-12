@@ -1,6 +1,8 @@
 #pragma once
 
 #include <vector>
+#include <map>
+#include <string>
 
 #include "ObjectPark.h"
 #include "CreatorObject.h"
@@ -11,8 +13,8 @@ class Park {
 public:
     Park();
 
-    void printObjectEasy() const;
-    void printObjectNoEasy() const;
+    void printObjectEasy(const std::map<std::string, std::string>& mapCommand) const;
+    void printObjectNoEasy(const std::map<std::string, std::string>& mapCommand) const;
     bool addObject(std::stringstream& ss, std::string& strError);
 private:
     CreatorObject* creatorObject_;

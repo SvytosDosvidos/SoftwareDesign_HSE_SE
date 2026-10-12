@@ -7,14 +7,12 @@ Park::Park() {
     storageCenter_ = new StorageCenter();
 }
 
-void Park::printObjectEasy() const {
-    std::cout << "The objects is easy to use:\n";
-    storageCenter_->printObjectEasy();
+void Park::printObjectEasy(const std::map<std::string, std::string> &mapCommand) const {
+    storageCenter_->printObjectEasy(mapCommand);
 }
 
-void Park::printObjectNoEasy() const {
-    std::cout << "The objects is not easy to use:\n";
-    storageCenter_->printObjectNoEasy();
+void Park::printObjectNoEasy(const std::map<std::string, std::string>& mapCommand) const {
+    storageCenter_->printObjectNoEasy(mapCommand);
 }
 
 bool Park::addObject(std::stringstream& ss, std::string& strError) {

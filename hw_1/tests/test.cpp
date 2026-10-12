@@ -6,6 +6,10 @@
 void createWheel(std::string &name, int inventoryId, int simplicity,
     int typeObject, int typeWheel, Value radius, std::stringstream &ss)
 {
+    if(!ss.str().empty()) {
+        ss = std::stringstream();
+    }
+
     ss << name << " ";
     ss << inventoryId << " ";
     ss << simplicity << " ";
@@ -32,25 +36,48 @@ TEST_CASE("Test for create Wheel", "[Create Wheel]") {
 
     OwnerPark* ownerPark = new OwnerPark();
     std::stringstream ss;
-
+    std::string strError;
     SECTION("Correct wheel") {
         createWheel(nameCorrect, inventoryId, simplicity, typeObjectCorrect, typeWheelCorrect, radius, ss);
-        CHECK(ownerPark->addObject(ss));
+        CHECK(ownerPark->addObject(ss, strError));
     }
     SECTION("Not Correct Wheel, wrong with name") {
         std::string nameNoCorrect = "wheel1";
         createWheel(nameNoCorrect, inventoryId, simplicity, typeObjectCorrect, typeWheelCorrect, radius, ss);
-        CHECK(!ownerPark->addObject(ss));
+        CHECK(!ownerPark->addObject(ss, strError));
     }
     SECTION("Not Correct Wheel, wrong with typeObject") {
         int typeObjectNoCorrect = 13;
         createWheel(nameCorrect, inventoryId, simplicity, typeObjectNoCorrect, typeWheelCorrect, radius, ss);
-        CHECK(!ownerPark->addObject(ss));
+        CHECK(!ownerPark->addObject(ss, strError));
     }
     SECTION("Not Correct Wheel, wrong with typeWheel") {
         int typeWheelNoCorrect = 3;
         createWheel(nameCorrect, inventoryId, simplicity, typeObjectCorrect, typeWheelNoCorrect, radius, ss);
-        CHECK(!ownerPark->addObject(ss));
+        CHECK(!ownerPark->addObject(ss, strError));
+    }
+    SECTION("Create 2 wheels with one id") {
+        createWheel(nameCorrect, inventoryId, simplicity, typeObjectCorrect, typeWheelCorrect, radius, ss);
+        CHECK(ownerPark->addObject(ss, strError));
+
+        createWheel(nameCorrect, inventoryId, simplicity, typeObjectCorrect, typeWheelCorrect, radius, ss);
+        CHECK(!ownerPark->addObject(ss, strError));
+
+        createWheel(nameCorrect, inventoryId + 1, simplicity, typeObjectCorrect, typeWheelCorrect, radius, ss);
+        CHECK(ownerPark->addObject(ss, strError));
+    }
+    SECTION("Not Correct Wheel, wrong with simplcity") {
+        createWheel(nameCorrect, inventoryId, 11, typeObjectCorrect, typeWheelCorrect, radius, ss);
+        CHECK(!ownerPark->addObject(ss, strError));
+
+        createWheel(nameCorrect, inventoryId, 0, typeObjectCorrect, typeWheelCorrect, radius, ss);
+        CHECK(!ownerPark->addObject(ss, strError));
+
+        createWheel(nameCorrect, inventoryId, 16, typeObjectCorrect, typeWheelCorrect, radius, ss);
+        CHECK(!ownerPark->addObject(ss, strError));
+
+        createWheel(nameCorrect, inventoryId, 20, typeObjectCorrect, typeWheelCorrect, radius, ss);
+        CHECK(!ownerPark->addObject(ss, strError));
     }
 
     delete ownerPark;
