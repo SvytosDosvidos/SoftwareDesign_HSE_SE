@@ -2,42 +2,39 @@
 
 StorageCenter::StorageCenter() : cntElectrcity_(0) {}
 
-void StorageCenter::printObjectEasy(const std::map<std::string, std::string>& mapCommand) const {
-    if(!objectsEasy_.empty()) {
+void StorageCenter::printObject(const std::vector<ObjectPark*> objects, const std::map<std::string, std::string>& mapCommand) const {
+    if(!objects.empty()) {
+        std::cout << "\n";
         std::cout << "The objects is easy to use:\n";
     }
     for(const auto& name : orderPrint_) {
         bool firstPrint = false;
-        for(const auto& it : objectsEasy_) {
+        int count = 0;
+        for(const auto& it : objects) {
+            if(it->getName() == name) {
+                count++;
+            }
+        }
+        for(const auto& it : objects) {
             if(it->getName() == name) {
                 if(!firstPrint) {
+                    std::cout << it->getName() << ", count = " << count << "\n";
                     std::cout << mapCommand.at(name);
                     std::cout << ":\n";
+                    firstPrint = true;
                 }
                 it->printObject();
-                firstPrint = true;
             }
         }
     }
 }
 
+void StorageCenter::printObjectEasy(const std::map<std::string, std::string>& mapCommand) const {
+    printObject(objectsEasy_, mapCommand);
+}
+
 void StorageCenter::printObjectNoEasy(const std::map<std::string, std::string>& mapCommand) const {
-    if(!objectsNoEasy_.empty()) {
-        std::cout << "The objects is not easy to use:\n";
-    }
-    for(const auto& name : orderPrint_) {
-        bool firstPrint = false;
-        for(const auto& it : objectsNoEasy_) {
-            if(it->getName() == name) {
-                if(!firstPrint) {
-                    std::cout << mapCommand.at(name);
-                    std::cout << ":\n";
-                }
-                it->printObject();
-                firstPrint = true;
-            }
-        }
-    }
+    printObject(objectsNoEasy_, mapCommand);
 }
 
 void StorageCenter::addObject(ObjectPark* objectPark) {
@@ -114,4 +111,8 @@ bool StorageCenter::checkUniqueId(int inventoryId, std::string& strError) const 
 
 void StorageCenter::addCntElectrcity(Value cntElectrcity) {
     cntElectrcity_ += cntElectrcity;
+}
+
+Value StorageCenter::getCntElectrcity() const {
+    return cntElectrcity_;
 }

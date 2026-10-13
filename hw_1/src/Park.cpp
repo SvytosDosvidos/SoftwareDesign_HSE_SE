@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include "../includes/Park.h"
 
 Park::Park() {
@@ -23,4 +21,8 @@ bool Park::addObject(std::stringstream& ss, std::string& strError) {
 
     storageCenter_->addObject(*obj);
     return true;
+}
+
+Value Park::getCntElectricity() const {
+    return storageCenter_->getCntElectrcity();
 }

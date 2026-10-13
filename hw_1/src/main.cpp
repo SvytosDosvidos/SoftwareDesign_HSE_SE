@@ -49,7 +49,7 @@ int main() {
                 break;
             } case 3: {
                 std::string strError;
-                std::cout << "Please input data:\n";
+                std::cout << "Input data:\n";
                 std::stringstream input = getS();
                 if(owner->addObject(input, strError)) {
                     std::cout << "The object has been created!!!\n";

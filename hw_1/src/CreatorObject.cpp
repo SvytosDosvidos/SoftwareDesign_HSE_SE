@@ -1,21 +1,39 @@
 #include "../includes/CreatorObject.h"
 
 void toLowerSymbols(std::string& str) {
-    for(int i = 0; i < str.size(); ++i) {
+    for(size_t i = 0; i < str.size(); ++i) {
         str[i] = tolower(str[i]);
     }
 }
 
+bool isSymbol(char c) {
+    return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+}
+
 std::optional<ObjectPark*> CreatorObject::createObject(std::stringstream& ss,
     StorageCenter* storageCenter, std::string& strError) {
-    std::string name;
-    ss >> name;
+    std::string nameFirst, nameSecond;
+    ss >> nameFirst;
 
-    toLowerSymbols(name);
-    if(creators_.find(name) == creators_.end()) {
+    if(ss.str().empty()) {
         return std::nullopt;
     }
-    return creators_[name](ss, storageCenter, strError);
+
+    ss >> nameSecond;
+    if(!nameSecond.empty() && isSymbol(nameSecond[0])) {
+        nameFirst += " " + nameSecond;
+    } else {
+        std::stringstream ssNew;
+        ssNew << ss.str();
+        ssNew >> nameSecond;
+        std::swap(ss, ssNew);
+    }
+
+    toLowerSymbols(nameFirst);
+    if(creators_.find(nameFirst) == creators_.end()) {
+        return std::nullopt;
+    }
+    return creators_[nameFirst](ss, storageCenter, strError);
 }
 
 void CreatorObject::addCreator(std::string str, Creator creator) {

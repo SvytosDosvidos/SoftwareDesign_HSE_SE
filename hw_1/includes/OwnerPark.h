@@ -1,5 +1,7 @@
 #pragma once
 
+#include <format>
+
 #include "Park.h"
 #include "StorageCenter.h"
 
@@ -15,6 +17,8 @@ public:
     void printCommand4Add() const;
 
     bool addObject(std::stringstream& ss, std::string& strError);
+
+    Value getCntElectricity() const;//only for test
 private:
     Park* park_;
     std::map<std::string, std::string> mapCommand_;

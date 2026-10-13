@@ -1,7 +1,3 @@
-#include <iostream>
-#include <format>
-#include <string>
-
 #include "../includes/OwnerPark.h"
 
 OwnerPark::OwnerPark() {
@@ -60,9 +56,9 @@ void OwnerPark::printCommand4Add() const {
 }
 
 void OwnerPark::printAllObjects() const {
-    std::map<std::string, std::string> mapf;
+    std::cout << "Daily consumption electricity = " << park_->getCntElectricity() << "\n";
+
     park_->printObjectEasy(mapCommand_);
-    std::cout << "\n";
     park_->printObjectNoEasy(mapCommand_);
 }
 

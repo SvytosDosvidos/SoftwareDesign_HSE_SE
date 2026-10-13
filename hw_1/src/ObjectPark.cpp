@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include "../includes/ObjectPark.h"
 
 std::ostream& operator<<(std::ostream& os, TypeObject s) {
@@ -106,7 +104,7 @@ ScooterElectirc::ScooterElectirc(std::string name, int inventoryId, int simplici
         inventoryId, simplicity, typeObject, electricityValue), wheels_(wheels), weight_(weight) {}
 
 void ScooterElectirc::printObject() const {
-    std::cout << "[" << " " << name_ << "][" << inventoryId_ << "][" << simplicity_ << "][" <<
+    std::cout << "[" << name_ << "][" << inventoryId_ << "][" << simplicity_ << "][" <<
         typeObject_ << "][" << electricityValue_ << "][" << weight_ << "]\n";
 
     std::cout << "Wheels count = " << wheels_.size() << "\n";

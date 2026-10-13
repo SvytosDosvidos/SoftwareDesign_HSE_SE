@@ -23,7 +23,10 @@ public:
     bool checkCntElectrcity(Value cntElectrcity, std::string& strError) const;
 
     void addCntElectrcity(Value cntElectrcity);
+    Value getCntElectrcity() const;
 private:
+    void printObject(const std::vector<ObjectPark*> objects, const std::map<std::string, std::string>& mapCommand) const;
+
     int simplicityMin_ = 6;
 
     std::vector<ObjectPark*> objectsEasy_;
