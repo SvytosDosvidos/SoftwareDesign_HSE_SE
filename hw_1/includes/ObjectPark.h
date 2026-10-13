@@ -72,6 +72,9 @@ public:
         TypeObject typeObject, Value electricityValue,
         std::vector<Wheel*> wheels, Value weight);
 
+    int getInventoryIDWheel1() const;
+    int getInventoryIDWheel2() const;
+
     void printObject() const override;
 private:
     std::vector<Wheel*> wheels_;
@@ -85,6 +88,9 @@ public:
     Scooter(std::string name, int inventoryId, int simplicity,
             TypeObject typeObject,
             std::vector<Wheel*> wheels, Value weight);
+
+    int getInventoryIDWheel1() const;
+    int getInventoryIDWheel2() const;
 
     void printObject() const override;
 private:

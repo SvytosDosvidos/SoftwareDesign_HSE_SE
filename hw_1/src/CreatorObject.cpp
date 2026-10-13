@@ -78,6 +78,10 @@ std::optional<ObjectPark*> CreatorWheel(std::stringstream& ss,
         return std::nullopt;
     }
 
+    if (!storageCenter->checkTypeObject("wheel", typeObject, strError)) {
+        return std::nullopt;
+    }
+
     return new Wheel("wheel", inventoryId, simplicity, typeObject, typeWheel, radius);
 }
 
@@ -123,6 +127,10 @@ std::optional<ObjectPark*> CreatorScooter(std::stringstream& ss,
         return std::nullopt;
     }
 
+    if (!storageCenter->checkTypeObject("scooter", typeObject, strError)) {
+        return std::nullopt;
+    }
+
     std::optional<ObjectPark*> wheel_1 = storageCenter->getObject("wheel", ind_1, simplicity);
     std::optional<ObjectPark*> wheel_2 = storageCenter->getObject("wheel", ind_2, simplicity);
     if(!wheel_1.has_value() || !wheel_2.has_value()) {
@@ -130,6 +138,10 @@ std::optional<ObjectPark*> CreatorScooter(std::stringstream& ss,
     }
 
     std::vector<Wheel*> wheels = {static_cast<Wheel*>(*wheel_1), static_cast<Wheel*>(*wheel_2)};
+
+    storageCenter->deleteObject(ind_1);
+    storageCenter->deleteObject(ind_2);
+
     return new Scooter("scooter", inventoryId, simplicity, typeObject,
         wheels, weight);
 }
@@ -185,6 +197,10 @@ std::optional<ObjectPark*> CreatorElectricScooter(std::stringstream& ss,
         return std::nullopt;
     }
 
+    if (!storageCenter->checkTypeObject("scooter electric", typeObject, strError)) {
+        return std::nullopt;
+    }
+
     std::optional<ObjectPark*> wheel_1 = storageCenter->getObject("wheel", ind_1, simplicity);
     std::optional<ObjectPark*> wheel_2 = storageCenter->getObject("wheel", ind_2, simplicity);
     if(!wheel_1.has_value() || !wheel_2.has_value()) {
@@ -193,6 +209,10 @@ std::optional<ObjectPark*> CreatorElectricScooter(std::stringstream& ss,
 
     std::vector<Wheel*> wheels = {static_cast<Wheel*>(*wheel_1), static_cast<Wheel*>(*wheel_2)};
     storageCenter->addCntElectrcity(electricityValue);
+
+    storageCenter->deleteObject(ind_1);
+    storageCenter->deleteObject(ind_2);
+
     return new ScooterElectirc("scooter electric", inventoryId, simplicity, typeObject,
                                electricityValue, wheels, weight);
 }

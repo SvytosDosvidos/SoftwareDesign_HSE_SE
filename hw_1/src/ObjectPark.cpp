@@ -103,6 +103,14 @@ ScooterElectirc::ScooterElectirc(std::string name, int inventoryId, int simplici
     Value electricityValue, std::vector<Wheel*> wheels, Value weight) : ObjectElectric(name,
         inventoryId, simplicity, typeObject, electricityValue), wheels_(wheels), weight_(weight) {}
 
+int ScooterElectirc::getInventoryIDWheel1() const {
+    return wheels_[0]->getInventoryId();
+}
+
+int ScooterElectirc::getInventoryIDWheel2() const {
+    return wheels_[1]->getInventoryId();
+}
+
 void ScooterElectirc::printObject() const {
     std::cout << "[" << name_ << "][" << inventoryId_ << "][" << simplicity_ << "][" <<
         typeObject_ << "][" << electricityValue_ << "][" << weight_ << "]\n";
@@ -125,4 +133,12 @@ void Scooter::printObject() const {
     for(const auto &it : wheels_) {
         it->printObject();
     }
+}
+
+int Scooter::getInventoryIDWheel1() const {
+    return wheels_[0]->getInventoryId();
+}
+
+int Scooter::getInventoryIDWheel2() const {
+    return wheels_[1]->getInventoryId();
 }

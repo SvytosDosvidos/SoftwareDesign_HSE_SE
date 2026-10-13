@@ -66,7 +66,7 @@ TEST_CASE("Test for create Wheel", "[Create Wheel]") {
 
     std::string nameCorrect = "wheel";
     int inventoryId = 1, simplicity = 2;
-    int typeObjectCorrect = 4;
+    int typeObjectCorrect = (int)TypeObject::SparePart;
     int typeWheelCorrect = 1;
     Value radius = 15;
 
@@ -89,6 +89,18 @@ TEST_CASE("Test for create Wheel", "[Create Wheel]") {
         int typeObjectNoCorrect = 13;
         createWheel(nameCorrect, inventoryId, simplicity, typeObjectNoCorrect, typeWheelCorrect, radius, ss);
         CHECK(!ownerPark->addObject(ss, strError));
+
+        createWheel(nameCorrect, inventoryId, simplicity, (int)TypeObject::Other, typeWheelCorrect, radius, ss);
+        CHECK(!ownerPark->addObject(ss, strError));
+
+        createWheel(nameCorrect, inventoryId, simplicity, (int)TypeObject::OtherElectric, typeWheelCorrect, radius, ss);
+        CHECK(!ownerPark->addObject(ss, strError));
+
+        createWheel(nameCorrect, inventoryId, simplicity, (int)TypeObject::TransportElectric, typeWheelCorrect, radius, ss);
+        CHECK(!ownerPark->addObject(ss, strError));
+
+        createWheel(nameCorrect, inventoryId, simplicity, (int)TypeObject::TransportNoElectric, typeWheelCorrect, radius, ss);
+        CHECK(!ownerPark->addObject(ss, strError));
     }
     SECTION("Not Correct Wheel, wrong with typeWheel") {
         int typeWheelNoCorrect = 3;
@@ -105,19 +117,6 @@ TEST_CASE("Test for create Wheel", "[Create Wheel]") {
         createWheel(nameCorrect, inventoryId + 1, simplicity, typeObjectCorrect, typeWheelCorrect, radius, ss);
         CHECK(ownerPark->addObject(ss, strError));
     }
-    SECTION("Not Correct Wheel, wrong with simplcity") {
-        createWheel(nameCorrect, inventoryId, 11, typeObjectCorrect, typeWheelCorrect, radius, ss);
-        CHECK(!ownerPark->addObject(ss, strError));
-
-        createWheel(nameCorrect, inventoryId, 0, typeObjectCorrect, typeWheelCorrect, radius, ss);
-        CHECK(!ownerPark->addObject(ss, strError));
-
-        createWheel(nameCorrect, inventoryId, 16, typeObjectCorrect, typeWheelCorrect, radius, ss);
-        CHECK(!ownerPark->addObject(ss, strError));
-
-        createWheel(nameCorrect, inventoryId, 20, typeObjectCorrect, typeWheelCorrect, radius, ss);
-        CHECK(!ownerPark->addObject(ss, strError));
-    }
 
     delete ownerPark;
 }
@@ -133,13 +132,13 @@ TEST_CASE("Test for create Scooter", "[Create Scooter]") {
     */
     std::string nameCorrectScooter = "scooter", nameCorrectWheel = "wheel";
     int inventoryId = 1, simplicity = 2;
-    int typeObjectScooterCorrect = 1;
+    int typeObjectScooterCorrect = (int)TypeObject::TransportNoElectric;
 
     std::vector<Wheel*> wheels;
     Value weight = 15;
 
     int typeWheel = 1;
-    int typeObjectWheel = 4;
+    int typeObjectWheel = (int)TypeObject::SparePart;
     Value radius = 5;
 
     int inventoryIdWheel_1 = 2;
@@ -169,6 +168,22 @@ TEST_CASE("Test for create Scooter", "[Create Scooter]") {
         createScooter(nameCorrectScooter, inventoryId + 1, simplicity, typeObjectScooterCorrect,
             inventoryIdWheel_1, inventoryIdWheel_2, weight, ss);
         CHECK(!ownerPark->addObject(ss, strError));
+
+        createScooter(nameCorrectScooter, inventoryId + 1, 10, typeObjectScooterCorrect,
+                      inventoryIdWheel_1, inventoryIdWheel_2, weight, ss);
+        CHECK(!ownerPark->addObject(ss, strError));
+    }
+
+    SECTION("Not Correct Scooter, wrong with wheel id used") {
+        createScooter(nameCorrectScooter, inventoryId, simplicity, typeObjectScooterCorrect,
+                      inventoryIdWheel_1, inventoryIdWheel_2, weight, ss);
+        CHECK(ownerPark->addObject(ss, strError));
+
+        createWheel(nameCorrectWheel, inventoryIdWheel_1, simplicity, typeObjectWheel, typeWheel, radius, ss);
+        CHECK(!ownerPark->addObject(ss, strError));
+
+        createWheel(nameCorrectWheel, inventoryIdWheel_2, simplicity, typeObjectWheel, typeWheel, radius, ss);
+        CHECK(!ownerPark->addObject(ss, strError));
     }
 
     SECTION("Not correct Scooter, wrong with wheel is not simple") {
@@ -192,14 +207,14 @@ TEST_CASE("Test for create electric Scooter", "[Create Electric Scooter]") {
     */
     std::string nameCorrectScooterElectric = "scooter electric", nameCorrectWheel = "wheel";
     int inventoryId = 1, simplicity = 2;
-    int typeObjectScooterCorrect = 1;
+    int typeObjectScooterCorrect = (int)TypeObject::TransportElectric;
 
     Value cntElectricity = 15;
     std::vector<Wheel*> wheels;
     Value weight = 15;
 
     int typeWheel = 1;
-    int typeObjectWheel = 4;
+    int typeObjectWheel = (int)TypeObject::SparePart;
     Value radius = 5;
 
     int inventoryIdWheel_1 = 2;
