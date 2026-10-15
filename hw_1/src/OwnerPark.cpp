@@ -12,11 +12,11 @@ OwnerPark::~OwnerPark() {
 void OwnerPark::init() {
     mapCommand_["wheel"] = "[name][inventoryId]"
         "[simplicity][typeObject][typeWheel][radius]";
-    mapCommand_["scooter electric"] = "[name]"
+    mapCommand_["scooter_electric"] = "[name]"
         "[inventoryId][simplicity][typeObject][electricityValue][inventoryIdWheel_1]"
-            "[inventoryIdWheel_2][weigth]";
+            "[inventoryIdWheel_2][weight]";
     mapCommand_["scooter"] = "[name][inventoryId]"
-        "[simplicity][typeObject][inventoryIdWheel_1][inventoryIdWheel_2][weigth]";
+        "[simplicity][typeObject][inventoryIdWheel_1][inventoryIdWheel_2][weight]";
 }
 
 void OwnerPark::printCommand() const {

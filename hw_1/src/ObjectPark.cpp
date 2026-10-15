@@ -99,19 +99,19 @@ void Wheel::printObject() const {
         << typeObject_ << "][" << typeWheel_ << "][" << radius_ << "]\n";
 }
 
-ScooterElectirc::ScooterElectirc(std::string name, int inventoryId, int simplicity, TypeObject typeObject,
-    Value electricityValue, std::vector<Wheel*> wheels, Value weight) : ObjectElectric(name,
+ScooterElectric::ScooterElectric(std::string name, int inventoryId, int simplicity, TypeObject typeObject,
+                                 Value electricityValue, std::vector<Wheel*> wheels, Value weight) : ObjectElectric(name,
         inventoryId, simplicity, typeObject, electricityValue), wheels_(wheels), weight_(weight) {}
 
-int ScooterElectirc::getInventoryIDWheel1() const {
+int ScooterElectric::getInventoryIDWheel1() const {
     return wheels_[0]->getInventoryId();
 }
 
-int ScooterElectirc::getInventoryIDWheel2() const {
+int ScooterElectric::getInventoryIDWheel2() const {
     return wheels_[1]->getInventoryId();
 }
 
-void ScooterElectirc::printObject() const {
+void ScooterElectric::printObject() const {
     std::cout << "[" << name_ << "][" << inventoryId_ << "][" << simplicity_ << "][" <<
         typeObject_ << "][" << electricityValue_ << "][" << weight_ << "]\n";
 

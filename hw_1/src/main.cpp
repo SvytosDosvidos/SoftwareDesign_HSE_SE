@@ -35,9 +35,9 @@ int getCommand() {
 int main() {
     OwnerPark* owner = new OwnerPark();
     owner->printCommand();
-    bool flagGontinue = true;
+    bool flagContinue = true;
 
-    while(flagGontinue) {
+    while(flagContinue) {
         int command_id = getCommand();
 
         switch(command_id) {
@@ -62,7 +62,7 @@ int main() {
                 owner->printCommand4Add();
                 break;
             } case 5: {
-                flagGontinue = false;
+                flagContinue = false;
             }
         }
     }

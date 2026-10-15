@@ -205,7 +205,7 @@ TEST_CASE("Test for create electric Scooter", "[Create Electric Scooter]") {
         std::vector<Wheel*> wheels
         Value weight
     */
-    std::string nameCorrectScooterElectric = "scooter electric", nameCorrectWheel = "wheel";
+    std::string nameCorrectScooterElectric = "scooter_electric", nameCorrectWheel = "wheel";
     int inventoryId = 1, simplicity = 2;
     int typeObjectScooterCorrect = (int)TypeObject::TransportElectric;
 

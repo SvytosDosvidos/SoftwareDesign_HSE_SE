@@ -27,11 +27,11 @@
     <list default="true" id="db0fbb13-dc1d-4bf5-9ae6-f42dad64a44c" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/includes/ObjectPark.h" beforeDir="false" afterPath="$PROJECT_DIR$/includes/ObjectPark.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/includes/StorageCenter.h" beforeDir="false" afterPath="$PROJECT_DIR$/includes/StorageCenter.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/CreatorObject.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/CreatorObject.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ObjectPark.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ObjectPark.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/OwnerPark.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OwnerPark.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/StorageCenter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/StorageCenter.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,32 +63,32 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "CMake Application.hw_1.executor": "Run",
-    "Catch.run_test.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.cidr.known.project.marker": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.readMode.enableVisualFormatting": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "RunOnceActivity.west.config.association.type.startup.service": "true",
-    "cf.first.check.clang-format": "false",
-    "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "hw__1/feature",
-    "last_opened_file_path": "//wsl.localhost/Ubuntu-24.04/home/svytosdosvidos/Software_design_26_27_wsl/SoftwareDesign_HSE_SE/hw_1",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "org.rust.first.attach.projects": "true",
-    "structure.view.defaults.are.configured": "true",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;CMake Application.hw_1.executor&quot;: &quot;Run&quot;,
+    &quot;Catch.run_test.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.west.config.association.type.startup.service&quot;: &quot;true&quot;,
+    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;hw__1/feature&quot;,
+    &quot;last_opened_file_path&quot;: &quot;//wsl.localhost/Ubuntu-24.04/home/svytosdosvidos/Software_design_26_27_wsl/SoftwareDesign_HSE_SE/hw_1&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;org.rust.first.attach.projects&quot;: &quot;true&quot;,
+    &quot;structure.view.defaults.are.configured&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="Catch.run_test">
     <configuration name="run_test" type="CMakeCatchTestRunConfigurationType" factoryName="Catch Test" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="hw_1" TARGET_NAME="run_test" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="hw_1" RUN_TARGET_NAME="run_test" TEST_MODE="SUITE_TEST">
       <method v="2">
@@ -121,6 +121,8 @@
       <workItem from="1791800678692" duration="11583000" />
       <workItem from="1791891819137" duration="5025000" />
       <workItem from="1791903021329" duration="4822000" />
+      <workItem from="1791990438320" duration="19000" />
+      <workItem from="1792072814543" duration="832000" />
     </task>
     <servers />
   </component>

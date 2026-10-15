@@ -12,21 +12,11 @@ bool isSymbol(char c) {
 
 std::optional<ObjectPark*> CreatorObject::createObject(std::stringstream& ss,
     StorageCenter* storageCenter, std::string& strError) {
-    std::string nameFirst, nameSecond;
+    std::string nameFirst;
     ss >> nameFirst;
 
     if(ss.str().empty()) {
         return std::nullopt;
-    }
-
-    ss >> nameSecond;
-    if(!nameSecond.empty() && isSymbol(nameSecond[0])) {
-        nameFirst += " " + nameSecond;
-    } else {
-        std::stringstream ssNew;
-        ssNew << ss.str();
-        ssNew >> nameSecond;
-        std::swap(ss, ssNew);
     }
 
     toLowerSymbols(nameFirst);
@@ -197,7 +187,7 @@ std::optional<ObjectPark*> CreatorElectricScooter(std::stringstream& ss,
         return std::nullopt;
     }
 
-    if (!storageCenter->checkTypeObject("scooter electric", typeObject, strError)) {
+    if (!storageCenter->checkTypeObject("scooter_electric", typeObject, strError)) {
         return std::nullopt;
     }
 
@@ -213,7 +203,7 @@ std::optional<ObjectPark*> CreatorElectricScooter(std::stringstream& ss,
     storageCenter->deleteObject(ind_1);
     storageCenter->deleteObject(ind_2);
 
-    return new ScooterElectirc("scooter electric", inventoryId, simplicity, typeObject,
+    return new ScooterElectric("scooter_electric", inventoryId, simplicity, typeObject,
                                electricityValue, wheels, weight);
 }
 
@@ -224,5 +214,5 @@ CreatorObject::CreatorObject() {
 void CreatorObject::initCreator() {
     addCreator("wheel", CreatorWheel);
     addCreator("scooter", CreatorScooter);
-    addCreator("scooter electric", CreatorElectricScooter);
+    addCreator("scooter_electric", CreatorElectricScooter);
 }

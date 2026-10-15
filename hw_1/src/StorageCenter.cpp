@@ -7,7 +7,7 @@ StorageCenter::StorageCenter() : cntElectrcity_(0) {
 void StorageCenter::init() {
     types_["wheel"] = TypeObject::SparePart;
     types_["scooter"] = TypeObject::TransportNoElectric;
-    types_["scooter electric"] = TypeObject::TransportElectric;
+    types_["scooter_electric"] = TypeObject::TransportElectric;
 }
 
 void StorageCenter::printObject(const std::vector<ObjectPark*> objects, const std::map<std::string, std::string>& mapCommand) const {
@@ -53,7 +53,7 @@ bool StorageCenter::checkUniqueId(const std::vector<ObjectPark*>& objects,
             }
         }
 
-        if(ScooterElectirc* scooterElectric = dynamic_cast<ScooterElectirc*>(objectsNoEasy_[i])) {
+        if(ScooterElectric* scooterElectric = dynamic_cast<ScooterElectric*>(objectsNoEasy_[i])) {
             if(scooterElectric->getInventoryIDWheel1() == inventoryId ||
                     scooterElectric->getInventoryIDWheel2() == inventoryId) {
                 strError += "InventoryId is already in use\n";
@@ -153,7 +153,7 @@ bool StorageCenter::checkTypeObject(std::string&& name,
     TypeObject typeObject, std::string& strError) const {
 
     if(types_.find(name) == types_.end()) {
-        strError += "Object not diclarated\n";
+        strError += "Object not declared\n";
         return false;
     }
 
