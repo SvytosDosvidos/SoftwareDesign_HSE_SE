@@ -11,7 +11,7 @@
 #include "ObjectPark.h"
 #include "StorageCenter.h"
 
-using Creator = std::function<std::optional<ObjectPark*>
+using Creator = std::function<std::optional<IInventoryItem*>
     (std::stringstream&, StorageCenter* storageCenter, std::string& strError)>;
 
 class CreatorObject {
@@ -20,7 +20,7 @@ public:
 
     void initCreator();
     void addCreator(std::string str, Creator creator);
-    std::optional<ObjectPark*> createObject(std::stringstream& ss,
+    std::optional<IInventoryItem*> createObject(std::stringstream& ss,
         StorageCenter* storageCenter, std::string& strError);
 private:
     std::map<std::string, Creator> creators_;

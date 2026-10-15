@@ -17,8 +17,8 @@ public:
     void printObjectEasy(const std::map<std::string, std::string>& mapCommand) const;
     void printObjectNoEasy(const std::map<std::string, std::string>& mapCommand) const;
 
-    void addObject(ObjectPark* objectPark);
-    std::optional<ObjectPark*> getObject(std::string&& name, int inventoryId,
+    void addObject(IInventoryItem* objectPark);
+    std::optional<IInventoryItem*> getObject(std::string&& name, int inventoryId,
         int simplicity);
 
     void deleteObject(int inventoryId);
@@ -32,16 +32,16 @@ public:
     Value getCntElectrcity() const;
 private:
 
-    void printObject(const std::vector<ObjectPark*> objects,
+    void printObject(const std::vector<IInventoryItem*> objects,
         const std::map<std::string, std::string>& mapCommand) const;
 
-    bool checkUniqueId(const std::vector<ObjectPark*>& objects,
+    bool checkUniqueId(const std::vector<IInventoryItem*>& objects,
         int inventoryId, std::string& strError) const;
 
     int simplicityMin_ = 6;
 
-    std::vector<ObjectPark*> objectsEasy_;
-    std::vector<ObjectPark*> objectsNoEasy_;
+    std::vector<IInventoryItem*> objectsEasy_;
+    std::vector<IInventoryItem*> objectsNoEasy_;
     Value cntElectrcity_;
 
     std::vector<std::string> orderPrint_ = {"wheel", "scooter", "scooter electric"};

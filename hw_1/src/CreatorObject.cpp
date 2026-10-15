@@ -10,7 +10,7 @@ bool isSymbol(char c) {
     return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
 }
 
-std::optional<ObjectPark*> CreatorObject::createObject(std::stringstream& ss,
+std::optional<IInventoryItem*> CreatorObject::createObject(std::stringstream& ss,
     StorageCenter* storageCenter, std::string& strError) {
     std::string nameFirst;
     ss >> nameFirst;
@@ -30,10 +30,9 @@ void CreatorObject::addCreator(std::string str, Creator creator) {
     creators_[str] = std::move(creator);
 }
 
-std::optional<ObjectPark*> CreatorWheel(std::stringstream& ss,
+std::optional<IInventoryItem*> CreatorWheel(std::stringstream& ss,
     StorageCenter* storageCenter, std::string& strError) {
     int inventoryId;
-    int simplicity;
     TypeObject typeObject;
 
     TypeWheel typeWheel;
@@ -41,10 +40,6 @@ std::optional<ObjectPark*> CreatorWheel(std::stringstream& ss,
 
     if(!(ss >> inventoryId)) {
         strError += "invalid inventoryId value\n";
-        return std::nullopt;
-    }
-    if(!(ss >> simplicity)) {
-        strError += "invalid simplicity value\n";
         return std::nullopt;
     }
     if(!(ss >> typeObject)) {
@@ -64,18 +59,14 @@ std::optional<ObjectPark*> CreatorWheel(std::stringstream& ss,
         return std::nullopt;
     }
 
-    if(!storageCenter->checkSimplicity(simplicity, strError)) {
-        return std::nullopt;
-    }
-
     if (!storageCenter->checkTypeObject("wheel", typeObject, strError)) {
         return std::nullopt;
     }
 
-    return new Wheel("wheel", inventoryId, simplicity, typeObject, typeWheel, radius);
+    return new Wheel("wheel", inventoryId, typeObject, typeWheel, radius);
 }
 
-std::optional<ObjectPark*> CreatorScooter(std::stringstream& ss,
+std::optional<IInventoryItem*> CreatorScooter(std::stringstream& ss,
     StorageCenter* storageCenter, std::string& strError) {
     int inventoryId;
     int simplicity;
@@ -121,8 +112,8 @@ std::optional<ObjectPark*> CreatorScooter(std::stringstream& ss,
         return std::nullopt;
     }
 
-    std::optional<ObjectPark*> wheel_1 = storageCenter->getObject("wheel", ind_1, simplicity);
-    std::optional<ObjectPark*> wheel_2 = storageCenter->getObject("wheel", ind_2, simplicity);
+    std::optional<IInventoryItem*> wheel_1 = storageCenter->getObject("wheel", ind_1, simplicity);
+    std::optional<IInventoryItem*> wheel_2 = storageCenter->getObject("wheel", ind_2, simplicity);
     if(!wheel_1.has_value() || !wheel_2.has_value()) {
         return std::nullopt;
     }
@@ -136,7 +127,7 @@ std::optional<ObjectPark*> CreatorScooter(std::stringstream& ss,
         wheels, weight);
 }
 
-std::optional<ObjectPark*> CreatorElectricScooter(std::stringstream& ss,
+std::optional<IInventoryItem*> CreatorElectricScooter(std::stringstream& ss,
     StorageCenter* storageCenter, std::string& strError) {
     int inventoryId;
     int simplicity;
@@ -191,8 +182,8 @@ std::optional<ObjectPark*> CreatorElectricScooter(std::stringstream& ss,
         return std::nullopt;
     }
 
-    std::optional<ObjectPark*> wheel_1 = storageCenter->getObject("wheel", ind_1, simplicity);
-    std::optional<ObjectPark*> wheel_2 = storageCenter->getObject("wheel", ind_2, simplicity);
+    std::optional<IInventoryItem*> wheel_1 = storageCenter->getObject("wheel", ind_1, simplicity);
+    std::optional<IInventoryItem*> wheel_2 = storageCenter->getObject("wheel", ind_2, simplicity);
     if(!wheel_1.has_value() || !wheel_2.has_value()) {
         return std::nullopt;
     }

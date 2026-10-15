@@ -70,38 +70,28 @@ std::istream& operator>>(std::istream& is, TypeWheel& s) {
     return is;
 }
 
-ObjectPark::ObjectPark(std::string name, int inventoryId, int simplicity,
-    TypeObject typeObject) : name_(name), inventoryId_(inventoryId),
-        simplicity_(simplicity), typeObject_(typeObject) {}
-
-int ObjectPark::getSimplicity() const {
-    return simplicity_;
+std::vector<int> IInventoryItem::getSubItemIds() const {
+    return {};
 }
 
-std::string ObjectPark::getName() const {
-    return name_;
+virtual bool IRentable::isForBeginners() const {
+    return getSimplicity() >= 6;
 }
 
-int ObjectPark::getInventoryId() const {
-    return inventoryId_;
-}
+IElectric::IElectric()
 
-ObjectElectric::ObjectElectric(std::string name, int inventoryId, int simplicity,
-    TypeObject typeObject, Value electricityValue) : ObjectPark(name, inventoryId,
-        simplicity, typeObject), electricityValue_(electricityValue) {}
-
-Wheel::Wheel(std::string name, int inventoryId, int simplicity,
-    TypeObject typeObject, TypeWheel typeWheel, Value radius) : ObjectPark(name,
-        inventoryId, simplicity, typeObject), typeWheel_(typeWheel), radius_(radius) {}
+Wheel::Wheel(std::string name, int inventoryId,
+    TypeObject typeObject, TypeWheel typeWheel, Value radius) : name_(name), inventoryId_(inventoryId),
+        typeObject_(typeObject), typeWheel_(typeWheel), radius_(radius) {}
 
 void Wheel::printObject() const {
-    std::cout << "[" << name_ << "][" << inventoryId_ << "][" << simplicity_ << "]["
+    std::cout << "[" << name_ << "][" << inventoryId_ << "]["
         << typeObject_ << "][" << typeWheel_ << "][" << radius_ << "]\n";
 }
 
-ScooterElectric::ScooterElectric(std::string name, int inventoryId, int simplicity, TypeObject typeObject,
-                                 Value electricityValue, std::vector<Wheel*> wheels, Value weight) : ObjectElectric(name,
-        inventoryId, simplicity, typeObject, electricityValue), wheels_(wheels), weight_(weight) {}
+ScooterElectric::ScooterElectric(std::string name, int inventoryId, int simplicity,
+    TypeObject typeObject, Value electricityValue, std::vector<Wheel*> wheels, Value weight) :
+
 
 int ScooterElectric::getInventoryIDWheel1() const {
     return wheels_[0]->getInventoryId();

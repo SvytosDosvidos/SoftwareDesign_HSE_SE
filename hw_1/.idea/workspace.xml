@@ -26,12 +26,11 @@
   <component name="ChangeListManager">
     <list default="true" id="db0fbb13-dc1d-4bf5-9ae6-f42dad64a44c" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/includes/CreatorObject.h" beforeDir="false" afterPath="$PROJECT_DIR$/includes/CreatorObject.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/includes/ObjectPark.h" beforeDir="false" afterPath="$PROJECT_DIR$/includes/ObjectPark.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/includes/StorageCenter.h" beforeDir="false" afterPath="$PROJECT_DIR$/includes/StorageCenter.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/CreatorObject.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/CreatorObject.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ObjectPark.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ObjectPark.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/OwnerPark.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OwnerPark.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/StorageCenter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/StorageCenter.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -122,7 +121,7 @@
       <workItem from="1791891819137" duration="5025000" />
       <workItem from="1791903021329" duration="4822000" />
       <workItem from="1791990438320" duration="19000" />
-      <workItem from="1792072814543" duration="832000" />
+      <workItem from="1792072814543" duration="3118000" />
     </task>
     <servers />
   </component>
