@@ -12,7 +12,7 @@
 #include "StorageCenter.h"
 
 using Creator = std::function<std::optional<IInventoryItem*>
-    (std::stringstream&, StorageCenter* storageCenter, std::string& strError)>;
+        (std::stringstream&, StorageCenter* storageCenter, std::string& strError)>;
 
 class CreatorObject {
 public:
@@ -22,6 +22,7 @@ public:
     void addCreator(std::string str, Creator creator);
     std::optional<IInventoryItem*> createObject(std::stringstream& ss,
         StorageCenter* storageCenter, std::string& strError);
+
 private:
     std::map<std::string, Creator> creators_;
 };

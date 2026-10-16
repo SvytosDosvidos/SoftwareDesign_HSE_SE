@@ -10,59 +10,30 @@ void StorageCenter::init() {
     types_["scooter_electric"] = TypeObject::TransportElectric;
 }
 
-void StorageCenter::printObject(const std::vector<ObjectPark*> objects, const std::map<std::string, std::string>& mapCommand) const {
+void StorageCenter::printObject(const std::vector<BaseRentable*>& objects,
+    const std::map<std::string, std::string>& mapCommand) const {
     if(!objects.empty()) {
-        std::cout << "\n";
-        std::cout << "The objects is easy to use:\n";
+        std::cout << "\nObjects:\n";
     }
     for(const auto& name : orderPrint_) {
         bool firstPrint = false;
         int count = 0;
-        for(const auto& it : objects) {
-            if(it->getName() == name) {
-                count++;
-            }
+        for(const auto* it : objects) {
+            if (it->getName() == name) count++;
         }
-        for(const auto& it : objects) {
+        for(const auto* it : objects) {
             if(it->getName() == name) {
                 if(!firstPrint) {
                     std::cout << it->getName() << ", count = " << count << "\n";
-                    std::cout << mapCommand.at(name);
-                    std::cout << ":\n";
+                    if(mapCommand.find(name) != mapCommand.end()) {
+                        std::cout << mapCommand.at(name) << ":\n";
+                    }
                     firstPrint = true;
                 }
                 it->printObject();
             }
         }
     }
-}
-
-bool StorageCenter::checkUniqueId(const std::vector<ObjectPark*>& objects,
-    int inventoryId, std::string& strError) const {
-    for(size_t i = 0; i < objectsNoEasy_.size(); ++i) {
-        if(objectsNoEasy_[i]->getInventoryId() == inventoryId) {
-            strError += "InventoryId is already in use\n";
-            return false;
-        }
-
-        if(Scooter* scooter = dynamic_cast<Scooter*>(objectsNoEasy_[i])) {
-            if(scooter->getInventoryIDWheel1() == inventoryId ||
-               scooter->getInventoryIDWheel2() == inventoryId) {
-                strError += "InventoryId is already in use\n";
-                return false;
-            }
-        }
-
-        if(ScooterElectric* scooterElectric = dynamic_cast<ScooterElectric*>(objectsNoEasy_[i])) {
-            if(scooterElectric->getInventoryIDWheel1() == inventoryId ||
-                    scooterElectric->getInventoryIDWheel2() == inventoryId) {
-                strError += "InventoryId is already in use\n";
-                return false;
-            }
-        }
-    }
-
-    return true;
 }
 
 void StorageCenter::printObjectEasy(const std::map<std::string, std::string>& mapCommand) const {
@@ -73,60 +44,60 @@ void StorageCenter::printObjectNoEasy(const std::map<std::string, std::string>& 
     printObject(objectsNoEasy_, mapCommand);
 }
 
-void StorageCenter::addObject(ObjectPark* objectPark) {
-    if(objectPark->getSimplicity() >= 6) {
-        objectsEasy_.push_back(objectPark);
+void StorageCenter::addObject(IInventoryItem* objectPark) {
+    if(auto* rentable = dynamic_cast<BaseRentable*>(objectPark)) {
+        if(rentable->isForBeginners()) {
+            objectsEasy_.push_back(rentable);
+        } else {
+            objectsNoEasy_.push_back(rentable);
+        }
     } else {
-        objectsNoEasy_.push_back(objectPark);
+        other_.push_back(objectPark);
     }
 }
 
-std::optional<ObjectPark*> StorageCenter::getObject(std::string&& name,
-    int inventoryId, int simplicity) {
-
-    std::optional<ObjectPark*> result;
-    //Всегда пытаюсь добавить в начале лёгкие детали, если объект сложный, а потом сложные,
-    //а если объект лёгкие, то только лёгкие, чтобы не ломать логику, чтобы новичок
-    //мог продолжать использовать этот объект
-    for(size_t i = 0; i < objectsEasy_.size(); ++i) {
-        if(objectsEasy_[i]->getName() == name &&
-        objectsEasy_[i]->getInventoryId() == inventoryId) {
-            result = objectsEasy_[i];
-            break;
+std::optional<IInventoryItem*> StorageCenter::getObject(const std::string& name, int inventoryId) {
+    for(auto* it : other_) {
+        if(it->getName() == name && it->getInventoryId() == inventoryId) {
+            return it;
         }
     }
-
-    if(simplicity < simplicityMin_ && !result.has_value()) {
-        for(size_t i = 0; i < objectsNoEasy_.size(); ++i) {
-            if(objectsNoEasy_[i]->getName() == name &&
-            objectsNoEasy_[i]->getInventoryId() == inventoryId) {
-                result = objectsNoEasy_[i];
-                break;
-            }
+    for(auto* it : objectsEasy_) {
+        if(it->getName() == name && it->getInventoryId() == inventoryId) {
+            return it;
         }
     }
-
-    return result;
+    for(auto* it : objectsNoEasy_) {
+        if(it->getName() == name && it->getInventoryId() == inventoryId) {
+            return it;
+        }
+    }
+    return std::nullopt;
 }
 
 void StorageCenter::deleteObject(int inventoryId) {
-    for(int i = 0; i < objectsEasy_.size(); ++i) {
-        if(objectsEasy_[i]->getInventoryId() == inventoryId) {
-            objectsEasy_.erase(objectsEasy_.begin() + i);
-            return;
+    auto eraseFrom = [inventoryId](auto& vec) {
+        for(auto it = vec.begin(); it != vec.end(); ++it) {
+            if((*it)->getInventoryId() == inventoryId) {
+                vec.erase(it);
+                return true;
+            }
         }
+        return false;
+    };
+
+    if(eraseFrom(other_)) {
+        return;
+    }
+    if(eraseFrom(objectsEasy_)) {
+        return;
     }
 
-    for(int i = 0; i < objectsNoEasy_.size(); ++i) {
-        if(objectsNoEasy_[i]->getInventoryId() == inventoryId) {
-            objectsNoEasy_.erase(objectsNoEasy_.begin() + i);
-            return;
-        }
-    }
+    eraseFrom(objectsNoEasy_);
 }
 
 bool StorageCenter::checkSimplicity(int simplicity, std::string& strError) const {
-    if(!(simplicity >= 1 && simplicity <= 10)) {
+    if(simplicity < 1 || simplicity > 10) {
         strError += "Invalid value for simplicity([1, 10])\n";
         return false;
     }
@@ -142,16 +113,38 @@ bool StorageCenter::checkCntElectrcity(Value cntElectrcity, std::string& strErro
 }
 
 bool StorageCenter::checkUniqueId(int inventoryId, std::string& strError) const {
-    if(!checkUniqueId(objectsEasy_, inventoryId, strError)) {
+    auto checkList = [&](const auto& list) {
+        for(const auto* item : list) {
+            if(item->getInventoryId() == inventoryId) {
+                strError += "InventoryId is already in use\n";
+                return false;
+            }
+            // Проверяем ID вложенных деталей (паттерн Composite)
+            for(int subId : item->getSubItemIds()) {
+                if(subId == inventoryId) {
+                    strError += "InventoryId is already in use\n";
+                    return false;
+                }
+            }
+        }
+        return true;
+    };
+
+    if(!checkList(objectsEasy_)) {
+        return false;
+    }
+    if(!checkList(objectsNoEasy_)) {
+        return false;
+    }
+    if(!checkList(other_)) {
         return false;
     }
 
-    return checkUniqueId(objectsNoEasy_, inventoryId, strError);
+    return true;
 }
 
-bool StorageCenter::checkTypeObject(std::string&& name,
+bool StorageCenter::checkTypeObject(const std::string& name,
     TypeObject typeObject, std::string& strError) const {
-
     if(types_.find(name) == types_.end()) {
         strError += "Object not declared\n";
         return false;
@@ -160,7 +153,7 @@ bool StorageCenter::checkTypeObject(std::string&& name,
     if(types_.at(name) != typeObject) {
         std::stringstream ss;
         ss << types_.at(name);
-        strError += "Invalid value for TypeObject" + ss.str() + "\n";
+        strError += "Invalid value for TypeObject: " + ss.str() + "\n";
         return false;
     }
 

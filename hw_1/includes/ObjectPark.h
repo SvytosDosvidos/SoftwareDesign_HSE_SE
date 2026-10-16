@@ -31,9 +31,7 @@ public:
     virtual ~IInventoryItem() = default;
     virtual int getInventoryId() const = 0;
     virtual std::string getName() const = 0;
-
     virtual std::vector<int> getSubItemIds() const;
-
     virtual void printObject() const = 0;
 };
 
@@ -46,7 +44,7 @@ public:
 
 class BaseRentable : public virtual IInventoryItem, public IRentable {
 public:
-    BaseRentable(std::string name, int inventoryId, int simplicity);
+    BaseRentable(std::string name, int inventoryId, int simplicity, TypeObject typeObject);
 
     int getInventoryId() const override;
     std::string getName() const override;
@@ -59,22 +57,17 @@ protected:
     TypeObject typeObject_;
 };
 
-class IElectric : public BaseRentable {
-public:
-    IElectric(std::string name, int inventoryId, int simplicity,
-        TypeObject typeObject, Value electricityValue);
-protected:
-    Value electricityValue_;
-};
-
 class Wheel : public IInventoryItem {
 public:
     ~Wheel() override = default;
 
     Wheel(std::string name, int inventoryId,
-        TypeObject typeObject, TypeWheel typeWheel, Value radius);
+          TypeObject typeObject, TypeWheel typeWheel, Value radius);
 
+    int getInventoryId() const override;
+    std::string getName() const override;
     void printObject() const override;
+
 private:
     std::string name_;
     int inventoryId_;
@@ -83,35 +76,43 @@ private:
     Value radius_;
 };
 
-class ScooterElectric : public IElectric {
+class Scooter : public BaseRentable {
 public:
-    ~ScooterElectric() override = default;
+    ~Scooter() override;
 
-    ScooterElectric(std::string name, int inventoryId, int simplicity,
-                    TypeObject typeObject, Value electricityValue,
-                    std::vector<Wheel*> wheels, Value weight);
+    Scooter(std::string name, int inventoryId, int simplicity,
+        TypeObject typeObject, std::vector<Wheel*> wheels, Value weight);
 
-    int getInventoryIDWheel1() const;
-    int getInventoryIDWheel2() const;
-
+    std::vector<int> getSubItemIds() const override;
     void printObject() const override;
+
 private:
     std::vector<Wheel*> wheels_;
     Value weight_;
 };
 
-class Scooter : public IElectric {
+class IElectric : public BaseRentable {
 public:
-    ~Scooter() override = default;
+    IElectric(std::string name, int inventoryId, int simplicity,
+        TypeObject typeObject, Value electricityValue);
 
-    Scooter(std::string name, int inventoryId, int simplicity,
-            TypeObject typeObject,
+    Value getElectricityValue() const;
+
+protected:
+    Value electricityValue_;
+};
+
+class ScooterElectric : public IElectric {
+public:
+    ~ScooterElectric() override;
+
+    ScooterElectric(std::string name, int inventoryId, int simplicity,
+        TypeObject typeObject, Value electricityValue,
             std::vector<Wheel*> wheels, Value weight);
 
-    int getInventoryIDWheel1() const;
-    int getInventoryIDWheel2() const;
-
+    std::vector<int> getSubItemIds() const override;
     void printObject() const override;
+
 private:
     std::vector<Wheel*> wheels_;
     Value weight_;
