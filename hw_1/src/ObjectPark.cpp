@@ -69,12 +69,14 @@ int BaseRentable::getSimplicity() const {
 }
 
 BaseRentable::BaseRentable(std::string name, int inventoryId, int simplicity,
-    TypeObject typeObject) : name_(std::move(name)), inventoryId_(inventoryId),
-        simplicity_(simplicity), typeObject_(typeObject) {}
+                           TypeObject typeObject)
+        : name_(std::move(name)), inventoryId_(inventoryId), simplicity_(simplicity),
+          typeObject_(typeObject) {}
 
 Wheel::Wheel(std::string name, int inventoryId, TypeObject typeObject,
-    TypeWheel typeWheel, Value radius) : name_(std::move(name)), inventoryId_(inventoryId),
-        typeObject_(typeObject), typeWheel_(typeWheel), radius_(radius) {}
+             TypeWheel typeWheel, Value radius)
+        : name_(std::move(name)), inventoryId_(inventoryId),
+          typeObject_(typeObject), typeWheel_(typeWheel), radius_(radius) {}
 
 int Wheel::getInventoryId() const {
     return inventoryId_;
@@ -86,16 +88,16 @@ std::string Wheel::getName() const {
 
 void Wheel::printObject() const {
     std::cout << "[" << name_ << "][" << inventoryId_ << "]["
-        << typeObject_ << "][" << typeWheel_ << "][" << radius_ << "]\n";
+              << typeObject_ << "][" << typeWheel_ << "][" << radius_ << "]\n";
 }
 
 Scooter::Scooter(std::string name, int inventoryId, int simplicity,
-    TypeObject typeObject, std::vector<Wheel*> wheels, Value weight) :
-        BaseRentable(std::move(name), inventoryId, simplicity, typeObject),
-            wheels_(std::move(wheels)), weight_(weight) {}
+                 TypeObject typeObject, std::vector<Wheel*> wheels, Value weight)
+        : BaseRentable(std::move(name), inventoryId, simplicity, typeObject),
+          wheels_(std::move(wheels)), weight_(weight) {}
 
 Scooter::~Scooter() {
-    for (auto* w : wheels_) {
+    for(auto* w : wheels_) {
         delete w;
     }
 }
@@ -122,25 +124,20 @@ void Scooter::printObject() const {
     }
 }
 
-IElectric::IElectric(std::string name, int inventoryId, int simplicity,
-                     TypeObject typeObject, Value electricityValue)
-        : BaseRentable(std::move(name), inventoryId, simplicity, typeObject),
-          electricityValue_(electricityValue) {}
-
-Value IElectric::getElectricityValue() const {
-    return electricityValue_;
-}
-
 ScooterElectric::ScooterElectric(std::string name, int inventoryId, int simplicity,
                                  TypeObject typeObject, Value electricityValue,
                                  std::vector<Wheel*> wheels, Value weight)
-        : IElectric(std::move(name), inventoryId, simplicity, typeObject, electricityValue),
-          wheels_(std::move(wheels)), weight_(weight) {}
+        : BaseRentable(std::move(name), inventoryId, simplicity, typeObject),
+          electricityValue_(electricityValue), wheels_(wheels), weight_(weight) {}
 
 ScooterElectric::~ScooterElectric() {
     for(auto* w : wheels_) {
         delete w;
     }
+}
+
+Value ScooterElectric::getDailyEnergyConsumption() const {
+    return electricityValue_;
 }
 
 std::vector<int> ScooterElectric::getSubItemIds() const {

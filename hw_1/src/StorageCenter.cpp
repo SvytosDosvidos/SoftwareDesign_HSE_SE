@@ -119,7 +119,7 @@ bool StorageCenter::checkUniqueId(int inventoryId, std::string& strError) const 
                 strError += "InventoryId is already in use\n";
                 return false;
             }
-            // Проверяем ID вложенных деталей (паттерн Composite)
+
             for(int subId : item->getSubItemIds()) {
                 if(subId == inventoryId) {
                     strError += "InventoryId is already in use\n";

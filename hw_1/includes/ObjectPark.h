@@ -42,6 +42,12 @@ public:
     virtual bool isForBeginners() const;
 };
 
+class IEnergyConsumer {
+public:
+    virtual ~IEnergyConsumer() = default;
+    virtual Value getDailyEnergyConsumption() const = 0;
+};
+
 class BaseRentable : public virtual IInventoryItem, public IRentable {
 public:
     BaseRentable(std::string name, int inventoryId, int simplicity, TypeObject typeObject);
@@ -81,7 +87,7 @@ public:
     ~Scooter() override;
 
     Scooter(std::string name, int inventoryId, int simplicity,
-        TypeObject typeObject, std::vector<Wheel*> wheels, Value weight);
+            TypeObject typeObject, std::vector<Wheel*> wheels, Value weight);
 
     std::vector<int> getSubItemIds() const override;
     void printObject() const override;
@@ -91,29 +97,20 @@ private:
     Value weight_;
 };
 
-class IElectric : public BaseRentable {
-public:
-    IElectric(std::string name, int inventoryId, int simplicity,
-        TypeObject typeObject, Value electricityValue);
-
-    Value getElectricityValue() const;
-
-protected:
-    Value electricityValue_;
-};
-
-class ScooterElectric : public IElectric {
+class ScooterElectric : public BaseRentable, public IEnergyConsumer {
 public:
     ~ScooterElectric() override;
 
     ScooterElectric(std::string name, int inventoryId, int simplicity,
-        TypeObject typeObject, Value electricityValue,
-            std::vector<Wheel*> wheels, Value weight);
+                    TypeObject typeObject, Value electricityValue,
+                    std::vector<Wheel*> wheels, Value weight);
 
+    Value getDailyEnergyConsumption() const override;
     std::vector<int> getSubItemIds() const override;
     void printObject() const override;
 
 private:
+    Value electricityValue_;
     std::vector<Wheel*> wheels_;
     Value weight_;
 };
