@@ -195,6 +195,67 @@ std::optional<IInventoryItem*> CreatorElectricScooter(std::stringstream& ss,
         electricityValue, wheels, weight);
 }
 
+
+std::optional<IInventoryItem*> CreatorHelmet(std::stringstream& ss,
+                                             StorageCenter* storageCenter, std::string& strError) {
+    int inventoryId;
+    TypeObject typeObject;
+    std::string size;
+
+    if(!(ss >> inventoryId)) {
+        strError += "invalid inventoryId value\n"; return std::nullopt;
+    }
+    if(!(ss >> typeObject)) {
+        strError += "invalid typeObject value\n"; return std::nullopt;
+    }
+    if(!(ss >> size)) {
+        strError += "invalid size value\n"; return std::nullopt;
+    }
+
+    if(!storageCenter->checkUniqueId(inventoryId, strError)) {
+        return std::nullopt;
+    }
+    if(!storageCenter->checkTypeObject("helmet", typeObject, strError)) {
+        return std::nullopt;
+    }
+
+    return new Helmet("helmet", inventoryId, typeObject, size);
+}
+
+std::optional<IInventoryItem*> CreatorChargingStation(std::stringstream& ss,
+                                                      StorageCenter* storageCenter, std::string& strError) {
+    int inventoryId;
+    TypeObject typeObject;
+    Value electricityValue;
+    int slotsCount;
+
+    if(!(ss >> inventoryId)) {
+        strError += "invalid inventoryId value\n"; return std::nullopt;
+    }
+    if(!(ss >> typeObject)) {
+        strError += "invalid typeObject value\n"; return std::nullopt;
+    }
+    if(!(ss >> electricityValue)) {
+        strError += "invalid electricityValue value\n"; return std::nullopt;
+    }
+    if(!(ss >> slotsCount)) {
+        strError += "invalid slotsCount value\n"; return std::nullopt;
+    }
+
+    if(!storageCenter->checkUniqueId(inventoryId, strError)) {
+        return std::nullopt;
+    }
+    if(!storageCenter->checkCntElectrcity(electricityValue, strError)) {
+        return std::nullopt;
+    }
+    if(!storageCenter->checkTypeObject("charging_station", typeObject, strError)) {
+        return std::nullopt;
+    }
+
+    storageCenter->addCntElectrcity(electricityValue);
+    return new ChargingStation("charging_station", inventoryId, typeObject, electricityValue, slotsCount);
+}
+
 CreatorObject::CreatorObject() {
     initCreator();
 }
@@ -203,4 +264,6 @@ void CreatorObject::initCreator() {
     addCreator("wheel", CreatorWheel);
     addCreator("scooter", CreatorScooter);
     addCreator("scooter_electric", CreatorElectricScooter);
+    addCreator("helmet", CreatorHelmet);
+    addCreator("charging_station", CreatorChargingStation);
 }

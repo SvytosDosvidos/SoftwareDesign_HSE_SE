@@ -21,6 +21,10 @@ void Park::printObjectNoEasy(const std::map<std::string, std::string>& mapComman
     storageCenter_->printObjectNoEasy(mapCommand);
 }
 
+void Park::printObjectOther(const std::map<std::string, std::string>& mapCommand) const {
+    storageCenter_->printObjectOther(mapCommand);
+}
+
 bool Park::addObject(std::stringstream& ss, std::string& strError) {
     std::optional<IInventoryItem*> obj = creatorObject_->createObject(ss, storageCenter_, strError);
     if (!obj.has_value()) {

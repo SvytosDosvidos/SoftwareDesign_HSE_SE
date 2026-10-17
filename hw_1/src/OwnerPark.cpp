@@ -25,6 +25,8 @@ void OwnerPark::init() {
     mapCommand_["wheel"] = "[name][inventoryId][typeObject][typeWheel][radius]";
     mapCommand_["scooter_electric"] = "[name][inventoryId][simplicity][typeObject][electricityValue][inventoryIdWheel_1][inventoryIdWheel_2][weight]";
     mapCommand_["scooter"] = "[name][inventoryId][simplicity][typeObject][inventoryIdWheel_1][inventoryIdWheel_2][weight]";
+    mapCommand_["helmet"] = "[name][inventoryId][typeObject][size (S/M/L)]";
+    mapCommand_["charging_station"] = "[name][inventoryId][typeObject][electricityValue][slotsCount]";
 }
 
 void OwnerPark::printCommand() const {
@@ -68,6 +70,7 @@ void OwnerPark::printAllObjects() const {
 
     park_->printObjectEasy(mapCommand_);
     park_->printObjectNoEasy(mapCommand_);
+    park_->printObjectOther(mapCommand_);
 }
 
 bool OwnerPark::addObject(std::stringstream& ss, std::string& strError) {

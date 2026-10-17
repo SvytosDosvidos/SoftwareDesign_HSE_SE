@@ -161,3 +161,42 @@ void ScooterElectric::printObject() const {
         }
     }
 }
+
+Helmet::Helmet(std::string name, int inventoryId, TypeObject typeObject, std::string size)
+        : name_(std::move(name)), inventoryId_(inventoryId),
+          typeObject_(typeObject), size_(std::move(size)) {}
+
+int Helmet::getInventoryId() const {
+    return inventoryId_;
+}
+
+std::string Helmet::getName() const {
+    return name_;
+}
+
+void Helmet::printObject() const {
+    std::cout << "[" << name_ << "][" << inventoryId_ << "]["
+              << typeObject_ << "][Size: " << size_ << "]\n";
+}
+
+ChargingStation::ChargingStation(std::string name, int inventoryId, TypeObject typeObject,
+                                 Value electricityValue, int slotsCount)
+        : name_(std::move(name)), inventoryId_(inventoryId),
+          typeObject_(typeObject), electricityValue_(electricityValue), slotsCount_(slotsCount) {}
+
+int ChargingStation::getInventoryId() const {
+    return inventoryId_;
+}
+
+std::string ChargingStation::getName() const {
+    return name_;
+}
+
+Value ChargingStation::getDailyEnergyConsumption() const {
+    return electricityValue_;
+}
+
+void ChargingStation::printObject() const {
+    std::cout << "[" << name_ << "][" << inventoryId_ << "]["
+              << typeObject_ << "][Power: " << electricityValue_ << " kWh][Slots: " << slotsCount_ << "]\n";
+}

@@ -114,3 +114,40 @@ private:
     std::vector<Wheel*> wheels_;
     Value weight_;
 };
+
+class Helmet : public IInventoryItem {
+public:
+    ~Helmet() override = default;
+
+    Helmet(std::string name, int inventoryId, TypeObject typeObject, std::string size);
+
+    int getInventoryId() const override;
+    std::string getName() const override;
+    void printObject() const override;
+
+private:
+    std::string name_;
+    int inventoryId_;
+    TypeObject typeObject_;
+    std::string size_;
+};
+
+class ChargingStation : public IInventoryItem, public IEnergyConsumer {
+public:
+    ~ChargingStation() override = default;
+
+    ChargingStation(std::string name, int inventoryId, TypeObject typeObject,
+                    Value electricityValue, int slotsCount);
+
+    int getInventoryId() const override;
+    std::string getName() const override;
+    Value getDailyEnergyConsumption() const override;
+    void printObject() const override;
+
+private:
+    std::string name_;
+    int inventoryId_;
+    TypeObject typeObject_;
+    Value electricityValue_;
+    int slotsCount_;
+};

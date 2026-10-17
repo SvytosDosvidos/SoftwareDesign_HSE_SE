@@ -8,6 +8,8 @@ void StorageCenter::init() {
     types_["wheel"] = TypeObject::SparePart;
     types_["scooter"] = TypeObject::TransportNoElectric;
     types_["scooter_electric"] = TypeObject::TransportElectric;
+    types_["helmet"] = TypeObject::Other;
+    types_["charging_station"] = TypeObject::OtherElectric;
 }
 
 void StorageCenter::printObject(const std::vector<BaseRentable*>& objects,
@@ -42,6 +44,32 @@ void StorageCenter::printObjectEasy(const std::map<std::string, std::string>& ma
 
 void StorageCenter::printObjectNoEasy(const std::map<std::string, std::string>& mapCommand) const {
     printObject(objectsNoEasy_, mapCommand);
+}
+
+void StorageCenter::printObjectOther(const std::map<std::string, std::string>& mapCommand) const {
+    if(other_.empty()) {
+        return;
+    }
+    std::cout << "\nThings and Parts on balance (Other):\n";
+    for(const auto& name : orderPrint_) {
+        bool firstPrint = false;
+        int count = 0;
+        for(const auto* it : other_) {
+            if (it->getName() == name) count++;
+        }
+        for(const auto* it : other_) {
+            if(it->getName() == name) {
+                if(!firstPrint) {
+                    std::cout << it->getName() << ", count = " << count << "\n";
+                    if(mapCommand.find(name) != mapCommand.end()) {
+                        std::cout << mapCommand.at(name) << ":\n";
+                    }
+                    firstPrint = true;
+                }
+                it->printObject();
+            }
+        }
+    }
 }
 
 void StorageCenter::addObject(IInventoryItem* objectPark) {

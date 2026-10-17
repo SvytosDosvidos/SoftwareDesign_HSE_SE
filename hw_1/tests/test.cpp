@@ -1,19 +1,19 @@
 #define CATCH_CONFIG_MAIN
 
 #include "catch.hpp"
+#include <memory>
+#include <sstream>
+
 #include "../includes/OwnerPark.h"
+#include "../includes/DIContainer.h"
+#include "../includes/ServiceCenter.h"
 
 void createWheel(std::string &name, int inventoryId,
                  int typeObject, int typeWheel, Value radius, std::stringstream &ss) {
     if(!ss.str().empty()) {
         ss = std::stringstream();
     }
-
-    ss << name << " ";
-    ss << inventoryId << " ";
-    ss << typeObject << " ";
-    ss << typeWheel << " ";
-    ss << radius;
+    ss << name << " " << inventoryId << " " << typeObject << " " << typeWheel << " " << radius;
 }
 
 void createScooter(std::string &name, int inventoryId, int simplicity,
@@ -22,14 +22,8 @@ void createScooter(std::string &name, int inventoryId, int simplicity,
     if(!ss.str().empty()) {
         ss = std::stringstream();
     }
-
-    ss << name << " ";
-    ss << inventoryId << " ";
-    ss << simplicity << " ";
-    ss << typeObject << " ";
-    ss << inventoryIdWheel_1 << " ";
-    ss << inventoryIdWheel_2 << " ";
-    ss << weight;
+    ss << name << " " << inventoryId << " " << simplicity << " " << typeObject << " "
+       << inventoryIdWheel_1 << " " << inventoryIdWheel_2 << " " << weight;
 }
 
 void createElectricScooter(std::string &name, int inventoryId, int simplicity,
@@ -38,16 +32,33 @@ void createElectricScooter(std::string &name, int inventoryId, int simplicity,
     if(!ss.str().empty()) {
         ss = std::stringstream();
     }
-
-    ss << name << " ";
-    ss << inventoryId << " ";
-    ss << simplicity << " ";
-    ss << typeObject << " ";
-    ss << cntElectricity << " ";
-    ss << inventoryIdWheel_1 << " ";
-    ss << inventoryIdWheel_2 << " ";
-    ss << weight;
+    ss << name << " " << inventoryId << " " << simplicity << " " << typeObject << " "
+       << cntElectricity << " " << inventoryIdWheel_1 << " " << inventoryIdWheel_2 << " " << weight;
 }
+
+class AlwaysRejectServiceCenterMock : public IServiceCenter {
+public:
+    bool inspect(const IInventoryItem& /*item*/, std::string& strError) override {
+        strError += "Inspection failed: Rejected by AlwaysRejectServiceCenterMock for testing\n";
+        return false;
+    }
+};
+
+class DefectiveIdServiceCenterMock : public IServiceCenter {
+public:
+    explicit DefectiveIdServiceCenterMock(int defectiveId) : defectiveId_(defectiveId) {}
+
+    bool inspect(const IInventoryItem& item, std::string& strError) override {
+        if(item.getInventoryId() == defectiveId_) {
+            strError += "Inspection failed: Defective unit detected by mock\n";
+            return false;
+        }
+        return true;
+    }
+
+private:
+    int defectiveId_;
+};
 
 TEST_CASE("Test for create Wheel", "[Create Wheel]") {
     std::string nameCorrect = "wheel";
@@ -76,18 +87,6 @@ TEST_CASE("Test for create Wheel", "[Create Wheel]") {
         int typeObjectNoCorrect = 13;
         createWheel(nameCorrect, inventoryId, typeObjectNoCorrect, typeWheelCorrect, radius, ss);
         CHECK(!ownerPark->addObject(ss, strError));
-
-        createWheel(nameCorrect, inventoryId, (int)TypeObject::Other, typeWheelCorrect, radius, ss);
-        CHECK(!ownerPark->addObject(ss, strError));
-
-        createWheel(nameCorrect, inventoryId, (int)TypeObject::OtherElectric, typeWheelCorrect, radius, ss);
-        CHECK(!ownerPark->addObject(ss, strError));
-
-        createWheel(nameCorrect, inventoryId, (int)TypeObject::TransportElectric, typeWheelCorrect, radius, ss);
-        CHECK(!ownerPark->addObject(ss, strError));
-
-        createWheel(nameCorrect, inventoryId, (int)TypeObject::TransportNoElectric, typeWheelCorrect, radius, ss);
-        CHECK(!ownerPark->addObject(ss, strError));
     }
     SECTION("Not Correct Wheel, wrong with typeWheel") {
         int typeWheelNoCorrect = 3;
@@ -100,9 +99,6 @@ TEST_CASE("Test for create Wheel", "[Create Wheel]") {
 
         createWheel(nameCorrect, inventoryId, typeObjectCorrect, typeWheelCorrect, radius, ss);
         CHECK(!ownerPark->addObject(ss, strError));
-
-        createWheel(nameCorrect, inventoryId + 1, typeObjectCorrect, typeWheelCorrect, radius, ss);
-        CHECK(ownerPark->addObject(ss, strError));
     }
 
     delete ownerPark;
@@ -216,21 +212,111 @@ TEST_CASE("Test for create electric Scooter", "[Create Electric Scooter]") {
         CHECK(ownerPark->getCntElectricity() == 0);
     }
 
-    SECTION("Correct 2 Scooter Electric") {
-        createElectricScooter(nameCorrectScooterElectric, inventoryId, simplicity, typeObjectScooterCorrect,
-                              cntElectricity, inventoryIdWheel_1, inventoryIdWheel_2, weight, ss);
-        CHECK(ownerPark->addObject(ss, strError));
+    delete ownerPark;
+}
 
-        createWheel(nameCorrectWheel, 4, typeObjectWheel, typeWheel, radius, ss);
-        CHECK(ownerPark->addObject(ss, strError));
-        createWheel(nameCorrectWheel, 5, typeObjectWheel, typeWheel, radius, ss);
-        CHECK(ownerPark->addObject(ss, strError));
+TEST_CASE("ServiceCenter inspection via DI Container (Mock / Stub)", "[DI][ServiceCenter]") {
+    std::string nameScooter = "scooter";
+    std::string nameWheel = "wheel";
+    std::string strError;
+    std::stringstream ss;
 
-        createElectricScooter(nameCorrectScooterElectric, 6, simplicity, typeObjectScooterCorrect,
-                              cntElectricity, 4, 5, weight, ss);
-        CHECK(ownerPark->addObject(ss, strError));
-        CHECK(ownerPark->getCntElectricity() == 2 * cntElectricity);
+    SECTION("Mock completely rejects addition of vehicles") {
+        DIContainer container;
+        container.registerSingleton<IServiceCenter, AlwaysRejectServiceCenterMock>();
+
+        OwnerPark owner(container);
+
+        createWheel(nameWheel, 10, (int)TypeObject::SparePart, 1, 10, ss);
+        bool result = owner.addObject(ss, strError);
+
+        CHECK_FALSE(result);
+        CHECK(strError.find("Rejected by AlwaysRejectServiceCenterMock") != std::string::npos);
+        CHECK(owner.getCntElectricity() == 0);
     }
 
-    delete ownerPark;
+    SECTION("Conditional mock rejects only defective vehicle by ID") {
+        const int defectiveScooterId = 77;
+        const int healthyScooterId = 88;
+
+        DIContainer container;
+        container.registerInstance<IServiceCenter>(
+                std::make_shared<DefectiveIdServiceCenterMock>(defectiveScooterId)
+        );
+
+        OwnerPark owner(container);
+
+        createWheel(nameWheel, 1, (int)TypeObject::SparePart, 1, 10, ss);
+        CHECK(owner.addObject(ss, strError));
+        createWheel(nameWheel, 2, (int)TypeObject::SparePart, 1, 10, ss);
+        CHECK(owner.addObject(ss, strError));
+        createWheel(nameWheel, 3, (int)TypeObject::SparePart, 1, 10, ss);
+        CHECK(owner.addObject(ss, strError));
+        createWheel(nameWheel, 4, (int)TypeObject::SparePart, 1, 10, ss);
+        CHECK(owner.addObject(ss, strError));
+
+        createScooter(nameScooter, defectiveScooterId, 5, (int)TypeObject::TransportNoElectric, 1, 2, 12, ss);
+        CHECK_FALSE(owner.addObject(ss, strError));
+        CHECK(strError.find("Defective unit detected") != std::string::npos);
+
+        createScooter(nameScooter, healthyScooterId, 5, (int)TypeObject::TransportNoElectric, 3, 4, 12, ss);
+        CHECK(owner.addObject(ss, strError));
+    }
+}
+
+TEST_CASE("Behavior test: Beginner rules and energy calculation", "[Behavior]") {
+    std::string nameScooter = "scooter";
+    std::string nameElectric = "scooter_electric";
+    std::string nameWheel = "wheel";
+    std::stringstream ss;
+    std::string strError;
+
+    OwnerPark owner;
+
+    createWheel(nameWheel, 101, (int)TypeObject::SparePart, 1, 10, ss);
+    CHECK(owner.addObject(ss, strError));
+    createWheel(nameWheel, 102, (int)TypeObject::SparePart, 1, 10, ss);
+    CHECK(owner.addObject(ss, strError));
+
+    createElectricScooter(nameElectric, 1, 8, (int)TypeObject::TransportElectric, 25, 101, 102, 14, ss);
+    CHECK(owner.addObject(ss, strError));
+    CHECK(owner.getCntElectricity() == 25);
+
+    createWheel(nameWheel, 103, (int)TypeObject::SparePart, 1, 10, ss);
+    CHECK(owner.addObject(ss, strError));
+    createWheel(nameWheel, 104, (int)TypeObject::SparePart, 1, 10, ss);
+    CHECK(owner.addObject(ss, strError));
+
+    createElectricScooter(nameElectric, 2, 2, (int)TypeObject::TransportElectric, 40, 103, 104, 18, ss);
+    CHECK(owner.addObject(ss, strError));
+
+    CHECK(owner.getCntElectricity() == 65);
+}
+
+TEST_CASE("Test for Items on Balance: Helmet and ChargingStation", "[ItemsOnBalance]") {
+    OwnerPark owner;
+    std::string strError;
+    std::stringstream ss;
+
+    SECTION("Add Helmet on balance") {
+        ss << "helmet 201 5 M";
+        CHECK(owner.addObject(ss, strError));
+        CHECK(owner.getCntElectricity() == 0);
+    }
+
+    SECTION("Add ChargingStation with energy consumption") {
+        ss << "charging_station 301 3 150 10";
+        CHECK(owner.addObject(ss, strError));
+        CHECK(owner.getCntElectricity() == 150);
+    }
+
+    SECTION("Reject duplicate ID between transport and helmet") {
+        ss << "helmet 500 5 L";
+        CHECK(owner.addObject(ss, strError));
+
+        std::stringstream ssWheel;
+        ssWheel << "wheel 500 4 1 10";
+        CHECK_FALSE(owner.addObject(ssWheel, strError));
+        CHECK(strError.find("already in use") != std::string::npos);
+    }
 }

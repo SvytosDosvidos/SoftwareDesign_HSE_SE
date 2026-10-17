@@ -16,6 +16,7 @@ public:
 
     void printObjectEasy(const std::map<std::string, std::string>& mapCommand) const;
     void printObjectNoEasy(const std::map<std::string, std::string>& mapCommand) const;
+    void printObjectOther(const std::map<std::string, std::string>& mapCommand) const;
 
     void addObject(IInventoryItem* objectPark);
     std::optional<IInventoryItem*> getObject(const std::string& name, int inventoryId);
@@ -32,13 +33,15 @@ public:
 
 private:
     void printObject(const std::vector<BaseRentable*>& objects,
-        const std::map<std::string, std::string>& mapCommand) const;
+                     const std::map<std::string, std::string>& mapCommand) const;
 
     std::vector<BaseRentable*> objectsEasy_;
     std::vector<BaseRentable*> objectsNoEasy_;
     std::vector<IInventoryItem*> other_;
     Value cntElectrcity_;
 
-    std::vector<std::string> orderPrint_ = {"wheel", "scooter", "scooter_electric"};
+    std::vector<std::string> orderPrint_ = {
+            "wheel", "scooter", "scooter_electric", "helmet", "charging_station"
+    };
     std::map<std::string, TypeObject> types_;
 };
