@@ -1,15 +1,16 @@
 #include "../includes/Park.h"
 
-Park::Park() {
+Park::Park(std::shared_ptr<IServiceCenter> serviceCenter)
+        : serviceCenter_(std::move(serviceCenter)) {
     creatorObject_ = new CreatorObject();
     storageCenter_ = new StorageCenter();
-    serviceCenter_ = new StandardServiceCenter();
 }
+
+Park::Park() : Park(std::make_shared<StandardServiceCenter>()) {}
 
 Park::~Park() {
     delete creatorObject_;
     delete storageCenter_;
-    delete serviceCenter_;
 }
 
 void Park::printObjectEasy(const std::map<std::string, std::string>& mapCommand) const {
@@ -22,11 +23,11 @@ void Park::printObjectNoEasy(const std::map<std::string, std::string>& mapComman
 
 bool Park::addObject(std::stringstream& ss, std::string& strError) {
     std::optional<IInventoryItem*> obj = creatorObject_->createObject(ss, storageCenter_, strError);
-    if(!obj.has_value()) {
+    if (!obj.has_value()) {
         return false;
     }
 
-    if(!serviceCenter_->inspect(**obj, strError)) {
+    if (!serviceCenter_->inspect(**obj, strError)) {
         delete *obj;
         return false;
     }

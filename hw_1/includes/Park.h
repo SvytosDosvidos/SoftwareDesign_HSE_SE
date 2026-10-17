@@ -3,6 +3,7 @@
 #include <vector>
 #include <map>
 #include <string>
+#include <memory>
 
 #include "ObjectPark.h"
 #include "CreatorObject.h"
@@ -12,6 +13,8 @@ using Value = long long;
 
 class Park {
 public:
+    explicit Park(std::shared_ptr<IServiceCenter> serviceCenter);
+
     Park();
     ~Park();
 
@@ -24,5 +27,5 @@ public:
 private:
     CreatorObject* creatorObject_;
     StorageCenter* storageCenter_;
-    IServiceCenter* serviceCenter_;
+    std::shared_ptr<IServiceCenter> serviceCenter_;
 };

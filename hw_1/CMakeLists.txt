@@ -12,6 +12,7 @@ add_executable(hw_1
         includes/StorageCenter.h
         includes/CreatorObject.h
         includes/ServiceCenter.h
+        includes/DIContainer.h
 
         src/OwnerPark.cpp
         src/StorageCenter.cpp
@@ -27,6 +28,7 @@ add_executable(run_test
         includes/Park.h
         includes/ObjectPark.h
         includes/OwnerPark.h
+        includes/DIContainer.h
         includes/StorageCenter.h
         includes/CreatorObject.h
         includes/ServiceCenter.h

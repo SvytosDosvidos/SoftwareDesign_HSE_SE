@@ -3,10 +3,6 @@
 #include "catch.hpp"
 #include "../includes/OwnerPark.h"
 
-Value OwnerPark::getCntElectricity() const {
-    return park_->getCntElectricity();
-}
-
 void createWheel(std::string &name, int inventoryId,
                  int typeObject, int typeWheel, Value radius, std::stringstream &ss) {
     if(!ss.str().empty()) {

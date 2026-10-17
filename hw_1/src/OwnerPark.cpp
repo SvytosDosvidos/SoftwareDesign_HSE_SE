@@ -2,7 +2,19 @@
 
 OwnerPark::OwnerPark() {
     init();
-    park_ = new Park();
+    DIContainer container;
+    container.registerSingleton<IServiceCenter, StandardServiceCenter>();
+    park_ = new Park(container.resolve<IServiceCenter>());
+}
+
+OwnerPark::OwnerPark(const DIContainer& container) {
+    init();
+    park_ = new Park(container.resolve<IServiceCenter>());
+}
+
+OwnerPark::OwnerPark(std::shared_ptr<IServiceCenter> serviceCenter) {
+    init();
+    park_ = new Park(std::move(serviceCenter));
 }
 
 OwnerPark::~OwnerPark() {
@@ -10,13 +22,9 @@ OwnerPark::~OwnerPark() {
 }
 
 void OwnerPark::init() {
-    mapCommand_["wheel"] = "[name][inventoryId]"
-        "[simplicity][typeObject][typeWheel][radius]";
-    mapCommand_["scooter_electric"] = "[name]"
-        "[inventoryId][simplicity][typeObject][electricityValue][inventoryIdWheel_1]"
-            "[inventoryIdWheel_2][weight]";
-    mapCommand_["scooter"] = "[name][inventoryId]"
-        "[simplicity][typeObject][inventoryIdWheel_1][inventoryIdWheel_2][weight]";
+    mapCommand_["wheel"] = "[name][inventoryId][typeObject][typeWheel][radius]";
+    mapCommand_["scooter_electric"] = "[name][inventoryId][simplicity][typeObject][electricityValue][inventoryIdWheel_1][inventoryIdWheel_2][weight]";
+    mapCommand_["scooter"] = "[name][inventoryId][simplicity][typeObject][inventoryIdWheel_1][inventoryIdWheel_2][weight]";
 }
 
 void OwnerPark::printCommand() const {
@@ -45,12 +53,12 @@ void OwnerPark::printCommand4Add() const {
     std::cout << std::format("|{: ^128}|\n", "");
 
     std::cout << std::format("|{: ^128}|\n", "TypeWheel:");
-    std::cout << std::format("|{: ^128}|\n", "BicycleScooter - 1");
+    std::cout << std::format("|{: ^128}|\n", "ScooterWheel - 1");
     std::cout << std::format("|{: ^128}|\n", "BicycleWheel - 2");
     std::cout << std::format("|{: ^128}|\n", "");
 
     for(const auto &it : mapCommand_) {
-        std::cout <<  std::format("|{: ^128}|\n", it.first + " - " + it.second);
+        std::cout << std::format("|{: ^128}|\n", it.first + " - " + it.second);
     }
     std::cout << std::format("+{:-^128}+\n", "");
 }
@@ -63,6 +71,9 @@ void OwnerPark::printAllObjects() const {
 }
 
 bool OwnerPark::addObject(std::stringstream& ss, std::string& strError) {
-    bool flag = park_->addObject(ss, strError);
-    return flag;
+    return park_->addObject(ss, strError);
+}
+
+Value OwnerPark::getCntElectricity() const {
+    return park_->getCntElectricity();
 }

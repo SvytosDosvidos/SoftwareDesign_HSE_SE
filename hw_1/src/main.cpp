@@ -3,6 +3,8 @@
 #include <sstream>
 
 #include "../includes/OwnerPark.h"
+#include "../includes/DIContainer.h"
+#include "../includes/ServiceCenter.h"
 
 const int kMaxSymbols = 200;
 
@@ -28,12 +30,14 @@ int getCommand() {
     if(ss >> n) {
         return n;
     }
-
     return -1;
 }
 
 int main() {
-    OwnerPark* owner = new OwnerPark();
+    DIContainer container;
+    container.registerSingleton<IServiceCenter, StandardServiceCenter>();
+
+    OwnerPark* owner = new OwnerPark(container);
     owner->printCommand();
     bool flagContinue = true;
 
@@ -63,11 +67,14 @@ int main() {
                 break;
             } case 5: {
                 flagContinue = false;
+                break;
+            } default: {
+                std::cout << "Unknown command!\n";
+                break;
             }
         }
     }
 
     delete owner;
-
     return 0;
 }
