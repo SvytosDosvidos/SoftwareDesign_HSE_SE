@@ -4,6 +4,18 @@ StorageCenter::StorageCenter() : cntElectrcity_(0) {
     init();
 }
 
+StorageCenter::~StorageCenter() {
+    for(auto* item : objectsEasy_) {
+        delete item;
+    }
+    for(auto* item : objectsNoEasy_) {
+        delete item;
+    }
+    for(auto* item : other_) {
+        delete item;
+    }
+}
+
 void StorageCenter::init() {
     types_["wheel"] = TypeObject::SparePart;
     types_["scooter"] = TypeObject::TransportNoElectric;

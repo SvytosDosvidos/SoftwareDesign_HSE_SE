@@ -95,6 +95,11 @@ std::optional<IInventoryItem*> CreatorScooter(std::stringstream& ss,
         return std::nullopt;
     }
 
+    if(ind_1 == ind_2) {
+        strError += "Wheel IDs must be distinct\n";
+        return std::nullopt;
+    }
+
     if(!storageCenter->checkUniqueId(inventoryId, strError)) {
         return std::nullopt;
     }
@@ -161,6 +166,11 @@ std::optional<IInventoryItem*> CreatorElectricScooter(std::stringstream& ss,
         return std::nullopt;
     }
 
+    if(ind_1 == ind_2) {
+        strError += "Wheel IDs must be distinct\n";
+        return std::nullopt;
+    }
+
     if(!storageCenter->checkUniqueId(inventoryId, strError)) {
         return std::nullopt;
     }
@@ -187,7 +197,6 @@ std::optional<IInventoryItem*> CreatorElectricScooter(std::stringstream& ss,
         static_cast<Wheel*>(*wheel_2)
     };
 
-    storageCenter->addCntElectrcity(electricityValue);
     storageCenter->deleteObject(ind_1);
     storageCenter->deleteObject(ind_2);
 
@@ -252,7 +261,6 @@ std::optional<IInventoryItem*> CreatorChargingStation(std::stringstream& ss,
         return std::nullopt;
     }
 
-    storageCenter->addCntElectrcity(electricityValue);
     return new ChargingStation("charging_station", inventoryId, typeObject, electricityValue, slotsCount);
 }
 

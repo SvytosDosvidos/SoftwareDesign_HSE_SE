@@ -12,6 +12,8 @@
 class StorageCenter {
 public:
     StorageCenter();
+    ~StorageCenter();
+
     void init();
 
     void printObjectEasy(const std::map<std::string, std::string>& mapCommand) const;

@@ -36,6 +36,10 @@ bool Park::addObject(std::stringstream& ss, std::string& strError) {
         return false;
     }
 
+    if(auto* consumer = dynamic_cast<IEnergyConsumer*>(*obj)) {
+        storageCenter_->addCntElectrcity(consumer->getDailyEnergyConsumption());
+    }
+
     storageCenter_->addObject(*obj);
     return true;
 }

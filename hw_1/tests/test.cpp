@@ -320,3 +320,31 @@ TEST_CASE("Test for Items on Balance: Helmet and ChargingStation", "[ItemsOnBala
         CHECK(strError.find("already in use") != std::string::npos);
     }
 }
+
+TEST_CASE("Double Free and Transactional Energy", "[Fixes]") {
+    OwnerPark owner;
+    std::string strError;
+    std::stringstream ss;
+    std::string nameWheel = "wheel";
+    std::string nameScooter = "scooter";
+
+    SECTION("Prevent Double Free: scooter with duplicate wheel IDs must be rejected") {
+        createWheel(nameWheel, 1, (int)TypeObject::SparePart, 1, 10, ss);
+        CHECK(owner.addObject(ss, strError));
+
+        createScooter(nameScooter, 50, 5, (int)TypeObject::TransportNoElectric, 1, 1, 12, ss);
+        CHECK_FALSE(owner.addObject(ss, strError));
+        CHECK(strError.find("Wheel IDs must be distinct") != std::string::npos);
+    }
+
+    SECTION("Transactionality: Rejected charging station must NOT add energy") {
+        DIContainer container;
+        container.registerSingleton<IServiceCenter, AlwaysRejectServiceCenterMock>();
+        OwnerPark rejectingOwner(container);
+
+        ss << "charging_station 901 3 200 8";
+        CHECK_FALSE(rejectingOwner.addObject(ss, strError));
+
+        CHECK(rejectingOwner.getCntElectricity() == 0);
+    }
+}
