@@ -1,6 +1,80 @@
 #include <iostream>
+#include <string>
+#include <sstream>
+
+#include "../includes/OwnerPark.h"
+#include "../includes/DIContainer.h"
+#include "../includes/ServiceCenter.h"
+
+const int kMaxSymbols = 200;
+
+std::stringstream getS() {
+    std::string str;
+    std::stringstream ss;
+
+    while(std::cin && str.size() < kMaxSymbols) {
+        char c = std::cin.get();
+        if(c == '\n') {
+            break;
+        }
+        str.push_back(c);
+    }
+
+    ss << str;
+    return ss;
+}
+
+int getCommand() {
+    std::stringstream ss = getS();
+    int n;
+    if(ss >> n) {
+        return n;
+    }
+    return -1;
+}
 
 int main() {
-    std::cout << "Correct!\n";
+    DIContainer container;
+    container.registerSingleton<IServiceCenter, StandardServiceCenter>();
+
+    OwnerPark* owner = new OwnerPark(container);
+    owner->printCommand();
+    bool flagContinue = true;
+
+    while(flagContinue) {
+        int command_id = getCommand();
+
+        switch(command_id) {
+            case 1: {
+                owner->printCommand();
+                break;
+            } case 2: {
+                owner->printAllObjects();
+                break;
+            } case 3: {
+                std::string strError;
+                std::cout << "Input data:\n";
+                std::stringstream input = getS();
+                if(owner->addObject(input, strError)) {
+                    std::cout << "The object has been created!!!\n";
+                } else {
+                    std::cout << "Incorrect data, because:\n";
+                    std::cout << strError << "\n";
+                }
+                break;
+            } case 4: {
+                owner->printCommand4Add();
+                break;
+            } case 5: {
+                flagContinue = false;
+                break;
+            } default: {
+                std::cout << "Unknown command!\n";
+                break;
+            }
+        }
+    }
+
+    delete owner;
     return 0;
 }
