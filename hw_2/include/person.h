@@ -1,28 +1,43 @@
 #pragma once
 
+#include "academic_subject.h"
+#include "console_controller.h"
+
 #include <string>
 #include <vector>
 #include <memory>
-#include "academic_subject.h"
 
-class IPerson {
+class IPersonUniversity {
 public:
+    IPersonUniversity(int idPass, std::string name);
+    virtual ~IPersonUniversity() = 0;
 
-    virtual ~IPerson() = 0;
-private:
+protected:
+    int idPass_;
     std::string name_;
 };
 
-class Lecturer : public IPerson {
+class ManagerUniversity : public IPersonUniversity {
 public:
+    ManagerUniversity(int idPass, std::string name);
+    void printCommand() const;
+    void printCommand4Add() const;
+private:
+    std::unique_ptr<ConsoleController> consoleController_;
+};
 
+class Lecturer : public IPersonUniversity {
+public:
+    Lecturer(int idPass, std::string name);
+    void AddSubjectTeach();
 private:
     std::vector<std::unique_ptr<Subject>> subjectsTeach_;
 };
 
-class Student : public IPerson {
+class Student : public IPersonUniversity {
 public:
-
+    Student(int idPass, std::string name);
+    void AddEductionDirection();
 private:
     std::vector<std::unique_ptr<EducationDirection>> educationDirections_;
 };

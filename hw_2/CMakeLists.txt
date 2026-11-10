@@ -3,6 +3,12 @@ project(hw_2)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(hw_2 main.cpp
+add_executable(hw_2 src/main.cpp
         include/person.h
-        include/academic_subject.h)
+        include/academic_subject.h
+        include/university.h
+        include/parser.h
+        src/person.cpp
+        include/console_controller.h
+        src/console_controller.cpp
+)

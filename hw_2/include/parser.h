@@ -1,8 +1,9 @@
-//
-// Created by Admin on 10.11.2026.
-//
+#pragma once
 
-#ifndef HW_2_PARSER_H
-#define HW_2_PARSER_H
+class Parser {
+public:
+    Parser() = default;
+    void Parse();
+private:
 
-#endif //HW_2_PARSER_H
+};

@@ -1,8 +1,19 @@
-//
-// Created by Admin on 10.11.2026.
-//
+#pragma once
 
-#ifndef HW_2_UNIVERSITY_H
-#define HW_2_UNIVERSITY_H
+#include <vector>
+#include <functional>
 
-#endif //HW_2_UNIVERSITY_H
+#include "person.h"
+#include "academic_subject.h"
+
+class University {
+public:
+    University() = default;
+    void addManagerUniversity();
+    void addLecturere();
+    void addEducationDirection();
+private:
+    std::unique_ptr<ManagerUniversity> managerUniversity_;
+    std::vector<std::unique_ptr<Lecturer>> lecturers_;
+    std::vector<std::unique_ptr<EducationDirection>> educationDirections_;
+};
