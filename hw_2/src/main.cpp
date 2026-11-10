@@ -3,7 +3,6 @@
 #include <sstream>
 
 #include "../include/parser.h"
-#include "../include/university.h"
 
 constexpr int kMaxSymbols = 200;
 
@@ -34,7 +33,6 @@ int getCommand() {
 
 int main() {
     std::unique_ptr<Parser> parser = std::make_unique<Parser>();
-    std::unique_ptr<University> university = std::make_unique<University>();
     while(true) {
         int idCommand = getCommand();
 
