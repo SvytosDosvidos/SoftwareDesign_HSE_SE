@@ -3,7 +3,7 @@
 class Parser {
 public:
     Parser() = default;
-    void Parse();
+    void Parse() {}
 private:
 
 };

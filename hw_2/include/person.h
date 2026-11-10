@@ -1,7 +1,6 @@
 #pragma once
 
 #include "academic_subject.h"
-#include "console_controller.h"
 
 #include <string>
 #include <vector>
@@ -10,15 +9,20 @@
 class IPersonUniversity {
 public:
     IPersonUniversity(int idPass, std::string name);
-    virtual ~IPersonUniversity() = 0;
+    virtual ~IPersonUniversity() = default;
 
 protected:
     int idPass_;
     std::string name_;
 };
 
+class A {
+
+};
+
 class Lecturer : public IPersonUniversity {
 public:
+    ~Lecturer() override = default;
     Lecturer(int idPass, std::string name);
     void addSubjectTeach();
 private:
@@ -27,6 +31,7 @@ private:
 
 class Student : public IPersonUniversity {
 public:
+    ~Student() override = default;
     Student(int idPass, std::string name);
     void addEductionDirection();
 private:
