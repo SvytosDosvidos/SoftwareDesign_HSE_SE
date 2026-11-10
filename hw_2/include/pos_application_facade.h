@@ -4,6 +4,9 @@
 #include "academic_subject.h"
 
 #include<memory>
+#include<functional>
+
+using creator = std::function<void(std::stringstream&)>;
 
 class POSApplicationFacade {
 public:

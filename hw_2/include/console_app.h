@@ -3,12 +3,17 @@
 #include "pos_application_facade.h"
 
 #include<memory>
+#include<unordered_map>
+#include<sstream>
 
 class ConsoleApp {
 public:
     ConsoleApp();
 
+    void init();
     void run();
+
+    std::string execute(std::stringstream input);
 
     void printStudents() const;
     void printLecturers() const;
@@ -17,4 +22,6 @@ public:
     void printCommand4Add() const;
 private:
     std::unique_ptr<POSApplicationFacade> posApplicationFacade_;
+    std::unordered_map<std::string, std::string> mapCommand_;
+    std::unordered_map<std::string, std::string> mapCreator_;
 };
