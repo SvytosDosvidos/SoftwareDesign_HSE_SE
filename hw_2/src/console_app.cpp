@@ -37,8 +37,8 @@ int getCommand() {
 }
 
 void ConsoleApp::init() {
-    mapCommand_["studyProgram "] = "[name][nameProgramReading](description)";
-    mapCommand_["subject"] = "[name][nameProgramReading](description)";
+    mapCommand_["studyProgram "] = "[idStudyProgam][nameStudyProgram](description)";
+    mapCommand_["subject"] = "[nameSubject][nameProgramReading](description)";
     mapCommand_["lecturer"] = "[idPass][name]";
     mapCommand_["student"] = "[idPass][name]";
 

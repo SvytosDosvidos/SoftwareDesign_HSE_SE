@@ -37,7 +37,7 @@ void POSApplicationFacade::appointLecturere(std::stringstream& input, std::strin
         return;
     }
 
-    if(!checkUniqueIdProgram(idPass)) {
+    if(!checkUniqueIdPass(idPass)) {
         errorStr += "not unique idPass\n";
         return;
     }
@@ -46,10 +46,51 @@ void POSApplicationFacade::appointLecturere(std::stringstream& input, std::strin
 }
 
 void POSApplicationFacade::enrollStudent(std::stringstream& input, std::string& errorStr) {
+    int idPass;
+    std::string name;
+    if(!(input >> idPass)) {
+        errorStr += "invalid idPass value\n";
+        return;
+    }
+    if(!(input >> name)) {
+        errorStr += "invalid name value\n";
+        return;
+    }
 
+    if(!checkUniqueIdPass(idPass)) {
+        errorStr += "not unique idPass\n";
+        return;
+    }
+
+    students_.push_back(std::make_unique<Student>(idPass, name));
 }
 
-bool POSApplicationFacade::checkUniqueIdPass(int idPass) {
+void POSApplicationFacade::addSubject(std::stringstream& input, std::string& errorStr) {
+    std::string name;
+    std::string nameStudyProgram;
+    std::optional<std::string> description;
+    std::string descriptionStr;
+    if(input >> name) {
+        errorStr += "invalid name value\n";
+    }
+
+    if(input >> nameStudyProgram) {
+        errorStr += "invalid nameStudyProgram value\n";
+    }
+
+    input >> descriptionStr;
+    description = descriptionStr;
+
+    std::optional<int> indStudyProgam = getIndStudyProgram(nameStudyProgram);
+    if(!indStudyProgam.has_value()) {
+        errorStr += "there is no such nameStudyProgram\n";
+    }
+
+    std::shared_ptr<Subject> subject = std::make_shared<Subject>(Subject(name, nameStudyProgram, description));
+    studyPrograms_[indStudyProgam.value()]->addSubject(subject);
+}
+
+bool POSApplicationFacade::checkUniqueIdPass(int idPass) const {
     for(const auto &lecturer : lecturers_) {
         if(lecturer->getIdPass() == idPass) {
             return false;
@@ -65,11 +106,19 @@ bool POSApplicationFacade::checkUniqueIdPass(int idPass) {
     return true;
 }
 
-bool POSApplicationFacade::checkUniqueNameSubject(std::string name) {
+bool POSApplicationFacade::checkUniqueNameSubject(std::string name) const {
+    for(const auto &program : studyPrograms_) {
+        for(const auto& subject : program->getSubjects()) {
+            if(subject->getName() == name) {
+                return false;
+            }
+        }
+    }
 
+    return true;
 }
 
-bool POSApplicationFacade::checkUniqueIdProgram(int idStudyProgam) {
+bool POSApplicationFacade::checkUniqueIdProgram(int idStudyProgam) const {
     for(const auto &program : studyPrograms_) {
         if(program->getIdStudyProgam() == idStudyProgam) {
             return false;
@@ -77,6 +126,16 @@ bool POSApplicationFacade::checkUniqueIdProgram(int idStudyProgam) {
     }
 
     return true;
+}
+
+std::optional<int> POSApplicationFacade::getIndStudyProgram(std::string nameStudyProgam) const {
+    for(size_t i = 0; i < studyPrograms_.size(); ++i) {
+        if(studyPrograms_[i]->getNameStudyProgram() == nameStudyProgam) {
+            return true;
+        }
+    }
+
+    return std::nullopt;
 }
 
 

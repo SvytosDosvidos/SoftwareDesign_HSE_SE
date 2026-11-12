@@ -23,7 +23,7 @@ public:
     Lecturer(int idPass, std::string name);
     void addSubjectTeach();
 private:
-    std::vector<std::unique_ptr<Subject>> subjectsTeach_;
+    std::vector<std::shared_ptr<Subject>> subjectsTeach_;
 };
 
 class Student : public IPersonUniversity {
