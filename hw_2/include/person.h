@@ -30,7 +30,7 @@ class Student : public IPersonUniversity {
 public:
     ~Student() override = default;
     Student(int idPass, std::string name);
-    void addEductionDirection();
+    void addStudyProgram();
 private:
-    std::vector<std::unique_ptr<StudyProgram>> educationDirections_;
+    std::vector<std::shared_ptr<StudyProgram>> studyPrograms_;
 };

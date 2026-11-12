@@ -70,11 +70,11 @@ void POSApplicationFacade::addSubject(std::stringstream& input, std::string& err
     std::string nameStudyProgram;
     std::optional<std::string> description;
     std::string descriptionStr;
-    if(input >> name) {
+    if(!(input >> name)) {
         errorStr += "invalid name value\n";
     }
 
-    if(input >> nameStudyProgram) {
+    if(!(input >> nameStudyProgram)) {
         errorStr += "invalid nameStudyProgram value\n";
     }
 
@@ -131,7 +131,7 @@ bool POSApplicationFacade::checkUniqueIdProgram(int idStudyProgam) const {
 std::optional<int> POSApplicationFacade::getIndStudyProgram(std::string nameStudyProgam) const {
     for(size_t i = 0; i < studyPrograms_.size(); ++i) {
         if(studyPrograms_[i]->getNameStudyProgram() == nameStudyProgam) {
-            return true;
+            return static_cast<int>(i);
         }
     }
 
