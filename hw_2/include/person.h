@@ -11,13 +11,10 @@ public:
     IPersonUniversity(int idPass, std::string name);
     virtual ~IPersonUniversity() = default;
 
+    int getIdPass() const;
 protected:
     int idPass_;
     std::string name_;
-};
-
-class A {
-
 };
 
 class Lecturer : public IPersonUniversity {
@@ -35,5 +32,5 @@ public:
     Student(int idPass, std::string name);
     void addEductionDirection();
 private:
-    std::vector<std::unique_ptr<EducationDirection>> educationDirections_;
+    std::vector<std::unique_ptr<StudyProgram>> educationDirections_;
 };

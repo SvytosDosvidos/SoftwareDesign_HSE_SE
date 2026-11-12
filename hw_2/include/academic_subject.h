@@ -15,14 +15,16 @@ private:
     std::optional<std::string> description_;
 };
 
-class EducationDirection {
+class StudyProgram {
 public:
-    EducationDirection(int idDirection, std::string name,
-                       std::optional<std::string> description);
+    StudyProgram(int idStudyProgam, std::string name,
+        std::optional<std::string> description);
     void addSubject(std::string name, std::optional<std::string> description,
-                    std::string nameProgramReading);
+        std::string nameProgramReading);
+
+    int getIdStudyProgam() const;
 private:
-    int idDirection_;
+    int idStudyProgam_;
     std::string name_;
     std::vector<std::unique_ptr<Subject>> subjects_;
     std::optional<std::string> description_;

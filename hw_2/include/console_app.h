@@ -6,6 +6,8 @@
 #include<unordered_map>
 #include<sstream>
 
+using creator = std::function<void(std::stringstream&, std::string&)>;
+
 class ConsoleApp {
 public:
     ConsoleApp();
@@ -13,7 +15,7 @@ public:
     void init();
     void run();
 
-    std::string execute(std::stringstream input);
+    std::string execute(std::stringstream& input);
 
     void printStudents() const;
     void printLecturers() const;
@@ -23,5 +25,5 @@ public:
 private:
     std::unique_ptr<POSApplicationFacade> posApplicationFacade_;
     std::unordered_map<std::string, std::string> mapCommand_;
-    std::unordered_map<std::string, std::string> mapCreator_;
+    std::unordered_map<std::string, creator> mapCreator_;
 };

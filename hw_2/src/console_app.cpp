@@ -37,9 +37,21 @@ int getCommand() {
 }
 
 void ConsoleApp::init() {
-    mapCommand_["student"] = "[idPass][name]";
+    mapCommand_["studyProgram "] = "[name][nameProgramReading](description)";
+    mapCommand_["subject"] = "[name][nameProgramReading](description)";
     mapCommand_["lecturer"] = "[idPass][name]";
-    mapCommand_["subject"] = "[name][]";
+    mapCommand_["student"] = "[idPass][name]";
+
+    mapCreator_["studyProgram "] = [raw = posApplicationFacade_.get()](std::stringstream &ss, std::string& errorStr) {
+        raw->openStudyProgram(ss, errorStr);
+    };
+    mapCreator_["lecturer"] = [raw = posApplicationFacade_.get()](std::stringstream &ss, std::string& errorStr) {
+        raw->appointLecturere(ss, errorStr);
+    };
+    mapCreator_["student"] = [raw = posApplicationFacade_.get()](std::stringstream &ss, std::string& errorStr) {
+        raw->enrollStudent(ss, errorStr);
+    };
+    //mapCreator_["subject"] =
 }
 
 void ConsoleApp::run() {
@@ -61,10 +73,11 @@ void ConsoleApp::run() {
                 printLecturers();
                 break;
             } case 4: {
-                std::string strError;
                 std::cout << "Input data:\n";
-                std::stringstream input = getS();
-                if(owner->addObject(input, strError)) {
+                std::stringstream input = getStr();
+
+                std::string strError = execute(input);
+                if(strError.empty()) {
                     std::cout << "The object has been created!!!\n";
                 } else {
                     std::cout << "Incorrect data, because:\n";
@@ -85,24 +98,25 @@ void ConsoleApp::run() {
     }
 }
 
-std::string ConsoleApp::execute(std::stringstream input) {
+std::string ConsoleApp::execute(std::stringstream& input) {
     std::string name;
     input >> name;
 
     std::string errorStr;
-    if(mapCommand_[name] == mapCommand_.end()) {
+    if(mapCreator_.find(name) == mapCreator_.end()) {
         errorStr = "Invalid name for add object";
         return errorStr;
     }
 
-
+    mapCreator_[name](input, errorStr);
+    return errorStr;
 }
 
 void ConsoleApp::printCommand() const {
     std::cout << std::format("+{:-^128}+\n", "");
     std::cout << std::format("|{: ^128}|\n", "All command:");
     std::cout << std::format("|{: ^128}|\n", "");
-    std::cout << std::format("|{: ^78}|\n", "1 - Instructions for all commands");
+    std::cout << std::format("|{: ^128}|\n", "1 - Instructions for all commands");
     std::cout << std::format("|{: ^128}|\n", "2 - Displaying the entire students in the university");
     std::cout << std::format("|{: ^128}|\n", "3 - Displaying the entire lecturer, and what they teach");
     std::cout << std::format("|{: ^128}|\n", "4 - Add new student/lecturer/subject/educationDirection in university");
@@ -115,19 +129,9 @@ void ConsoleApp::printCommand4Add() const {
     std::cout << std::format("+{:-^128}+\n", "");
     std::cout << std::format("|{: ^128}|\n", "Instructions on how to add an object:");
     std::cout << std::format("|{: ^128}|\n", "");
-
-    /*std::cout << std::format("|{: ^128}|\n", "TypeObject:");
-    std::cout << std::format("|{: ^128}|\n", "TransportElectric - 1");
-    std::cout << std::format("|{: ^128}|\n", "TransportNoElectric - 2");
-    std::cout << std::format("|{: ^128}|\n", "OtherElectric - 3");
-    std::cout << std::format("|{: ^128}|\n", "SparePart - 4");
-    std::cout << std::format("|{: ^128}|\n", "Other - 5");
+    std::cout << std::format("|{: ^128}|\n", "If the parameter is in [], then it is required");
+    std::cout << std::format("|{: ^128}|\n", "If the parameter is in (), then it is optional");
     std::cout << std::format("|{: ^128}|\n", "");
-
-    std::cout << std::format("|{: ^128}|\n", "TypeWheel:");
-    std::cout << std::format("|{: ^128}|\n", "ScooterWheel - 1");
-    std::cout << std::format("|{: ^128}|\n", "BicycleWheel - 2");
-    std::cout << std::format("|{: ^128}|\n", "");*/
 
     for(const auto &it : mapCommand_) {
         std::cout << std::format("|{: ^128}|\n", it.first + " - " + it.second);
