@@ -1,5 +1,7 @@
 #pragma once
 
+#include "assessment_subject.h"
+
 #include <string>
 #include <vector>
 #include <optional>
@@ -10,11 +12,14 @@ public:
     Subject(std::string name, std::string nameProgramReading,
         std::optional<std::string> description);
 
+    void addAssessmentSubject(std::unique_ptr<AssessmentSubject>& assessmentSubject);
+
     std::string getName() const;
 private:
     std::string name_;
     std::string nameStudyProgram_;
     std::optional<std::string> description_;
+    std::unique_ptr<AssessmentSubject> assessmentSubject_;
 };
 
 class StudyProgram {

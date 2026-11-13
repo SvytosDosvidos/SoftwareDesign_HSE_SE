@@ -16,4 +16,6 @@ add_executable(hw_2
         src/person.cpp
         src/console_app.cpp
         src/parser.cpp
+        include/assessment_subject.h
+        src/assessment_subject.cpp
 )
