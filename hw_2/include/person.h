@@ -1,28 +1,36 @@
 #pragma once
 
+#include "academic_subject.h"
+
 #include <string>
 #include <vector>
 #include <memory>
-#include "academic_subject.h"
 
-class IPerson {
+class IPersonUniversity {
 public:
+    IPersonUniversity(int idPass, std::string name);
+    virtual ~IPersonUniversity() = default;
 
-    virtual ~IPerson() = 0;
-private:
+    int getIdPass() const;
+protected:
+    int idPass_;
     std::string name_;
 };
 
-class Lecturer : public IPerson {
+class Lecturer : public IPersonUniversity {
 public:
-
+    ~Lecturer() override = default;
+    Lecturer(int idPass, std::string name);
+    void addSubjectTeach(std::shared_ptr<Subject> subjectTeach);
 private:
-    std::vector<std::unique_ptr<Subject>> subjectsTeach_;
+    std::vector<std::shared_ptr<Subject>> subjectsTeach_;
 };
 
-class Student : public IPerson {
+class Student : public IPersonUniversity {
 public:
-
+    ~Student() override = default;
+    Student(int idPass, std::string name);
+    void addStudyProgram(std::shared_ptr<StudyProgram> studyProgram);
 private:
-    std::vector<std::unique_ptr<EducationDirection>> educationDirections_;
+    std::vector<std::shared_ptr<StudyProgram>> studyPrograms_;
 };
