@@ -7,6 +7,7 @@
 #include<sstream>
 
 using creator = std::function<void(std::stringstream&, std::string&)>;
+using binder = std::function<void(std::stringstream&, std::string&)>;
 
 class ConsoleApp {
 public:
@@ -24,6 +25,7 @@ public:
     void printCommand4Add() const;
 private:
     std::unique_ptr<POSApplicationFacade> posApplicationFacade_;
-    std::unordered_map<std::string, std::string> mapCommand_;
+    std::unordered_map<std::string, std::string> map4Print_;
     std::unordered_map<std::string, creator> mapCreator_;
+    std::unordered_map<std::string, binder> mapBinder_;
 };

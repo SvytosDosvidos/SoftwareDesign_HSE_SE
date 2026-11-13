@@ -72,10 +72,12 @@ void POSApplicationFacade::addSubject(std::stringstream& input, std::string& err
     std::string descriptionStr;
     if(!(input >> name)) {
         errorStr += "invalid name value\n";
+        return;
     }
 
     if(!(input >> nameStudyProgram)) {
         errorStr += "invalid nameStudyProgram value\n";
+        return;
     }
 
     input >> descriptionStr;
@@ -84,10 +86,36 @@ void POSApplicationFacade::addSubject(std::stringstream& input, std::string& err
     std::optional<int> indStudyProgam = getIndStudyProgram(nameStudyProgram);
     if(!indStudyProgam.has_value()) {
         errorStr += "there is no such nameStudyProgram\n";
+        return;
+    }
+
+    if(!checkUniqueNameSubject(nameStudyProgram)) {
+        errorStr += "not unique nameStudyProgram\n";
+        return;
     }
 
     std::shared_ptr<Subject> subject = std::make_shared<Subject>(Subject(name, nameStudyProgram, description));
     studyPrograms_[indStudyProgam.value()]->addSubject(subject);
+}
+
+void POSApplicationFacade::addTeachSubject(std::stringstream& input, std::string& errorStr) {
+    std::string nameSubject;
+    std::string nameStudyProgram;
+    if(!(input >> nameSubject)) {
+        errorStr += "invalid nameSubject value\n";
+        return;
+    }
+
+    if(!(input >> nameStudyProgram)) {
+        errorStr += "invalid nameStudyProgram value\n";
+        return;
+    }
+
+
+}
+
+void POSApplicationFacade::addStudyProgramStudent(std::stringstream& input, std::string& errorStr) {
+
 }
 
 bool POSApplicationFacade::checkUniqueIdPass(int idPass) const {

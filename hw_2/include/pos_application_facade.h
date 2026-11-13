@@ -15,6 +15,9 @@ public:
     void enrollStudent(std::stringstream& input, std::string& errorStr);
     void addSubject(std::stringstream& input, std::string& errorStr);
 
+    void addTeachSubject(std::stringstream& input, std::string& errorStr);
+    void addStudyProgramStudent(std::stringstream& input, std::string& errorStr);
+
     void printStudents() const;
     void printLecturers() const;
 private:

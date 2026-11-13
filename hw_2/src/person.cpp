@@ -10,9 +10,13 @@ int IPersonUniversity::getIdPass() const {
 Lecturer::Lecturer(int idPass, std::string name) :
     IPersonUniversity(idPass, name) {}
 
-void Lecturer::addSubjectTeach() {
-
+void Lecturer::addSubjectTeach(std::shared_ptr<Subject> subjectTeach) {
+    subjectsTeach_.push_back(std::move(subjectTeach));
 }
 
 Student::Student(int idPass, std::string name) :
     IPersonUniversity(idPass, name) {}
+
+void Student::addStudyProgram(std::shared_ptr<StudyProgram> studyProgram) {
+    studyPrograms_.push_back(std::move(studyProgram));
+}

@@ -37,10 +37,10 @@ int getCommand() {
 }
 
 void ConsoleApp::init() {
-    mapCommand_["studyProgram "] = "[idStudyProgam][nameStudyProgram](description)";
-    mapCommand_["subject"] = "[nameSubject][nameProgramReading](description)";
-    mapCommand_["lecturer"] = "[idPass][name]";
-    mapCommand_["student"] = "[idPass][name]";
+    map4Print_["studyProgram "] = "[idStudyProgam][nameStudyProgram](description)";
+    map4Print_["subject"] = "[nameSubject][nameProgramReading](description)";
+    map4Print_["lecturer"] = "[idPass][name]";
+    map4Print_["student"] = "[idPass][name]";
 
     mapCreator_["studyProgram "] = [raw = posApplicationFacade_.get()](std::stringstream &ss, std::string& errorStr) {
         raw->openStudyProgram(ss, errorStr);
@@ -51,7 +51,12 @@ void ConsoleApp::init() {
     mapCreator_["student"] = [raw = posApplicationFacade_.get()](std::stringstream &ss, std::string& errorStr) {
         raw->enrollStudent(ss, errorStr);
     };
-    //mapCreator_["subject"] =
+    mapCreator_["subject"] = [raw = posApplicationFacade_.get()](std::stringstream &ss, std::string& errorStr) {
+        raw->addSubject(ss, errorStr);
+    };
+
+    //mapBinder_["studyProgram"] =
+    //mapBinder_["subject"] =
 }
 
 void ConsoleApp::run() {
@@ -133,7 +138,7 @@ void ConsoleApp::printCommand4Add() const {
     std::cout << std::format("|{: ^128}|\n", "If the parameter is in (), then it is optional");
     std::cout << std::format("|{: ^128}|\n", "");
 
-    for(const auto &it : mapCommand_) {
+    for(const auto &it : map4Print_) {
         std::cout << std::format("|{: ^128}|\n", it.first + " - " + it.second);
     }
 }

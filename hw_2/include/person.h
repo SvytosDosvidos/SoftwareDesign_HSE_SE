@@ -21,7 +21,7 @@ class Lecturer : public IPersonUniversity {
 public:
     ~Lecturer() override = default;
     Lecturer(int idPass, std::string name);
-    void addSubjectTeach();
+    void addSubjectTeach(std::shared_ptr<Subject> subjectTeach);
 private:
     std::vector<std::shared_ptr<Subject>> subjectsTeach_;
 };
@@ -30,7 +30,7 @@ class Student : public IPersonUniversity {
 public:
     ~Student() override = default;
     Student(int idPass, std::string name);
-    void addStudyProgram();
+    void addStudyProgram(std::shared_ptr<StudyProgram> studyProgram);
 private:
     std::vector<std::shared_ptr<StudyProgram>> studyPrograms_;
 };
