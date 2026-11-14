@@ -43,6 +43,7 @@ void ConsoleApp::init() {
     map4Print_["student"] = "[idPass][name]";
 
     //[nameLecturer][nameStudyProgram][nameSubject]
+    //[name][nameStudyProgram]
 
     mapCreator_["studyProgram "] = [raw = posApplicationFacade_.get()](std::stringstream &input, std::string& errorStr) {
         raw->openStudyProgram(input, errorStr);
@@ -62,7 +63,7 @@ void ConsoleApp::init() {
     };//добавить subject для lecturer
 
     mapBinder_["studyProgram"] = [raw = posApplicationFacade_.get()](std::stringstream& input, std::string& errorStr) {
-        raw->addTeachSubject(input, errorStr);
+        raw->addStudyProgramStudent(input, errorStr);
     };//добавить studyProgram для Student
 
 

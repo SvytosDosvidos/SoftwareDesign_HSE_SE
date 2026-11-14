@@ -99,12 +99,12 @@ void POSApplicationFacade::addSubject(std::stringstream& input, std::string& err
 }
 
 void POSApplicationFacade::addTeachSubject(std::stringstream& input, std::string& errorStr) {
-    std::string nameLecturer;
+    int idPassLecturer;
     std::string nameStudyProgram;
     std::string nameSubject;
 
-    if(!(input >> nameLecturer)) {
-        errorStr += "invalid nameLecturer value\n";
+    if(!(input >> idPassLecturer)) {
+        errorStr += "invalid idPassLecturer value\n";
         return;
     }
 
@@ -118,7 +118,7 @@ void POSApplicationFacade::addTeachSubject(std::stringstream& input, std::string
         return;
     }
 
-    std::optional<int> indLecturer = getIndLecturer(nameLecturer);
+    std::optional<int> indLecturer = getIndLecturer(idPassLecturer);
     if(!indLecturer.has_value()) {
         errorStr += "lecturer does not exist\n";
         return;
@@ -141,7 +141,32 @@ void POSApplicationFacade::addTeachSubject(std::stringstream& input, std::string
 }
 
 void POSApplicationFacade::addStudyProgramStudent(std::stringstream& input, std::string& errorStr) {
+    int idPassStudent;
+    std::string nameStudyProgram;
 
+    if(!(input >> idPassStudent)) {
+        errorStr += "invalid name idPassStudent\n";
+        return;
+    }
+
+    if(!(input >> nameStudyProgram)) {
+        errorStr += "invalid nameStudyProgram value\n";
+        return;
+    }
+
+    std::optional<int> indStudent = getIndStudent(idPassStudent);
+    if(!indStudent.has_value()) {
+        errorStr += "student does not exist\n";
+        return;
+    }
+
+    std::optional<int> indStudyProgram = getIndStudyProgram(nameStudyProgram);
+    if(!indStudyProgram.has_value()) {
+        errorStr += "studyProgram does not exist\n";
+        return;
+    }
+
+    students_[indStudent.value()]->addStudyProgram(studyPrograms_[indStudyProgram.value()]);
 }
 
 bool POSApplicationFacade::checkUniqueIdPass(int idPass) const {
@@ -180,9 +205,19 @@ bool POSApplicationFacade::checkUniqueIdProgram(int idStudyProgam) const {
     return true;
 }
 
-std::optional<int> POSApplicationFacade::getIndLecturer(std::string& nameLecturer) const {
+std::optional<int> POSApplicationFacade::getIndLecturer(int idLecturer) const {
     for(size_t i = 0; i < lecturers_.size(); ++i) {
-        if(lecturers_[i]->getName() == nameLecturer) {
+        if(lecturers_[i]->getIdPass() == idLecturer) {
+            return i;
+        }
+    }
+
+    return std::nullopt;
+}
+
+std::optional<int> POSApplicationFacade::getIndStudent(int idStudent) const {
+    for(size_t i = 0; i < students_.size(); ++i) {
+        if(students_[i]->getIdPass() == idStudent) {
             return i;
         }
     }
@@ -199,7 +234,6 @@ std::optional<int> POSApplicationFacade::getIndStudyProgram(std::string& nameStu
 
     return std::nullopt;
 }
-
 
 void POSApplicationFacade::printStudents() const {
 

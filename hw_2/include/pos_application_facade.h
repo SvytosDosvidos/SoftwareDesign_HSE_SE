@@ -25,10 +25,11 @@ private:
     bool checkUniqueNameSubject(std::string& name, int indStudyProgam) const;
     bool checkUniqueIdProgram(int idStudyProgam) const;
 
+    std::optional<int> getIndLecturer(int idPass) const;
+    std::optional<int> getIndStudent(int idPass) const;
     std::optional<int> getIndStudyProgram(std::string& nameStudyProgam) const;
-    std::optional<int> getIndLecturer(std::string& nameLecturer) const;
 
     std::vector<std::unique_ptr<Lecturer>> lecturers_;
     std::vector<std::unique_ptr<Student>> students_;
-    std::vector<std::unique_ptr<StudyProgram>> studyPrograms_;
+    std::vector<std::shared_ptr<StudyProgram>> studyPrograms_;
 };
