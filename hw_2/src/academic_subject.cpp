@@ -28,6 +28,16 @@ std::string StudyProgram::getNameStudyProgram() const {
     return name_;
 }
 
+std::optional<int> StudyProgram::getIndSubject(std::string& name) const {
+    for(size_t i = 0; i < subjects_.size(); ++i) {
+        if(subjects_[i]->getName() == name) {
+            return i;
+        }
+    }
+
+    return std::nullopt;
+}
+
 const std::vector<std::shared_ptr<Subject>>& StudyProgram::getSubjects() const {
     return subjects_;
 }

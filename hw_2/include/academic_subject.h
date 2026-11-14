@@ -30,6 +30,8 @@ public:
 
     int getIdStudyProgam() const;
     std::string getNameStudyProgram() const;
+    std::optional<int> getIndSubject(std::string& name) const;
+
     const std::vector<std::shared_ptr<Subject>>& getSubjects() const;
 private:
     int idStudyProgam_;

@@ -42,21 +42,33 @@ void ConsoleApp::init() {
     map4Print_["lecturer"] = "[idPass][name]";
     map4Print_["student"] = "[idPass][name]";
 
-    mapCreator_["studyProgram "] = [raw = posApplicationFacade_.get()](std::stringstream &ss, std::string& errorStr) {
-        raw->openStudyProgram(ss, errorStr);
+    //[nameLecturer][nameStudyProgram][nameSubject]
+
+    mapCreator_["studyProgram "] = [raw = posApplicationFacade_.get()](std::stringstream &input, std::string& errorStr) {
+        raw->openStudyProgram(input, errorStr);
     };
-    mapCreator_["lecturer"] = [raw = posApplicationFacade_.get()](std::stringstream &ss, std::string& errorStr) {
-        raw->appointLecturere(ss, errorStr);
+    mapCreator_["lecturer"] = [raw = posApplicationFacade_.get()](std::stringstream &input, std::string& errorStr) {
+        raw->appointLecturere(input, errorStr);
     };
-    mapCreator_["student"] = [raw = posApplicationFacade_.get()](std::stringstream &ss, std::string& errorStr) {
-        raw->enrollStudent(ss, errorStr);
+    mapCreator_["student"] = [raw = posApplicationFacade_.get()](std::stringstream &input, std::string& errorStr) {
+        raw->enrollStudent(input, errorStr);
     };
-    mapCreator_["subject"] = [raw = posApplicationFacade_.get()](std::stringstream &ss, std::string& errorStr) {
-        raw->addSubject(ss, errorStr);
+    mapCreator_["subject"] = [raw = posApplicationFacade_.get()](std::stringstream &input, std::string& errorStr) {
+        raw->addSubject(input, errorStr);
     };
 
-    //mapBinder_["studyProgram"] =
-    //mapBinder_["subject"] =
+    mapBinder_["subject"] = [raw = posApplicationFacade_.get()](std::stringstream& input, std::string& errorStr) {
+        raw->addTeachSubject(input, errorStr);
+    };//добавить subject для lecturer
+
+    mapBinder_["studyProgram"] = [raw = posApplicationFacade_.get()](std::stringstream& input, std::string& errorStr) {
+        raw->addTeachSubject(input, errorStr);
+    };//добавить studyProgram для Student
+
+
+    /*
+        std::shared_ptr<>
+    */
 }
 
 void ConsoleApp::run() {

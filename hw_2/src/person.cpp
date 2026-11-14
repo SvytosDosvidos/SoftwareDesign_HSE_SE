@@ -7,6 +7,10 @@ int IPersonUniversity::getIdPass() const {
     return idPass_;
 }
 
+std::string IPersonUniversity::getName() const {
+    return name_;
+}
+
 Lecturer::Lecturer(int idPass, std::string name) :
     IPersonUniversity(idPass, name) {}
 
