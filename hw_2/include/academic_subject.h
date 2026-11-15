@@ -24,7 +24,8 @@ private:
 
 class StudyProgram {
 public:
-    StudyProgram(int idStudyProgam, std::string name,
+    StudyProgram() = default;
+    StudyProgram(std::string name,
         std::optional<std::string> description);
     void addSubject(std::shared_ptr<Subject>& subject);
 
@@ -34,7 +35,6 @@ public:
 
     const std::vector<std::shared_ptr<Subject>>& getSubjects() const;
 private:
-    int idStudyProgam_;
     std::string name_;
     std::vector<std::shared_ptr<Subject>> subjects_;
     std::optional<std::string> description_;

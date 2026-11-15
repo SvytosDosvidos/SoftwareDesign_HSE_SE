@@ -37,7 +37,7 @@ int getCommand() {
 }
 
 void ConsoleApp::init() {
-    map4Print_["studyProgram "] = "[idStudyProgam][nameStudyProgram](description)";
+    map4Print_["studyProgram "] = "[nameStudyProgram](description)";
     map4Print_["subject"] = "[nameSubject][nameProgramReading](description)";
     map4Print_["lecturer"] = "[idPass][name]";
     map4Print_["student"] = "[idPass][name]";

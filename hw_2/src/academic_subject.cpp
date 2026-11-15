@@ -12,16 +12,12 @@ std::string Subject::getName() const {
     return name_;
 }
 
-StudyProgram::StudyProgram(int idStudyProgam, std::string name,
-    std::optional<std::string> description) : idStudyProgam_(idStudyProgam),
+StudyProgram::StudyProgram(std::string name,
+    std::optional<std::string> description) :
     name_(name), description_(description) {}
 
 void StudyProgram::addSubject(std::shared_ptr<Subject>& subject) {
     subjects_.push_back(subject);
-}
-
-int StudyProgram::getIdStudyProgam() const {
-    return idStudyProgam_;
 }
 
 std::string StudyProgram::getNameStudyProgram() const {

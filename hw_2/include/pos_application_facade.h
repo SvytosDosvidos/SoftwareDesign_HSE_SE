@@ -20,14 +20,16 @@ public:
 
     void printStudents() const;
     void printLecturers() const;
+
+    size_t getCntSubjectInStudyProgram(std::string&& nameStudyProgram) const;
 private:
     bool checkUniqueIdPass(int idPass) const;
-    bool checkUniqueNameSubject(std::string& name, int indStudyProgam) const;
-    bool checkUniqueIdProgram(int idStudyProgam) const;
+    bool checkUniqueNameSubject(const std::string& name, int indStudyProgam) const;
+    bool checkUniqueNameStudyProgram(const std::string& name) const;
 
     std::optional<int> getIndLecturer(int idPass) const;
     std::optional<int> getIndStudent(int idPass) const;
-    std::optional<int> getIndStudyProgram(std::string& nameStudyProgam) const;
+    std::optional<int> getIndStudyProgram(const std::string& nameStudyProgam) const;
 
     std::vector<std::unique_ptr<Lecturer>> lecturers_;
     std::vector<std::unique_ptr<Student>> students_;
