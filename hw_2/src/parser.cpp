@@ -1,5 +1,7 @@
 #include "../include/parser.h"
 
+#include <cctype>
+
 bool Parser::parseStudyProgram(std::stringstream& input, std::string& name,
     std::optional<std::string>& description, std::string& errorStr) {
     std::string descriptionStr;
@@ -92,14 +94,28 @@ bool Parser::parseAssessmentSubject(std::stringstream& input, std::string& nameS
         return false;
     }
 
-    std::pair<int, int> rangeValue;
-    std::string descriptionStr;
-
-    if(input >> rangeValue.first >> rangeValue.second) {
-        rangeValue = {rangeValue.first, rangeValue.second};
+    range.reset();
+    description.reset();
+    input >> std::ws;
+    if(input.eof()) {
+        return true;
     }
 
-    input >> descriptionStr;
+    std::pair<int, int> rangeValue;
+    if(!(input >> rangeValue.first >> rangeValue.second)) {
+        errorStr += "expected min and max score";
+        return false;
+    }
+    // A numeric prefix such as "100abc" is not a valid range boundary.
+    if(!input.eof() && !std::isspace(static_cast<unsigned char>(input.peek()))) {
+        errorStr += "invalid max score";
+        return false;
+    }
+    range = rangeValue;
 
+    std::string descriptionStr;
+    if(std::getline(input >> std::ws, descriptionStr) && !descriptionStr.empty()) {
+        description = descriptionStr;
+    }
     return true;
 }

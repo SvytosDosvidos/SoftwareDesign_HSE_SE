@@ -2,6 +2,7 @@
 #include "../include/parser.h"
 
 #include <iostream>
+#include <stdexcept>
 
 POSApplicationFacade::POSApplicationFacade() :
         repository_(std::make_shared<InMemoryPOSRepository>()) {}
@@ -169,7 +170,13 @@ bool POSApplicationFacade::addAssessmentSubject(const std::string& nameSubject, 
     }
 
     auto subject = studyProgram->getSubjects()[indSubject.value()];
-    subject->addAssessmentSubject(std::make_unique<AssessmentSubject>(weigth, range, description));
+    try {
+        auto assessment = std::make_unique<AssessmentSubject>(weigth, range, description);
+        subject->addAssessmentSubject(std::move(assessment));
+    } catch(const std::invalid_argument& error) {
+        errorStr += error.what();
+        return false;
+    }
 
     return true;
 }

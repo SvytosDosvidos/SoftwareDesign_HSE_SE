@@ -15,6 +15,7 @@ public:
     void addAssessmentSubject(std::unique_ptr<AssessmentSubject>&& assessmentSubject);
 
     std::string getName() const;
+    const AssessmentSubject* getAssessmentSubject() const;
 private:
     std::string name_;
     std::string nameStudyProgram_;

@@ -44,7 +44,7 @@ void ConsoleApp::init() {
 
     mapBinderPrint_["add_subject_lecturer"] = "[nameLecturer][nameStudyProgram][nameSubject]";
     mapBinderPrint_["add_studyProgam_student"] = "[nameStudent][nameStudyProgram]";
-    mapBinderPrint_["add_"] = "[nameSubject][nameStudyProgram][wiegth](pairScore)(description)";
+    mapBinderPrint_["add_assessment"] = "[subject] [program] [weight] (min max (description)); default range: 0 10";
 
     mapCreator_["studyProgram"] = [raw = posApplicationFacade_.get()](std::stringstream &input, std::string& errorStr) {
         raw->openStudyProgram(input, errorStr);
@@ -57,6 +57,10 @@ void ConsoleApp::init() {
     };
     mapCreator_["subject"] = [raw = posApplicationFacade_.get()](std::stringstream &input, std::string& errorStr) {
         raw->addSubject(input, errorStr);
+    };
+
+    mapBinder_["add_assessment"] = [raw = posApplicationFacade_.get()](std::stringstream& input, std::string& errorStr) {
+        raw->addAssessmentSubject(input, errorStr);
     };
 
     mapBinder_["add_subject_lecturer"] = [raw = posApplicationFacade_.get()](std::stringstream& input, std::string& errorStr) {

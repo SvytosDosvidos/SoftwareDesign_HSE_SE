@@ -10,6 +10,7 @@ public:
     ScoreInt(std::pair<int, int> range);
 
     void updateScore(int score);
+    std::pair<int, int> getRange() const;
 private:
     std::optional<int> score_;
     std::pair<int, int> range_;
@@ -21,6 +22,9 @@ public:
         std::optional<std::string> description);
     AssessmentSubject(double weigth, std::pair<int, int> range, std::optional<std::string> description);
     AssessmentSubject(double weigth, std::optional<std::string> description);
+    double getWeight() const;
+    std::pair<int, int> getRange() const;
+    const std::optional<std::string>& getDescription() const;
 private:
     ScoreInt score_;
     std::optional<std::string> description_;

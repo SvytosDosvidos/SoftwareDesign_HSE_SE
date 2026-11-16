@@ -1,4 +1,5 @@
 #include <catch2/catch_test_macros.hpp>
+#include "../include/console_app.h"
 
 #include <random>
 #include <sstream>
@@ -497,5 +498,92 @@ TEST_CASE("Test logic with direct Domain classes") {
 
         auto prog = std::make_shared<StudyProgram>("se", std::nullopt);
         REQUIRE_NOTHROW(student.addStudyProgram(prog));
+    }
+}
+
+TEST_CASE("Assessment parameters survive construction and parsing") {
+    auto repository = std::make_shared<InMemoryPOSRepository>();
+    POSApplicationFacade app(repository);
+    std::string error;
+    REQUIRE(app.openStudyProgram("se", std::nullopt, error));
+    REQUIRE(app.addSubject("math", "se", std::nullopt, error));
+    auto subject = repository->findStudyProgram("se")->getSubjects().front();
+    REQUIRE(subject->getAssessmentSubject() == nullptr);
+
+    SECTION("custom range and multiword description") {
+        std::stringstream input("math se 0.5 0 100 final exam");
+        app.addAssessmentSubject(input, error);
+        REQUIRE(error.empty());
+        auto assessment = subject->getAssessmentSubject();
+        REQUIRE(assessment != nullptr);
+        CHECK(assessment->getWeight() == 0.5);
+        CHECK(assessment->getRange() == std::make_pair(0, 100));
+        CHECK(assessment->getDescription() == "final exam");
+    }
+    SECTION("default range without description") {
+        std::stringstream input("math se 1   ");
+        app.addAssessmentSubject(input, error);
+        REQUIRE(error.empty());
+        REQUIRE(subject->getAssessmentSubject() != nullptr);
+        CHECK(subject->getAssessmentSubject()->getRange() == std::make_pair(0, 10));
+        CHECK_FALSE(subject->getAssessmentSubject()->getDescription().has_value());
+    }
+    SECTION("invalid update preserves the previous assessment") {
+        std::stringstream valid("math se 0.5 0 100 exam");
+        app.addAssessmentSubject(valid, error);
+        REQUIRE(error.empty());
+        auto previous = subject->getAssessmentSubject();
+        REQUIRE(previous != nullptr);
+        for(const auto& command : {
+                "math se 0", "math se -1", "math se 1 10 5",
+                "math se 1 -1 10", "math se 1 0", "math se 1 0 abc",
+                "math se 1 0 100abc", "math se 1 0 99999999999999999999",
+                "math se 1e999", "math unknown 1", "unknown se 1"}) {
+            error.clear();
+            std::stringstream input(command);
+            REQUIRE_NOTHROW(app.addAssessmentSubject(input, error));
+            CHECK_FALSE(error.empty());
+            CHECK(subject->getAssessmentSubject() == previous);
+            CHECK(previous->getWeight() == 0.5);
+            CHECK(previous->getRange() == std::make_pair(0, 100));
+            CHECK(previous->getDescription() == "exam");
+        }
+    }
+}
+
+TEST_CASE("Assessment constructors protect their invariants") {
+    std::optional<std::pair<int, int>> range = std::make_pair(0, 100);
+    AssessmentSubject assessment(0.25, range, "exam");
+    CHECK(assessment.getWeight() == 0.25);
+    CHECK(assessment.getRange() == range.value());
+    CHECK(assessment.getDescription() == "exam");
+    AssessmentSubject defaults(1, std::nullopt, std::nullopt);
+    CHECK(defaults.getRange() == std::make_pair(0, 10));
+    CHECK(defaults.getWeight() == 1);
+    CHECK_FALSE(defaults.getDescription().has_value());
+    for(double weight : {0.0, -1.0, std::numeric_limits<double>::infinity(),
+                          std::numeric_limits<double>::quiet_NaN()}) {
+        REQUIRE_THROWS_AS(AssessmentSubject(weight, range, "exam"), std::invalid_argument);
+        REQUIRE_THROWS_AS(AssessmentSubject(weight, std::make_pair(0, 10), "exam"), std::invalid_argument);
+        REQUIRE_THROWS_AS(AssessmentSubject(weight, std::nullopt), std::invalid_argument);
+    }
+    range = std::make_pair(10, 5);
+    REQUIRE_THROWS_AS(AssessmentSubject(1, range, "exam"), std::invalid_argument);
+}
+
+TEST_CASE("Console routes assessment creation and reports errors") {
+    ConsoleApp app;
+    app.init();
+    for(const auto& command : {"studyProgram se", "subject math se",
+                              "add_assessment math se 0.5 0 100 final exam"}) {
+        std::stringstream input(command);
+        CHECK(app.execute(input).empty());
+    }
+    for(const auto& command : {"add_assessment math se -1",
+                              "add_assessment math se 1 0",
+                              "add_assessment unknown se 1",
+                              "add_assessment math se 1 10 5"}) {
+        std::stringstream input(command);
+        CHECK_FALSE(app.execute(input).empty());
     }
 }

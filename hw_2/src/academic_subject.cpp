@@ -37,3 +37,7 @@ std::optional<int> StudyProgram::getIndSubject(const std::string& name) const {
 const std::vector<std::shared_ptr<Subject>>& StudyProgram::getSubjects() const {
     return subjects_;
 }
+
+const AssessmentSubject* Subject::getAssessmentSubject() const {
+    return assessmentSubject_.get();
+}
