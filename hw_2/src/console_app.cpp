@@ -37,13 +37,13 @@ int getCommand() {
 }
 
 void ConsoleApp::init() {
-    map4Print_["studyProgram "] = "[nameStudyProgram](description)";
-    map4Print_["subject"] = "[nameSubject][nameProgramReading](description)";
-    map4Print_["lecturer"] = "[idPass][name]";
-    map4Print_["student"] = "[idPass][name]";
+    mapСreatorPrint_["studyProgram"] = "[nameStudyProgram](description)";
+    mapСreatorPrint_["subject"] = "[nameSubject][nameProgramReading](description)";
+    mapСreatorPrint_["lecturer"] = "[idPass][name]";
+    mapСreatorPrint_["student"] = "[idPass][name]";
 
-    //[nameLecturer][nameStudyProgram][nameSubject]
-    //[name][nameStudyProgram]
+    mapBinderPrint_["add_subject_lecturer"] = "[nameLecturer][nameStudyProgram][nameSubject]";
+    mapBinderPrint_["add_studyProgam_student"] = "[nameStudent][nameStudyProgram]";
 
     mapCreator_["studyProgram "] = [raw = posApplicationFacade_.get()](std::stringstream &input, std::string& errorStr) {
         raw->openStudyProgram(input, errorStr);
@@ -58,11 +58,11 @@ void ConsoleApp::init() {
         raw->addSubject(input, errorStr);
     };
 
-    mapBinder_["subject"] = [raw = posApplicationFacade_.get()](std::stringstream& input, std::string& errorStr) {
+    mapBinder_["add_subject_lecturer"] = [raw = posApplicationFacade_.get()](std::stringstream& input, std::string& errorStr) {
         raw->addTeachSubject(input, errorStr);
     };//добавить subject для lecturer
 
-    mapBinder_["studyProgram"] = [raw = posApplicationFacade_.get()](std::stringstream& input, std::string& errorStr) {
+    mapBinder_["add_studyProgam_student"] = [raw = posApplicationFacade_.get()](std::stringstream& input, std::string& errorStr) {
         raw->addStudyProgramStudent(input, errorStr);
     };//добавить studyProgram для Student
 
@@ -121,12 +121,14 @@ std::string ConsoleApp::execute(std::stringstream& input) {
     input >> name;
 
     std::string errorStr;
-    if(mapCreator_.find(name) == mapCreator_.end()) {
+    if(mapCreator_.find(name) != mapCreator_.end()) {
+        mapCreator_[name](input, errorStr);
+    } else if(mapBinder_.find(name) != mapBinder_.end()) {
+        mapBinder_[name](input, errorStr);
+    } else {
         errorStr = "Invalid name for add object";
-        return errorStr;
     }
 
-    mapCreator_[name](input, errorStr);
     return errorStr;
 }
 
@@ -151,7 +153,12 @@ void ConsoleApp::printCommand4Add() const {
     std::cout << std::format("|{: ^128}|\n", "If the parameter is in (), then it is optional");
     std::cout << std::format("|{: ^128}|\n", "");
 
-    for(const auto &it : map4Print_) {
+    for(const auto &it : mapСreatorPrint_) {
+        std::cout << std::format("|{: ^128}|\n", it.first + " - " + it.second);
+    }
+    std::cout << std::format("|{: ^128}|\n", "");
+
+    for(const auto &it : mapBinderPrint_) {
         std::cout << std::format("|{: ^128}|\n", it.first + " - " + it.second);
     }
 }

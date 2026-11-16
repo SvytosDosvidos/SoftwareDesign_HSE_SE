@@ -32,6 +32,11 @@ void POSApplicationFacade::appointLecturere(std::stringstream& input, std::strin
         return;
     }
 
+    if(idPass < 0) {
+        errorStr += "invalid IdPass value(>0)";
+        return;
+    }
+
     if(!checkUniqueIdPass(idPass)) {
         errorStr += "not unique idPass";
         return;
@@ -188,6 +193,10 @@ size_t POSApplicationFacade::getCntSubjectInStudyProgram(std::string&& nameStudy
     }
 
     return 0;
+}
+
+size_t POSApplicationFacade::getCntLecturers() const {
+    return lecturers_.size();
 }
 
 bool POSApplicationFacade::checkUniqueNameSubject(const std::string& name, int indStudyProgam) const {

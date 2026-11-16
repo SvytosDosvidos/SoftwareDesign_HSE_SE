@@ -21,7 +21,8 @@ public:
     void printStudents() const;
     void printLecturers() const;
 
-    size_t getCntSubjectInStudyProgram(std::string&& nameStudyProgram) const;
+    size_t getCntSubjectInStudyProgram(std::string&& nameStudyProgram) const;//only for test
+    size_t getCntLecturers() const;
 private:
     bool checkUniqueIdPass(int idPass) const;
     bool checkUniqueNameSubject(const std::string& name, int indStudyProgam) const;

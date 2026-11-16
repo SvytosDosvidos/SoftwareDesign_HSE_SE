@@ -25,7 +25,8 @@ public:
     void printCommand4Add() const;
 private:
     std::unique_ptr<POSApplicationFacade> posApplicationFacade_;
-    std::unordered_map<std::string, std::string> map4Print_;
+    std::unordered_map<std::string, std::string> mapСreatorPrint_;
+    std::unordered_map<std::string, std::string> mapBinderPrint_;
     std::unordered_map<std::string, creator> mapCreator_;
     std::unordered_map<std::string, binder> mapBinder_;
 };
