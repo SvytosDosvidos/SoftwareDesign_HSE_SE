@@ -41,11 +41,17 @@ public:
         double weigth, std::optional<std::pair<int, int>> range,
         std::optional<std::string>& description, std::string& errorStr);
 
+    void addCriterion(const std::string& program, const std::string& subject,
+                      const std::string& criterion, int maxScore, double weight);
+    void setEvaluation(const std::string& program, const std::string& subject,
+                       int studentId, const std::string& criterion, int score);
+
     void printStudents() const;
     void printLecturers() const;
 
     size_t getCntSubjectInStudyProgram(const std::string& nameStudyProgram) const;
     size_t getCntLecturers() const;
 private:
+    std::shared_ptr<Subject> findSubject(const std::string& program, const std::string& subject) const;
     std::shared_ptr<IPOSRepository> repository_;
 };

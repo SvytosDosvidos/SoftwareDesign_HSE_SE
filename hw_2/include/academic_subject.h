@@ -6,6 +6,7 @@
 #include <vector>
 #include <optional>
 #include <memory>
+#include <map>
 
 class Subject {
 public:
@@ -16,11 +17,16 @@ public:
 
     std::string getName() const;
     const AssessmentSubject* getAssessmentSubject() const;
+    void addCriterion(const std::string& name, int maxScore, double weight);
+    void setEvaluation(int studentId, const std::string& criterion, int score);
+    std::optional<int> getEvaluation(int studentId, const std::string& criterion) const;
+    const std::map<std::string, AssessmentSubject>& getCriteria() const;
 private:
     std::string name_;
     std::string nameStudyProgram_;
     std::optional<std::string> description_;
-    std::unique_ptr<AssessmentSubject> assessmentSubject_;
+    std::map<std::string, AssessmentSubject> criteria_;
+    std::map<std::pair<int, std::string>, int> evaluations_;
 };
 
 class StudyProgram {

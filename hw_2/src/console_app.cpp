@@ -4,6 +4,7 @@
 #include <format>
 #include <sstream>
 #include <string>
+#include <stdexcept>
 
 ConsoleApp::ConsoleApp() {
     posApplicationFacade_ = std::make_unique<POSApplicationFacade>();
@@ -45,6 +46,26 @@ void ConsoleApp::init() {
     mapBinderPrint_["add_subject_lecturer"] = "[nameLecturer][nameStudyProgram][nameSubject]";
     mapBinderPrint_["add_studyProgam_student"] = "[nameStudent][nameStudyProgram]";
     mapBinderPrint_["add_assessment"] = "[subject] [program] [weight] (min max (description)); default range: 0 10";
+
+    mapBinderPrint_["criterion"] = "[program] [subject] [criterion] [maxScore] [weight]";
+    mapBinderPrint_["evaluate"] = "[program] [subject] [studentId] [criterion] [score]";
+    mapBinder_["criterion"] = [raw = posApplicationFacade_.get()](std::stringstream& input, std::string&) {
+        std::string program, subject, criterion;
+        int maxScore;
+        double weight;
+        if(!(input >> program >> subject >> criterion >> maxScore >> weight) || !(input >> std::ws).eof()) {
+            throw std::invalid_argument("expected: criterion program subject name maxScore weight");
+        }
+        raw->addCriterion(program, subject, criterion, maxScore, weight);
+    };
+    mapBinder_["evaluate"] = [raw = posApplicationFacade_.get()](std::stringstream& input, std::string&) {
+        std::string program, subject, criterion;
+        int studentId, score;
+        if(!(input >> program >> subject >> studentId >> criterion >> score) || !(input >> std::ws).eof()) {
+            throw std::invalid_argument("expected: evaluate program subject studentId criterion score");
+        }
+        raw->setEvaluation(program, subject, studentId, criterion, score);
+    };
 
     mapCreator_["studyProgram"] = [raw = posApplicationFacade_.get()](std::stringstream &input, std::string& errorStr) {
         raw->openStudyProgram(input, errorStr);
@@ -96,7 +117,7 @@ void ConsoleApp::run() {
 
                 std::string strError = execute(input);
                 if(strError.empty()) {
-                    std::cout << "The object has been created!!!\n";
+                    std::cout << "Operation completed.\n";
                 } else {
                     std::cout << "Incorrect data, because:\n";
                     std::cout << strError << "\n";
@@ -124,7 +145,11 @@ std::string ConsoleApp::execute(std::stringstream& input) {
     if(mapCreator_.find(name) != mapCreator_.end()) {
         mapCreator_[name](input, errorStr);
     } else if(mapBinder_.find(name) != mapBinder_.end()) {
-        mapBinder_[name](input, errorStr);
+        try {
+            mapBinder_[name](input, errorStr);
+        } catch(const std::invalid_argument& error) {
+            errorStr = error.what();
+        }
     } else {
         errorStr = "Invalid name for add object";
     }
@@ -139,7 +164,7 @@ void ConsoleApp::printCommand() const {
     std::cout << std::format("|{: ^128}|\n", "1 - Instructions for all commands");
     std::cout << std::format("|{: ^128}|\n", "2 - Displaying the entire students in the university");
     std::cout << std::format("|{: ^128}|\n", "3 - Displaying the entire lecturer, and what they teach");
-    std::cout << std::format("|{: ^128}|\n", "4 - Add new student/lecturer/subject/educationDirection in university");
+    std::cout << std::format("|{: ^128}|\n", "4 - Create objects, add criteria or set/correct evaluations");
     std::cout << std::format("|{: ^128}|\n", "5 - Instructions on how to add student/lecturer/subject/educationDirection");
     std::cout << std::format("|{: ^128}|\n", "6 - End program");
     std::cout << std::format("+{:-^128}+\n", "");

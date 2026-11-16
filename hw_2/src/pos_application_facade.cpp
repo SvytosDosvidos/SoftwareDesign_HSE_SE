@@ -204,3 +204,29 @@ void POSApplicationFacade::printLecturers() const {
         std::cout << lecturer->getIdPass() << "\n";
     }
 }
+
+std::shared_ptr<Subject> POSApplicationFacade::findSubject(
+    const std::string& program, const std::string& subject) const {
+    auto studyProgram = repository_->findStudyProgram(program);
+    if(!studyProgram) {
+        throw std::invalid_argument("studyProgram does not exist");
+    }
+    auto index = studyProgram->getIndSubject(subject);
+    if(!index) {
+        throw std::invalid_argument("subject does not exist");
+    }
+    return studyProgram->getSubjects()[*index];
+}
+
+void POSApplicationFacade::addCriterion(const std::string& program, const std::string& subject,
+    const std::string& criterion, int maxScore, double weight) {
+    findSubject(program, subject)->addCriterion(criterion, maxScore, weight);
+}
+
+void POSApplicationFacade::setEvaluation(const std::string& program, const std::string& subject,
+    int studentId, const std::string& criterion, int score) {
+    if(!repository_->existsStudent(studentId)) {
+        throw std::invalid_argument("student does not exist");
+    }
+    findSubject(program, subject)->setEvaluation(studentId, criterion, score);
+}

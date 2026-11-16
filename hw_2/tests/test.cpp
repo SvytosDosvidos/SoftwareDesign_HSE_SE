@@ -587,3 +587,80 @@ TEST_CASE("Console routes assessment creation and reports errors") {
         CHECK_FALSE(app.execute(input).empty());
     }
 }
+
+
+TEST_CASE("Rubric keeps independent criteria and individual evaluations") {
+    Subject subject("math", "se", std::nullopt);
+    subject.addCriterion("exam", 100, 0.7);
+    subject.addCriterion("homework", 10, 0.3);
+    CHECK(subject.getCriteria().size() == 2);
+    CHECK(subject.getCriteria().at("exam").getWeight() == 0.7);
+    CHECK_FALSE(subject.getEvaluation(1, "exam").has_value());
+    subject.setEvaluation(1, "exam", 80);
+    subject.setEvaluation(2, "exam", 0);
+    subject.setEvaluation(1, "homework", 10);
+    subject.setEvaluation(1, "exam", 100);
+    CHECK(subject.getEvaluation(1, "exam") == 100);
+    CHECK(subject.getEvaluation(2, "exam") == 0);
+    CHECK(subject.getEvaluation(1, "homework") == 10);
+    REQUIRE_THROWS_AS(subject.setEvaluation(1, "exam", 101), std::invalid_argument);
+    REQUIRE_THROWS_AS(subject.setEvaluation(1, "exam", -1), std::invalid_argument);
+    REQUIRE_THROWS_AS(subject.setEvaluation(1, "unknown", 1), std::invalid_argument);
+    REQUIRE_THROWS_AS(subject.setEvaluation(-1, "exam", 1), std::invalid_argument);
+    CHECK(subject.getEvaluation(1, "exam") == 100);
+    REQUIRE_THROWS_AS(subject.addCriterion("exam", 10, 1), std::invalid_argument);
+    REQUIRE_THROWS_AS(subject.addCriterion("", 10, 1), std::invalid_argument);
+    REQUIRE_THROWS_AS(subject.addCriterion("zero", 0, 1), std::invalid_argument);
+    REQUIRE_THROWS_AS(subject.addCriterion("bad_weight", 10, -1), std::invalid_argument);
+    CHECK(subject.getCriteria().size() == 2);
+}
+
+TEST_CASE("Legacy assessment belongs to the rubric and protects recorded scores") {
+    Subject subject("math", "se", std::nullopt);
+    subject.addAssessmentSubject(std::make_unique<AssessmentSubject>(
+        1, std::make_pair(0, 100), std::nullopt));
+    subject.setEvaluation(1, "default", 80);
+    REQUIRE_THROWS_AS(subject.addAssessmentSubject(std::make_unique<AssessmentSubject>(
+        1, std::make_pair(0, 10), std::nullopt)), std::invalid_argument);
+    REQUIRE_THROWS_AS(subject.addAssessmentSubject(nullptr), std::invalid_argument);
+    CHECK(subject.getAssessmentSubject()->getRange() == std::make_pair(0, 100));
+    CHECK(subject.getEvaluation(1, "default") == 80);
+}
+
+TEST_CASE("Evaluation use case rejects unknown students and isolates subjects") {
+    auto repository = std::make_shared<InMemoryPOSRepository>();
+    POSApplicationFacade app(repository);
+    std::string error;
+    REQUIRE(app.openStudyProgram("se", std::nullopt, error));
+    REQUIRE(app.enrollStudent(1, "Ivan", error));
+    for(const auto& name : {"math", "physics"}) {
+        REQUIRE(app.addSubject(name, "se", std::nullopt, error));
+        app.addCriterion("se", name, "exam", 10, 1);
+    }
+    app.setEvaluation("se", "math", 1, "exam", 7);
+    const auto& subjects = repository->findStudyProgram("se")->getSubjects();
+    CHECK(subjects[0]->getEvaluation(1, "exam") == 7);
+    CHECK_FALSE(subjects[1]->getEvaluation(1, "exam").has_value());
+    REQUIRE_THROWS_AS(app.setEvaluation("se", "math", 99, "exam", 5), std::invalid_argument);
+    REQUIRE_THROWS_AS(app.setEvaluation("se", "missing", 1, "exam", 5), std::invalid_argument);
+    REQUIRE_THROWS_AS(app.addCriterion("missing", "math", "exam", 10, 1), std::invalid_argument);
+    CHECK_FALSE(subjects[0]->getEvaluation(99, "exam").has_value());
+}
+
+TEST_CASE("Console creates criteria and sets or corrects evaluations") {
+    ConsoleApp app;
+    app.init();
+    for(const auto& command : {"studyProgram se", "subject math se", "student 1 Ivan",
+                              "criterion se math exam 100 0.7", "criterion se math homework 10 0.3",
+                              "evaluate se math 1 exam 80", "evaluate se math 1 exam 90"}) {
+        std::stringstream input(command);
+        CHECK(app.execute(input).empty());
+    }
+    for(const auto& command : {"evaluate se math 99 exam 80", "evaluate se math 1 exam 101",
+                              "evaluate se math 1 missing 5", "evaluate se math 1 exam",
+                              "evaluate se math 1 exam 5junk", "evaluate se math 1 exam 5 extra",
+                              "criterion se math other 10 1junk", "criterion se math exam 10 1"}) {
+        std::stringstream input(command);
+        CHECK_FALSE(app.execute(input).empty());
+    }
+}
