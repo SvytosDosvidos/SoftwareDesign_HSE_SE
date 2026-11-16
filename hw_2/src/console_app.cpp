@@ -6,26 +6,15 @@
 #include <string>
 #include <stdexcept>
 
-ConsoleApp::ConsoleApp() {
-    posApplicationFacade_ = std::make_unique<POSApplicationFacade>();
+ConsoleApp::ConsoleApp(std::unique_ptr<POSApplicationFacade> facade)
+    : posApplicationFacade_(std::move(facade)) {
+    if(!posApplicationFacade_) throw std::invalid_argument("facade must not be null");
 }
 
-constexpr int kMaxSymbols = 200;
-
 std::stringstream getStr() {
-    std::string str;
-    std::stringstream ss;
-
-    while(std::cin && str.size() < kMaxSymbols) {
-        char c = std::cin.get();
-        if(c == '\n') {
-            break;
-        }
-        str.push_back(c);
-    }
-
-    ss << str;
-    return ss;
+    std::string line;
+    std::getline(std::cin, line);
+    return std::stringstream(line);
 }
 
 int getCommand() {
@@ -38,6 +27,7 @@ int getCommand() {
 }
 
 void ConsoleApp::init() {
+    initReportingCommands();
     mapСreatorPrint_["studyProgram"] = "[nameStudyProgram](description)";
     mapСreatorPrint_["subject"] = "[nameSubject][nameProgramReading](description)";
     mapСreatorPrint_["lecturer"] = "[idPass][name]";
@@ -122,6 +112,7 @@ void ConsoleApp::run() {
 
     while(isWorkProgram) {
         int idCommand = getCommand();
+        if(!std::cin) break;
 
         switch(idCommand) {
             case 1: {
@@ -165,11 +156,15 @@ std::string ConsoleApp::execute(std::stringstream& input) {
 
     std::string errorStr;
     if(mapCreator_.find(name) != mapCreator_.end()) {
-        mapCreator_[name](input, errorStr);
+        try {
+            mapCreator_[name](input, errorStr);
+        } catch(const std::exception& error) {
+            errorStr = error.what();
+        }
     } else if(mapBinder_.find(name) != mapBinder_.end()) {
         try {
             mapBinder_[name](input, errorStr);
-        } catch(const std::invalid_argument& error) {
+        } catch(const std::exception& error) {
             errorStr = error.what();
         }
     } else {

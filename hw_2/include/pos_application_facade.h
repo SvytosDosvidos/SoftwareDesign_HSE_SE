@@ -3,6 +3,7 @@
 #include "person.h"
 #include "academic_subject.h"
 #include "repository.h"
+#include "application/final_exporter.h"
 #include "final_score.h"
 
 #include <sstream>
@@ -49,6 +50,17 @@ public:
 
     FinalScore calculateFinal(const std::string& program, const std::string& subject,
                              int studentId, const IMissingEvaluationStrategy& strategy) const;
+
+    const std::map<std::string, AssessmentSubject>& getCriteria(
+        const std::string& program, const std::string& subject) const;
+    std::map<std::string, std::optional<int>> getEvaluations(const std::string& program,
+        const std::string& subject, int studentId) const;
+    void cancelEvaluation(const std::string& program, const std::string& subject,
+        int studentId, const std::string& criterion);
+    std::vector<FinalReportRow> buildReport(const std::string& program, const std::string& subject,
+        const IMissingEvaluationStrategy& strategy) const;
+    void exportFinals(const std::string& program, const std::string& subject,
+        const IMissingEvaluationStrategy& strategy, IFinalExporter& exporter) const;
 
     void printStudents() const;
     void printLecturers() const;

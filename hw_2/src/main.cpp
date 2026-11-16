@@ -1,9 +1,8 @@
-#include "../include/console_app.h"
-
-#include <memory>
+#include "bootstrap/application_container.h"
 
 int main() {
-    std::unique_ptr<ConsoleApp> consoleApp = std::make_unique<ConsoleApp>();
+    ApplicationContainer container;
+    auto consoleApp = container.console();
     consoleApp->run();
 
     return 0;

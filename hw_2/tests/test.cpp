@@ -1,6 +1,8 @@
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/catch_approx.hpp>
 #include "final_score.h"
+#include "bootstrap/application_container.h"
+#include "adapters/csv_final_exporter.h"
 #include "../include/console_app.h"
 
 #include <random>
@@ -738,4 +740,48 @@ TEST_CASE("Final use case checks student and subject existence") {
     REQUIRE_THROWS_AS(app.calculateFinal("se", "math", 99, zero), std::invalid_argument);
     REQUIRE_THROWS_AS(app.calculateFinal("se", "missing", 1, zero), std::invalid_argument);
     REQUIRE_THROWS_AS(app.calculateFinal("missing", "math", 1, zero), std::invalid_argument);
+}
+
+TEST_CASE("Viewing, cancelling and exporting evaluations") {
+    ApplicationContainer container;
+    auto app = container.facade();
+    std::string error;
+    REQUIRE(app->openStudyProgram("se", std::nullopt, error));
+    REQUIRE(app->addSubject("math", "se", std::nullopt, error));
+    REQUIRE(app->enrollStudent(1, "Ivan, \"First\"", error));
+    app->addCriterion("se", "math", "exam", 10, 1);
+    app->setEvaluation("se", "math", 1, "exam", 8);
+
+    SECTION("view and cancel through console") {
+        auto console = container.console();
+        console->init();
+        std::stringstream input("cancel se math 1 exam");
+        CHECK(console->execute(input).empty());
+        CHECK(app->getCriteria("se", "math").size() == 1);
+        CHECK_FALSE(app->getEvaluations("se", "math", 1).at("exam").has_value());
+        CHECK(app->calculateFinal("se", "math", 1, MissingAsZero()).value == 0);
+        REQUIRE_THROWS(app->calculateFinal("se", "math", 1, RequireAllEvaluations()));
+        REQUIRE_THROWS(app->cancelEvaluation("se", "math", 99, "exam"));
+        REQUIRE_THROWS(app->cancelEvaluation("se", "math", 1, "unknown"));
+    }
+    SECTION("CSV escaping and errors") {
+        std::ostringstream output;
+        CsvFinalExporter exporter(output);
+        app->exportFinals("se", "math", RequireAllEvaluations(), exporter);
+        CHECK(output.str() == "student_id,student_name,final_score,graded,total\n1,\"Ivan, \"\"First\"\"\",8.00,1,1\n");
+        app->cancelEvaluation("se", "math", 1, "exam");
+        const auto previous = output.str();
+        REQUIRE_THROWS(app->exportFinals("se", "math", RequireAllEvaluations(), exporter));
+        CHECK(output.str() == previous);
+        output.setstate(std::ios::badbit);
+        REQUIRE_THROWS(app->exportFinals("se", "math", MissingAsZero(), exporter));
+    }
+    SECTION("factory and dependency validation") {
+        CHECK(EvaluationFactory::create(1, 10, {0, 10}).value() == 10);
+        REQUIRE_THROWS(EvaluationFactory::create(1, 12, {0, 10}));
+        REQUIRE_THROWS(Student(-1, "Ivan"));
+        REQUIRE_THROWS(ApplicationContainer(nullptr));
+        REQUIRE_THROWS(POSApplicationFacade(nullptr));
+        REQUIRE_THROWS(ConsoleApp(nullptr));
+    }
 }

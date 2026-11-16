@@ -1,75 +1,10 @@
 #include "../include/pos_application_facade.h"
-#include "../include/parser.h"
 
-#include <iostream>
 #include <stdexcept>
 
-POSApplicationFacade::POSApplicationFacade() :
-        repository_(std::make_shared<InMemoryPOSRepository>()) {}
-
 POSApplicationFacade::POSApplicationFacade(std::shared_ptr<IPOSRepository> repository) :
-        repository_(repository) {}
-
-void POSApplicationFacade::openStudyProgram(std::stringstream& input, std::string& errorStr) {
-    std::string name;
-    std::optional<std::string> description;
-    if(Parser::parseStudyProgram(input, name, description, errorStr)) {
-        openStudyProgram(name, description, errorStr);
-    }
-}
-
-void POSApplicationFacade::appointLecturere(std::stringstream& input, std::string& errorStr) {
-    int idPass;
-    std::string name;
-    if(Parser::parsePerson(input, idPass, name, errorStr)) {
-        appointLecturere(idPass, name, errorStr);
-    }
-}
-
-void POSApplicationFacade::enrollStudent(std::stringstream& input, std::string& errorStr) {
-    int idPass;
-    std::string name;
-    if(Parser::parsePerson(input, idPass, name, errorStr)) {
-        enrollStudent(idPass, name, errorStr);
-    }
-}
-
-void POSApplicationFacade::addSubject(std::stringstream& input, std::string& errorStr) {
-    std::string name;
-    std::string nameStudyProgram;
-    std::optional<std::string> description;
-    if(Parser::parseSubject(input, name, nameStudyProgram, description, errorStr)) {
-        addSubject(name, nameStudyProgram, description, errorStr);
-    }
-}
-
-void POSApplicationFacade::addTeachSubject(std::stringstream& input, std::string& errorStr) {
-    int idPassLecturer;
-    std::string nameStudyProgram;
-    std::string nameSubject;
-    if(Parser::parseTeachSubject(input, idPassLecturer, nameStudyProgram, nameSubject, errorStr)) {
-        addTeachSubject(idPassLecturer, nameStudyProgram, nameSubject, errorStr);
-    }
-}
-
-void POSApplicationFacade::addStudyProgramStudent(std::stringstream& input, std::string& errorStr) {
-    int idPassStudent;
-    std::string nameStudyProgram;
-    if(Parser::parseStudyProgramStudent(input, idPassStudent, nameStudyProgram, errorStr)) {
-        addStudyProgramStudent(idPassStudent, nameStudyProgram, errorStr);
-    }
-}
-
-void POSApplicationFacade::addAssessmentSubject(std::stringstream& input, std::string& errorStr) {
-    std::string nameSubject;
-    std::string nameStudyProgram;
-    double weigth;
-    std::optional<std::pair<int, int>> range;
-    std::optional<std::string> description;
-
-    if(Parser::parseAssessmentSubject(input, nameSubject, nameStudyProgram, weigth, range, description, errorStr)) {
-        addAssessmentSubject(nameSubject, nameStudyProgram, weigth, range, description, errorStr);
-    }
+        repository_(repository) {
+    if(!repository_) throw std::invalid_argument("repository must not be null");
 }
 
 bool POSApplicationFacade::openStudyProgram(const std::string& name, const std::optional<std::string>& description, std::string& errorStr) {
@@ -82,6 +17,10 @@ bool POSApplicationFacade::openStudyProgram(const std::string& name, const std::
 }
 
 bool POSApplicationFacade::appointLecturere(int idPass, const std::string& name, std::string& errorStr) {
+    if(name.find_first_not_of(" \t\r\n") == std::string::npos) {
+        errorStr += "invalid person id or name";
+        return false;
+    }
     if(idPass < 0) {
         errorStr += "invalid IdPass value(>0)";
         return false;
@@ -95,6 +34,10 @@ bool POSApplicationFacade::appointLecturere(int idPass, const std::string& name,
 }
 
 bool POSApplicationFacade::enrollStudent(int idPass, const std::string& name, std::string& errorStr) {
+    if(idPass < 0 || name.find_first_not_of(" \t\r\n") == std::string::npos) {
+        errorStr += "invalid person id or name";
+        return false;
+    }
     if(repository_->existsStudent(idPass) || repository_->existsLecturer(idPass)) {
         errorStr += "not unique idPass";
         return false;
@@ -191,18 +134,6 @@ size_t POSApplicationFacade::getCntSubjectInStudyProgram(const std::string& name
 
 size_t POSApplicationFacade::getCntLecturers() const {
     return repository_->getCntLecturers();
-}
-
-void POSApplicationFacade::printStudents() const {
-    for(const auto& student : repository_->getAllStudents()) {
-        std::cout << student->getIdPass() << "\n";
-    }
-}
-
-void POSApplicationFacade::printLecturers() const {
-    for(const auto& lecturer : repository_->getAllLecturers()) {
-        std::cout << lecturer->getIdPass() << "\n";
-    }
 }
 
 std::shared_ptr<Subject> POSApplicationFacade::findSubject(

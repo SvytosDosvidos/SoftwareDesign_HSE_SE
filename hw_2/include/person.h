@@ -12,6 +12,7 @@ public:
     virtual ~IPersonUniversity() = default;
 
     int getIdPass() const;
+    const std::string& getName() const { return name_; }
 protected:
     int idPass_;
     std::string name_;

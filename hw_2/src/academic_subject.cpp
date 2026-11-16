@@ -12,7 +12,7 @@ void Subject::addAssessmentSubject(std::unique_ptr<AssessmentSubject>&& assessme
     }
     const auto range = assessmentSubject->getRange();
     for(const auto& [key, score] : evaluations_) {
-        if(key.second == "default" && (score < range.first || score > range.second)) {
+        if(key.second == "default" && (score.value() < range.first || score.value() > range.second)) {
             throw std::invalid_argument("new range excludes existing evaluations");
         }
     }
@@ -70,17 +70,22 @@ void Subject::setEvaluation(int studentId, const std::string& criterion, int sco
         throw std::invalid_argument("invalid student id or unknown criterion");
     }
     const auto range = it->second.getRange();
-    if(score < range.first || score > range.second) {
-        throw std::invalid_argument("score is outside criterion range");
-    }
-    evaluations_.insert_or_assign(std::make_pair(studentId, criterion), score);
+    const auto evaluation = EvaluationFactory::create(studentId, score, range);
+    evaluations_.insert_or_assign(std::make_pair(studentId, criterion), evaluation);
 }
 
 std::optional<int> Subject::getEvaluation(int studentId, const std::string& criterion) const {
     auto it = evaluations_.find(std::make_pair(studentId, criterion));
-    return it == evaluations_.end() ? std::nullopt : std::optional<int>(it->second);
+    return it == evaluations_.end() ? std::nullopt : std::optional<int>(it->second.value());
 }
 
 const std::map<std::string, AssessmentSubject>& Subject::getCriteria() const {
     return criteria_;
+}
+
+void Subject::cancelEvaluation(int studentId, const std::string& criterion) {
+    if(studentId < 0 || !criteria_.contains(criterion)) {
+        throw std::invalid_argument("invalid student id or unknown criterion");
+    }
+    evaluations_.erase({studentId, criterion});
 }

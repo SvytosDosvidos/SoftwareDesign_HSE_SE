@@ -22,7 +22,7 @@ bool Parser::parsePerson(std::stringstream& input, int& idPass,
         errorStr += "invalid idPass value";
         return false;
     }
-    if(!(input >> name)) {
+    if(!std::getline(input >> std::ws, name) || name.empty()) {
         errorStr += "invalid name value";
         return false;
     }

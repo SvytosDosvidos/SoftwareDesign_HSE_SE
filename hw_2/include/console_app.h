@@ -13,6 +13,7 @@ using binder = std::function<void(std::stringstream&, std::string&)>;
 class ConsoleApp {
 public:
     ConsoleApp();
+    explicit ConsoleApp(std::unique_ptr<POSApplicationFacade> facade);
 
     void init();
     void run();
@@ -25,6 +26,7 @@ public:
     void printCommand() const;
     void printCommand4Add() const;
 private:
+    void initReportingCommands();
     std::unique_ptr<POSApplicationFacade> posApplicationFacade_;
     std::unordered_map<std::string, std::string> mapСreatorPrint_;
     std::unordered_map<std::string, std::string> mapBinderPrint_;

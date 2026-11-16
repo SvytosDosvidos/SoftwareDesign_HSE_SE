@@ -1,0 +1,29 @@
+4
+studyProgram se
+4
+subject math se
+4
+student 1 Ivan Petrov
+4
+criterion se math exam 100 7
+4
+criterion se math homework 10 3
+4
+criteria se math
+4
+evaluate se math 1 exam 80
+4
+evaluate se math 1 homework 9
+4
+evaluations se math 1
+4
+final se math 1 strict
+4
+cancel se math 1 homework
+4
+final se math 1 zero
+4
+evaluate se math 1 homework 10
+4
+export se math finals.csv
+6

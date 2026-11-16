@@ -1,6 +1,7 @@
 #pragma once
 
 #include "assessment_subject.h"
+#include "domain/evaluation.h"
 
 #include <string>
 #include <vector>
@@ -21,12 +22,13 @@ public:
     void setEvaluation(int studentId, const std::string& criterion, int score);
     std::optional<int> getEvaluation(int studentId, const std::string& criterion) const;
     const std::map<std::string, AssessmentSubject>& getCriteria() const;
+    void cancelEvaluation(int studentId, const std::string& criterion);
 private:
     std::string name_;
     std::string nameStudyProgram_;
     std::optional<std::string> description_;
     std::map<std::string, AssessmentSubject> criteria_;
-    std::map<std::pair<int, std::string>, int> evaluations_;
+    std::map<std::pair<int, std::string>, EvaluationScore> evaluations_;
 };
 
 class StudyProgram {
