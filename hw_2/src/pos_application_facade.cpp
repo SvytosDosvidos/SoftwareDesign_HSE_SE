@@ -59,6 +59,18 @@ void POSApplicationFacade::addStudyProgramStudent(std::stringstream& input, std:
     }
 }
 
+void POSApplicationFacade::addAssessmentSubject(std::stringstream& input, std::string& errorStr) {
+    std::string nameSubject;
+    std::string nameStudyProgram;
+    double weigth;
+    std::optional<std::pair<int, int>> range;
+    std::optional<std::string> description;
+
+    if(Parser::parseAssessmentSubject(input, nameSubject, nameStudyProgram, weigth, range, description, errorStr)) {
+        addAssessmentSubject(nameSubject, nameStudyProgram, weigth, range, description, errorStr);
+    }
+}
+
 bool POSApplicationFacade::openStudyProgram(const std::string& name, const std::optional<std::string>& description, std::string& errorStr) {
     if(repository_->existsStudyProgram(name)) {
         errorStr += "not unique nameStudyProgram";
@@ -137,6 +149,28 @@ bool POSApplicationFacade::addStudyProgramStudent(int idPassStudent, const std::
         return false;
     }
     student->addStudyProgram(program);
+    return true;
+}
+
+bool POSApplicationFacade::addAssessmentSubject(const std::string& nameSubject, const std::string& nameStudyProgam,
+    double weigth, std::optional<std::pair<int, int>> range,
+    std::optional<std::string>& description, std::string& errorStr) {
+
+    auto studyProgram = repository_->findStudyProgram(nameStudyProgam);
+    if(!studyProgram) {
+        errorStr += "studyProgram does not exist";
+        return false;
+    }
+
+    auto indSubject = studyProgram->getIndSubject(nameSubject);
+    if(!indSubject.has_value()) {
+        errorStr += "subject does not exist";
+        return false;
+    }
+
+    auto subject = studyProgram->getSubjects()[indSubject.value()];
+    subject->addAssessmentSubject(std::make_unique<AssessmentSubject>(weigth, range, description));
+
     return true;
 }
 

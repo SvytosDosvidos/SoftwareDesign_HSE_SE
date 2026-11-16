@@ -4,7 +4,7 @@ Subject::Subject(std::string name, std::string nameStudyProgram,
                  std::optional<std::string> description) : name_(name), nameStudyProgram_(nameStudyProgram),
                                                            description_(description) {}
 
-void Subject::addAssessmentSubject(std::unique_ptr<AssessmentSubject>& assessmentSubject) {
+void Subject::addAssessmentSubject(std::unique_ptr<AssessmentSubject>&& assessmentSubject) {
     assessmentSubject_ = std::move(assessmentSubject);
 }
 

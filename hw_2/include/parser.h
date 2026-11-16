@@ -7,17 +7,23 @@
 class Parser {
 public:
     static bool parseStudyProgram(std::stringstream& input, std::string& name,
-                                  std::optional<std::string>& description, std::string& errorStr);
+        std::optional<std::string>& description, std::string& errorStr);
 
     static bool parsePerson(std::stringstream& input, int& idPass,
-                            std::string& name, std::string& errorStr);
+        std::string& name, std::string& errorStr);
 
     static bool parseSubject(std::stringstream& input, std::string& name,
-                             std::string& nameStudyProgram, std::optional<std::string>& description, std::string& errorStr);
+        std::string& nameStudyProgram, std::optional<std::string>& description, std::string& errorStr);
 
     static bool parseTeachSubject(std::stringstream& input, int& idPassLecturer,
-                                  std::string& nameStudyProgram, std::string& nameSubject, std::string& errorStr);
+        std::string& nameStudyProgram, std::string& nameSubject, std::string& errorStr);
 
     static bool parseStudyProgramStudent(std::stringstream& input, int& idPassStudent,
-                                         std::string& nameStudyProgram, std::string& errorStr);
+        std::string& nameStudyProgram, std::string& errorStr);
+
+    static bool parseAssessmentSubject(std::stringstream& input, std::string& nameSubject, std::string& nameStudyProgam,
+        double& weigth, std::optional<std::pair<int, int>>& range, std::optional<std::string>& description, std::string& errorStr);
+
+    static bool parseAssessmentSubject(std::stringstream& input, double& weigth,
+        std::optional<std::pair<int, int>>& range, std::optional<std::string>& description, std::string& errorStr);
 };

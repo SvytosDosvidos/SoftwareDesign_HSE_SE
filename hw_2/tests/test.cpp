@@ -448,8 +448,8 @@ TEST_CASE("Test logic with ScoreInt") {
     }
 
     SECTION("AssessmentSubject constructor calls") {
-        REQUIRE_NOTHROW(AssessmentSubject(std::nullopt));
-        REQUIRE_NOTHROW(AssessmentSubject(std::make_pair(0, 100), "desc"));
+        REQUIRE_NOTHROW(AssessmentSubject(1, std::nullopt));
+        REQUIRE_NOTHROW(AssessmentSubject(1, std::make_pair(0, 100), "desc"));
     }
 
     SECTION("updateScore inside range and outside range") {

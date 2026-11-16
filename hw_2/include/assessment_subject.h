@@ -17,9 +17,12 @@ private:
 
 class AssessmentSubject {
 public:
-    AssessmentSubject(std::pair<int, int> range, std::optional<std::string> description);
-    AssessmentSubject(std::optional<std::string> description);
+    AssessmentSubject(double weigth, std::optional<std::pair<int, int>> range,
+        std::optional<std::string> description);
+    AssessmentSubject(double weigth, std::pair<int, int> range, std::optional<std::string> description);
+    AssessmentSubject(double weigth, std::optional<std::string> description);
 private:
     ScoreInt score_;
     std::optional<std::string> description_;
+    double weigth_;
 };

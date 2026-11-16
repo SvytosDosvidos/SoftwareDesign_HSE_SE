@@ -12,7 +12,7 @@ public:
     Subject(std::string name, std::string nameProgramReading,
             std::optional<std::string> description);
 
-    void addAssessmentSubject(std::unique_ptr<AssessmentSubject>& assessmentSubject);
+    void addAssessmentSubject(std::unique_ptr<AssessmentSubject>&& assessmentSubject);
 
     std::string getName() const;
 private:

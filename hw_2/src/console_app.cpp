@@ -44,6 +44,7 @@ void ConsoleApp::init() {
 
     mapBinderPrint_["add_subject_lecturer"] = "[nameLecturer][nameStudyProgram][nameSubject]";
     mapBinderPrint_["add_studyProgam_student"] = "[nameStudent][nameStudyProgram]";
+    mapBinderPrint_["add_"] = "[nameSubject][nameStudyProgram][wiegth](pairScore)(description)";
 
     mapCreator_["studyProgram"] = [raw = posApplicationFacade_.get()](std::stringstream &input, std::string& errorStr) {
         raw->openStudyProgram(input, errorStr);

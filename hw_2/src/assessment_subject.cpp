@@ -16,8 +16,18 @@ void ScoreInt::updateScore(int score) {
     }
 }
 
-AssessmentSubject::AssessmentSubject(std::pair<int, int> range, std::optional<std::string> description) :
-        score_(range), description_(description) {}
+AssessmentSubject::AssessmentSubject(double weigth, std::optional<std::pair<int, int>> range,
+    std::optional<std::string> description) {
+        if(range.has_value()) {
+            AssessmentSubject(weigth, range.value(), description);
+        } else {
+            AssessmentSubject(weigth, description);
+        }
+    }
 
-AssessmentSubject::AssessmentSubject(std::optional<std::string> description) :
-        score_(), description_(description) {}
+AssessmentSubject::AssessmentSubject(double weigth, std::pair<int, int> range,
+    std::optional<std::string> description) :
+        weigth_(weigth), score_(range), description_(description) {}
+
+AssessmentSubject::AssessmentSubject(double weigth, std::optional<std::string> description) :
+    weigth_(weigth), score_(), description_(description) {}
