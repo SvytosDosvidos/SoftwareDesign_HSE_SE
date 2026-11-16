@@ -1,4 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_approx.hpp>
+#include "final_score.h"
 #include "../include/console_app.h"
 
 #include <random>
@@ -663,4 +665,77 @@ TEST_CASE("Console creates criteria and sets or corrects evaluations") {
         std::stringstream input(command);
         CHECK_FALSE(app.execute(input).empty());
     }
+}
+
+
+TEST_CASE("Weighted final normalizes maxima and recomputes after corrections") {
+    Subject subject("math", "se", std::nullopt);
+    RequireAllEvaluations strict;
+    FinalScoreService service(strict);
+    subject.addCriterion("exam", 100, 7);
+    subject.addCriterion("homework", 10, 3);
+    subject.setEvaluation(1, "exam", 80);
+    subject.setEvaluation(1, "homework", 9);
+    auto result = service.calculate(subject, 1);
+    CHECK(result.value == Catch::Approx(8.3));
+    CHECK(result.gradedCriteria == 2);
+    CHECK(result.totalCriteria == 2);
+    subject.setEvaluation(1, "exam", 100);
+    CHECK(service.calculate(subject, 1).value == Catch::Approx(9.7));
+    subject.addCriterion("project", 10, 10);
+    REQUIRE_THROWS_AS(service.calculate(subject, 1), std::invalid_argument);
+    subject.setEvaluation(1, "project", 10);
+    CHECK(service.calculate(subject, 1).value == Catch::Approx(9.85));
+}
+
+TEST_CASE("Missing-score strategies distinguish absent evaluations from zero") {
+    Subject subject("math", "se", std::nullopt);
+    subject.addCriterion("exam", 100, 0.7);
+    subject.addCriterion("homework", 10, 0.3);
+    subject.setEvaluation(1, "exam", 80);
+    RequireAllEvaluations strict;
+    MissingAsZero zero;
+    REQUIRE_THROWS_AS(FinalScoreService(strict).calculate(subject, 1), std::invalid_argument);
+    auto result = FinalScoreService(zero).calculate(subject, 1);
+    CHECK(result.value == Catch::Approx(5.6));
+    CHECK(result.gradedCriteria == 1);
+    CHECK(result.totalCriteria == 2);
+    CHECK_FALSE(subject.getEvaluation(1, "homework").has_value());
+    CHECK(FinalScoreService(zero).calculate(subject, 2).value == 0);
+    subject.setEvaluation(1, "homework", 0);
+    CHECK(FinalScoreService(strict).calculate(subject, 1).value == Catch::Approx(5.6));
+    CHECK(FinalScoreService(strict).calculate(subject, 1).gradedCriteria == 2);
+}
+
+TEST_CASE("Final calculation rejects undefined rubrics and handles large weights") {
+    Subject subject("math", "se", std::nullopt);
+    MissingAsZero zero;
+    FinalScoreService service(zero);
+    REQUIRE_THROWS_AS(service.calculate(subject, 1), std::invalid_argument);
+    subject.addAssessmentSubject(std::make_unique<AssessmentSubject>(
+        1, std::make_pair(0, 0), std::nullopt));
+    REQUIRE_THROWS_AS(service.calculate(subject, 1), std::invalid_argument);
+    Subject large("physics", "se", std::nullopt);
+    large.addCriterion("exam", 10, std::numeric_limits<double>::max());
+    large.addCriterion("homework", 100, std::numeric_limits<double>::max());
+    large.setEvaluation(1, "exam", 10);
+    large.setEvaluation(1, "homework", 50);
+    CHECK(service.calculate(large, 1).value == Catch::Approx(7.5));
+    REQUIRE_THROWS_AS(service.calculate(large, -1), std::invalid_argument);
+}
+
+TEST_CASE("Final use case checks student and subject existence") {
+    auto repository = std::make_shared<InMemoryPOSRepository>();
+    POSApplicationFacade app(repository);
+    MissingAsZero zero;
+    std::string error;
+    REQUIRE(app.openStudyProgram("se", std::nullopt, error));
+    REQUIRE(app.addSubject("math", "se", std::nullopt, error));
+    REQUIRE(app.enrollStudent(1, "Ivan", error));
+    app.addCriterion("se", "math", "exam", 100, 1);
+    app.setEvaluation("se", "math", 1, "exam", 80);
+    CHECK(app.calculateFinal("se", "math", 1, zero).value == Catch::Approx(8));
+    REQUIRE_THROWS_AS(app.calculateFinal("se", "math", 99, zero), std::invalid_argument);
+    REQUIRE_THROWS_AS(app.calculateFinal("se", "missing", 1, zero), std::invalid_argument);
+    REQUIRE_THROWS_AS(app.calculateFinal("missing", "math", 1, zero), std::invalid_argument);
 }

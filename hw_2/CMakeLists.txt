@@ -4,6 +4,7 @@ project(hw_2 CXX)
 set(CMAKE_CXX_STANDARD 20)
 
 add_library(core
+        src/final_score.cpp
         src/academic_subject.cpp
         src/assessment_subject.cpp
         src/person.cpp

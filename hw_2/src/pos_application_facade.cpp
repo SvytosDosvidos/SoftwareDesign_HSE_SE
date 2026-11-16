@@ -230,3 +230,11 @@ void POSApplicationFacade::setEvaluation(const std::string& program, const std::
     }
     findSubject(program, subject)->setEvaluation(studentId, criterion, score);
 }
+
+FinalScore POSApplicationFacade::calculateFinal(const std::string& program, const std::string& subject,
+    int studentId, const IMissingEvaluationStrategy& strategy) const {
+    if(!repository_->existsStudent(studentId)) {
+        throw std::invalid_argument("student does not exist");
+    }
+    return FinalScoreService(strategy).calculate(*findSubject(program, subject), studentId);
+}

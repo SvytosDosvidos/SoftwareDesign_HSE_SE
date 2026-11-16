@@ -3,6 +3,7 @@
 #include "person.h"
 #include "academic_subject.h"
 #include "repository.h"
+#include "final_score.h"
 
 #include <sstream>
 #include <memory>
@@ -45,6 +46,9 @@ public:
                       const std::string& criterion, int maxScore, double weight);
     void setEvaluation(const std::string& program, const std::string& subject,
                        int studentId, const std::string& criterion, int score);
+
+    FinalScore calculateFinal(const std::string& program, const std::string& subject,
+                             int studentId, const IMissingEvaluationStrategy& strategy) const;
 
     void printStudents() const;
     void printLecturers() const;

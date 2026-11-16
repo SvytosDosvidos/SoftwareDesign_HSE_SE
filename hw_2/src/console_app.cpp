@@ -67,6 +67,28 @@ void ConsoleApp::init() {
         raw->setEvaluation(program, subject, studentId, criterion, score);
     };
 
+    mapBinderPrint_["final"] = "[program] [subject] [studentId] [strict|zero]";
+    mapBinder_["final"] = [raw = posApplicationFacade_.get()](std::stringstream& input, std::string&) {
+        std::string program, subject, mode;
+        int studentId;
+        if(!(input >> program >> subject >> studentId >> mode) || !(input >> std::ws).eof()) {
+            throw std::invalid_argument("expected: final program subject studentId strict|zero");
+        }
+        RequireAllEvaluations strict;
+        MissingAsZero zero;
+        const IMissingEvaluationStrategy* strategy = nullptr;
+        if(mode == "strict") {
+            strategy = &strict;
+        } else if(mode == "zero") {
+            strategy = &zero;
+        } else {
+            throw std::invalid_argument("unknown final score policy: use strict or zero");
+        }
+        const auto result = raw->calculateFinal(program, subject, studentId, *strategy);
+        std::cout << std::format("Final score: {:.2f}/10 (graded: {}/{})\n",
+                                 result.value, result.gradedCriteria, result.totalCriteria);
+    };
+
     mapCreator_["studyProgram"] = [raw = posApplicationFacade_.get()](std::stringstream &input, std::string& errorStr) {
         raw->openStudyProgram(input, errorStr);
     };
@@ -164,7 +186,7 @@ void ConsoleApp::printCommand() const {
     std::cout << std::format("|{: ^128}|\n", "1 - Instructions for all commands");
     std::cout << std::format("|{: ^128}|\n", "2 - Displaying the entire students in the university");
     std::cout << std::format("|{: ^128}|\n", "3 - Displaying the entire lecturer, and what they teach");
-    std::cout << std::format("|{: ^128}|\n", "4 - Create objects, add criteria or set/correct evaluations");
+    std::cout << std::format("|{: ^128}|\n", "4 - Create objects, manage evaluations or calculate final score");
     std::cout << std::format("|{: ^128}|\n", "5 - Instructions on how to add student/lecturer/subject/educationDirection");
     std::cout << std::format("|{: ^128}|\n", "6 - End program");
     std::cout << std::format("+{:-^128}+\n", "");
