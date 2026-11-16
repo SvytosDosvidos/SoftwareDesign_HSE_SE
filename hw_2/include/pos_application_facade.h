@@ -2,37 +2,37 @@
 
 #include "person.h"
 #include "academic_subject.h"
+#include "repository.h"
 
-#include<sstream>
-#include<memory>
-#include<functional>
+#include <sstream>
+#include <memory>
+#include <string>
+#include <optional>
 
 class POSApplicationFacade {
 public:
-    POSApplicationFacade() = default;
+    POSApplicationFacade();
+    explicit POSApplicationFacade(std::shared_ptr<IPOSRepository> repository);
+
     void openStudyProgram(std::stringstream& input, std::string& errorStr);
     void appointLecturere(std::stringstream& input, std::string& errorStr);
     void enrollStudent(std::stringstream& input, std::string& errorStr);
     void addSubject(std::stringstream& input, std::string& errorStr);
-
     void addTeachSubject(std::stringstream& input, std::string& errorStr);
     void addStudyProgramStudent(std::stringstream& input, std::string& errorStr);
+
+    bool openStudyProgram(const std::string& name, const std::optional<std::string>& description, std::string& errorStr);
+    bool appointLecturere(int idPass, const std::string& name, std::string& errorStr);
+    bool enrollStudent(int idPass, const std::string& name, std::string& errorStr);
+    bool addSubject(const std::string& name, const std::string& nameStudyProgram, const std::optional<std::string>& description, std::string& errorStr);
+    bool addTeachSubject(int idPassLecturer, const std::string& nameStudyProgram, const std::string& nameSubject, std::string& errorStr);
+    bool addStudyProgramStudent(int idPassStudent, const std::string& nameStudyProgram, std::string& errorStr);
 
     void printStudents() const;
     void printLecturers() const;
 
-    size_t getCntSubjectInStudyProgram(std::string&& nameStudyProgram) const;//only for test
+    size_t getCntSubjectInStudyProgram(const std::string& nameStudyProgram) const;
     size_t getCntLecturers() const;
 private:
-    bool checkUniqueIdPass(int idPass) const;
-    bool checkUniqueNameSubject(const std::string& name, int indStudyProgam) const;
-    bool checkUniqueNameStudyProgram(const std::string& name) const;
-
-    std::optional<int> getIndLecturer(int idPass) const;
-    std::optional<int> getIndStudent(int idPass) const;
-    std::optional<int> getIndStudyProgram(const std::string& nameStudyProgam) const;
-
-    std::vector<std::unique_ptr<Lecturer>> lecturers_;
-    std::vector<std::unique_ptr<Student>> students_;
-    std::vector<std::shared_ptr<StudyProgram>> studyPrograms_;
+    std::shared_ptr<IPOSRepository> repository_;
 };

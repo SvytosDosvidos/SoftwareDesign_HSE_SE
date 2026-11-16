@@ -1,9 +1,9 @@
 #include "../include/console_app.h"
 
-#include<iostream>
-#include<format>
-#include<sstream>
-#include<string>
+#include <iostream>
+#include <format>
+#include <sstream>
+#include <string>
 
 ConsoleApp::ConsoleApp() {
     posApplicationFacade_ = std::make_unique<POSApplicationFacade>();
@@ -45,7 +45,7 @@ void ConsoleApp::init() {
     mapBinderPrint_["add_subject_lecturer"] = "[nameLecturer][nameStudyProgram][nameSubject]";
     mapBinderPrint_["add_studyProgam_student"] = "[nameStudent][nameStudyProgram]";
 
-    mapCreator_["studyProgram "] = [raw = posApplicationFacade_.get()](std::stringstream &input, std::string& errorStr) {
+    mapCreator_["studyProgram"] = [raw = posApplicationFacade_.get()](std::stringstream &input, std::string& errorStr) {
         raw->openStudyProgram(input, errorStr);
     };
     mapCreator_["lecturer"] = [raw = posApplicationFacade_.get()](std::stringstream &input, std::string& errorStr) {
@@ -60,16 +60,11 @@ void ConsoleApp::init() {
 
     mapBinder_["add_subject_lecturer"] = [raw = posApplicationFacade_.get()](std::stringstream& input, std::string& errorStr) {
         raw->addTeachSubject(input, errorStr);
-    };//добавить subject для lecturer
+    };
 
     mapBinder_["add_studyProgam_student"] = [raw = posApplicationFacade_.get()](std::stringstream& input, std::string& errorStr) {
         raw->addStudyProgramStudent(input, errorStr);
-    };//добавить studyProgram для Student
-
-
-    /*
-        std::shared_ptr<>
-    */
+    };
 }
 
 void ConsoleApp::run() {
@@ -80,7 +75,7 @@ void ConsoleApp::run() {
     while(isWorkProgram) {
         int idCommand = getCommand();
 
-        switch (idCommand) {
+        switch(idCommand) {
             case 1: {
                 printCommand();
                 break;

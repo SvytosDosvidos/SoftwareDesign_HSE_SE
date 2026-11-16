@@ -10,6 +10,8 @@ add_library(core
         src/parser.cpp
         src/pos_application_facade.cpp
         src/console_app.cpp
+        include/repository.h
+        src/repository.cpp
 )
 
 target_include_directories(core PUBLIC include)

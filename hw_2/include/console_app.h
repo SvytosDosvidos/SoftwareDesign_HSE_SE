@@ -2,9 +2,10 @@
 
 #include "pos_application_facade.h"
 
-#include<memory>
-#include<unordered_map>
-#include<sstream>
+#include <memory>
+#include <unordered_map>
+#include <sstream>
+#include <functional>
 
 using creator = std::function<void(std::stringstream&, std::string&)>;
 using binder = std::function<void(std::stringstream&, std::string&)>;

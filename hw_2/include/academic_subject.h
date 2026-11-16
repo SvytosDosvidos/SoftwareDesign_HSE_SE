@@ -10,7 +10,7 @@
 class Subject {
 public:
     Subject(std::string name, std::string nameProgramReading,
-        std::optional<std::string> description);
+            std::optional<std::string> description);
 
     void addAssessmentSubject(std::unique_ptr<AssessmentSubject>& assessmentSubject);
 
@@ -26,12 +26,11 @@ class StudyProgram {
 public:
     StudyProgram() = default;
     StudyProgram(std::string name,
-        std::optional<std::string> description);
+                 std::optional<std::string> description);
     void addSubject(std::shared_ptr<Subject>& subject);
 
-    int getIdStudyProgam() const;
     std::string getNameStudyProgram() const;
-    std::optional<int> getIndSubject(std::string& name) const;
+    std::optional<int> getIndSubject(const std::string& name) const;
 
     const std::vector<std::shared_ptr<Subject>>& getSubjects() const;
 private:

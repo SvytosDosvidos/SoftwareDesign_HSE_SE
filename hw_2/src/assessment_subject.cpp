@@ -1,6 +1,6 @@
 #include "../include/assessment_subject.h"
 
-#include<stdexcept>
+#include <stdexcept>
 
 ScoreInt::ScoreInt() : range_(std::make_pair(0, 10)) {}
 
@@ -17,7 +17,7 @@ void ScoreInt::updateScore(int score) {
 }
 
 AssessmentSubject::AssessmentSubject(std::pair<int, int> range, std::optional<std::string> description) :
-    score_(range), description_(description) {}
+        score_(range), description_(description) {}
 
 AssessmentSubject::AssessmentSubject(std::optional<std::string> description) :
-    score_(), description_(description) {}
+        score_(), description_(description) {}

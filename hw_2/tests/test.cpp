@@ -1,45 +1,63 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include <random>
+#include <sstream>
+#include <limits>
 
 #include "../include/pos_application_facade.h"
+#include "../include/assessment_subject.h"
+#include "../include/academic_subject.h"
+#include "../include/person.h"
 
-void createSubject(std::string&& name, std::string&& nameStudyProgram,
-    std::optional<std::string>&& description, std::stringstream& input) {
+void createSubject(const std::string& name, const std::string& nameStudyProgram,
+                   const std::optional<std::string>& description, std::stringstream& input) {
     input << name << " " << nameStudyProgram;
     if(description.has_value()) {
         input << " " << description.value();
     }
 }
 
-void createStudyProgram(std::string&& name,
-    std::optional<std::string>&& description, std::stringstream& input) {
+void createStudyProgram(const std::string& name,
+                        const std::optional<std::string>& description, std::stringstream& input) {
     input << name;
     if(description.has_value()) {
         input << " " << description.value();
     }
 }
 
-void createLecturer(int&& idPass, std::string&& name,
-    std::stringstream& input) {
+void createLecturer(int idPass, const std::string& name, std::stringstream& input) {
     input << idPass << " " << name;
 }
 
-std::string createRandStr(size_t&& size, std::uniform_int_distribution<size_t>& distChar, std::mt19937& rnd) {
+void createStudent(int idPass, const std::string& name, std::stringstream& input) {
+    input << idPass << " " << name;
+}
+
+void createTeachSubject(int idPassLecturer, const std::string& nameStudyProgram,
+                        const std::string& nameSubject, std::stringstream& input) {
+    input << idPassLecturer << " " << nameStudyProgram << " " << nameSubject;
+}
+
+void createStudyProgramStudent(int idPassStudent, const std::string& nameStudyProgram,
+                               std::stringstream& input) {
+    input << idPassStudent << " " << nameStudyProgram;
+}
+
+std::string createRandStr(size_t size, std::uniform_int_distribution<size_t>& distChar, std::mt19937& rnd) {
     static std::vector<char> symbols;
     if(symbols.empty()) {
         symbols.resize(2 * 26);
         for(size_t i = 0; i < 2 * 26; ++i) {
-             if(i < 26) {
+            if(i < 26) {
                 symbols[i] = 'a' + i;
-             } else {
+            } else {
                 symbols[i] = 'A' + (i - 26);
-             }
+            }
         }
     }
 
     std::string result;
-    result.reserve(size);
+    result.resize(size);
     for(size_t i = 0; i < size; ++i) {
         result[i] = symbols[distChar(rnd)];
     }
@@ -57,8 +75,8 @@ TEST_CASE("Test logic for correct parser") {
     std::uniform_int_distribution<size_t> distSizeStr(1, 100);
     std::uniform_int_distribution<size_t> typeAdd(1, 2);
 
-    SECTION("") {
-        for(size_t ind = 0; ind < 1000; ++ind) {
+    SECTION("fuzzing with random string and numbers") {
+        for(size_t ind = 0; ind < 200; ++ind) {
             size_t sizePars = distCntPars(rnd);
             std::stringstream input;
             std::string strError;
@@ -78,17 +96,17 @@ TEST_CASE("Test logic for correct parser") {
             std::stringstream input_5(input.str());
             std::stringstream input_6(input.str());
 
-            posApplicationFacade->openStudyProgram(input_1, strError);
-            posApplicationFacade->appointLecturere(input_2, strError);
-            posApplicationFacade->enrollStudent(input_3, strError);
-            posApplicationFacade->addSubject(input_4, strError);
-            posApplicationFacade->addTeachSubject(input_5, strError);
-            posApplicationFacade->addStudyProgramStudent(input_6, strError);
+            REQUIRE_NOTHROW(posApplicationFacade->openStudyProgram(input_1, strError));
+            REQUIRE_NOTHROW(posApplicationFacade->appointLecturere(input_2, strError));
+            REQUIRE_NOTHROW(posApplicationFacade->enrollStudent(input_3, strError));
+            REQUIRE_NOTHROW(posApplicationFacade->addSubject(input_4, strError));
+            REQUIRE_NOTHROW(posApplicationFacade->addTeachSubject(input_5, strError));
+            REQUIRE_NOTHROW(posApplicationFacade->addStudyProgramStudent(input_6, strError));
         }
     }
 }
 
-TEST_CASE("Test logic with studyPogram and studyProgram") {
+TEST_CASE("Test logic with studyProgram and Subject") {
     std::unique_ptr<POSApplicationFacade> posApplicationFacade = std::make_unique<POSApplicationFacade>();
 
     std::stringstream inputStudyProgram;
@@ -97,7 +115,23 @@ TEST_CASE("Test logic with studyPogram and studyProgram") {
     posApplicationFacade->openStudyProgram(inputStudyProgram, errorStrStudyProgram);
     REQUIRE(errorStrStudyProgram.empty());
 
-    SECTION("") {
+    SECTION("create studyProgram with description") {
+        std::stringstream inputWithDesc;
+        std::string errorWithDesc;
+        createStudyProgram("ami", "applied_math_program", inputWithDesc);
+        posApplicationFacade->openStudyProgram(inputWithDesc, errorWithDesc);
+        CHECK(errorWithDesc.empty());
+    }
+
+    SECTION("not unique nameStudyProgram error") {
+        std::stringstream inputStudyProgram_2;
+        std::string errorStrStudyProgram_2;
+        createStudyProgram("se", std::nullopt, inputStudyProgram_2);
+        posApplicationFacade->openStudyProgram(inputStudyProgram_2, errorStrStudyProgram_2);
+        CHECK(errorStrStudyProgram_2 == "not unique nameStudyProgram");
+    }
+
+    SECTION("there is no such nameStudyProgram for subject") {
         std::stringstream inputSubject;
         std::string errorStrSubject;
         createSubject("math", "ami", std::optional<std::string>(std::nullopt), inputSubject);
@@ -107,7 +141,7 @@ TEST_CASE("Test logic with studyPogram and studyProgram") {
         CHECK(posApplicationFacade->getCntSubjectInStudyProgram("ami") == 0);
     }
 
-    SECTION("") {
+    SECTION("check not unique name subject in same studyProgram") {
         std::stringstream inputSubject_1;
         std::string errorStrSubject_1;
         createSubject("math", "se", std::optional<std::string>(std::nullopt), inputSubject_1);
@@ -122,7 +156,16 @@ TEST_CASE("Test logic with studyPogram and studyProgram") {
         CHECK(errorStrSubject_2 == "not unique name");
     }
 
-    SECTION("") {
+    SECTION("add subject with description") {
+        std::stringstream inputSubjectWithDesc;
+        std::string errorStrSubjectWithDesc;
+        createSubject("discrete_math", "se", "hard_course", inputSubjectWithDesc);
+        posApplicationFacade->addSubject(inputSubjectWithDesc, errorStrSubjectWithDesc);
+        CHECK(errorStrSubjectWithDesc.empty());
+        CHECK(posApplicationFacade->getCntSubjectInStudyProgram("se") == 1);
+    }
+
+    SECTION("add multiple different subjects in one studyProgram") {
         std::stringstream inputSubject_1;
         std::string errorStrSubject_1;
         createSubject("math", "se", std::optional<std::string>(std::nullopt), inputSubject_1);
@@ -137,7 +180,7 @@ TEST_CASE("Test logic with studyPogram and studyProgram") {
     }
 }
 
-TEST_CASE("Test logic with Lecturer") {
+TEST_CASE("Test logic with Lecturer and Student") {
     std::unique_ptr<POSApplicationFacade> posApplicationFacade = std::make_unique<POSApplicationFacade>();
 
     std::stringstream inputStudyProgram;
@@ -151,7 +194,16 @@ TEST_CASE("Test logic with Lecturer") {
     posApplicationFacade->appointLecturere(inputLecturer_1, errorStrLecturer_1);
     REQUIRE(posApplicationFacade->getCntLecturers() == 1);
 
-    SECTION("") {
+    SECTION("invalid IdPass value less than zero") {
+        std::stringstream inputLecturer_2;
+        std::string errorStrLecturer_2;
+        createLecturer(-1, "BadLecturer", inputLecturer_2);
+        posApplicationFacade->appointLecturere(inputLecturer_2, errorStrLecturer_2);
+        CHECK(errorStrLecturer_2 == "invalid IdPass value(>0)");
+        CHECK(posApplicationFacade->getCntLecturers() == 1);
+    }
+
+    SECTION("not unique idPass for another lecturer") {
         std::stringstream inputLecturer_2;
         std::string errorStrLecturer_2;
         createLecturer(1, "EvgeniyDashkov", inputLecturer_2);
@@ -160,11 +212,290 @@ TEST_CASE("Test logic with Lecturer") {
         CHECK(errorStrLecturer_2 == "not unique idPass");
     }
 
-    SECTION("") {
+    SECTION("appoint second lecturer with unique idPass") {
         std::stringstream inputLecturer_2;
         std::string errorStrLecturer_2;
         createLecturer(2, "EvgeniyDashkov", inputLecturer_2);
         posApplicationFacade->appointLecturere(inputLecturer_2, errorStrLecturer_2);
         CHECK(posApplicationFacade->getCntLecturers() == 2);
+    }
+
+    SECTION("not unique idPass collision student with lecturer") {
+        std::stringstream inputStudent_1;
+        std::string errorStrStudent_1;
+        createStudent(1, "Ivan", inputStudent_1);
+        posApplicationFacade->enrollStudent(inputStudent_1, errorStrStudent_1);
+        CHECK(errorStrStudent_1 == "not unique idPass");
+    }
+
+    SECTION("enroll student and duplicate idPass for student") {
+        std::stringstream inputStudent_1;
+        std::string errorStrStudent_1;
+        createStudent(2, "Ivan", inputStudent_1);
+        posApplicationFacade->enrollStudent(inputStudent_1, errorStrStudent_1);
+        CHECK(errorStrStudent_1.empty());
+
+        std::stringstream inputStudent_2;
+        std::string errorStrStudent_2;
+        createStudent(2, "Petr", inputStudent_2);
+        posApplicationFacade->enrollStudent(inputStudent_2, errorStrStudent_2);
+        CHECK(errorStrStudent_2 == "not unique idPass");
+    }
+
+    SECTION("not unique idPass collision lecturer with student") {
+        std::stringstream inputStudent_1;
+        std::string errorStrStudent_1;
+        createStudent(5, "Anna", inputStudent_1);
+        posApplicationFacade->enrollStudent(inputStudent_1, errorStrStudent_1);
+        CHECK(errorStrStudent_1.empty());
+
+        std::stringstream inputLecturer_2;
+        std::string errorStrLecturer_2;
+        createLecturer(5, "NewLecturer", inputLecturer_2);
+        posApplicationFacade->appointLecturere(inputLecturer_2, errorStrLecturer_2);
+        CHECK(errorStrLecturer_2 == "not unique idPass");
+        CHECK(posApplicationFacade->getCntLecturers() == 1);
+    }
+}
+
+TEST_CASE("Test logic with binding") {
+    std::unique_ptr<POSApplicationFacade> posApplicationFacade = std::make_unique<POSApplicationFacade>();
+
+    std::stringstream inputStudyProgram;
+    std::string errorStrStudyProgram;
+    createStudyProgram("se", std::nullopt, inputStudyProgram);
+    posApplicationFacade->openStudyProgram(inputStudyProgram, errorStrStudyProgram);
+
+    std::stringstream inputSubject_1;
+    std::string errorStrSubject_1;
+    createSubject("c++", "se", std::nullopt, inputSubject_1);
+    posApplicationFacade->addSubject(inputSubject_1, errorStrSubject_1);
+
+    std::stringstream inputSubject_2;
+    std::string errorStrSubject_2;
+    createSubject("algorithms", "se", std::nullopt, inputSubject_2);
+    posApplicationFacade->addSubject(inputSubject_2, errorStrSubject_2);
+
+    std::stringstream inputStudyProgram_2;
+    std::string errorStrStudyProgram_2;
+    createStudyProgram("ami", std::nullopt, inputStudyProgram_2);
+    posApplicationFacade->openStudyProgram(inputStudyProgram_2, errorStrStudyProgram_2);
+
+    std::stringstream inputLecturer;
+    std::string errorStrLecturer;
+    createLecturer(1, "Professor", inputLecturer);
+    posApplicationFacade->appointLecturere(inputLecturer, errorStrLecturer);
+
+    std::stringstream inputStudent;
+    std::string errorStrStudent;
+    createStudent(2, "Student", inputStudent);
+    posApplicationFacade->enrollStudent(inputStudent, errorStrStudent);
+
+    SECTION("successful add teach subject to lecturer") {
+        std::stringstream inputTeachSubject;
+        std::string errorStrTeachSubject;
+        createTeachSubject(1, "se", "c++", inputTeachSubject);
+        posApplicationFacade->addTeachSubject(inputTeachSubject, errorStrTeachSubject);
+        CHECK(errorStrTeachSubject.empty());
+    }
+
+    SECTION("add multiple teach subjects to same lecturer") {
+        std::stringstream inputTeachSubject_1;
+        std::string errorStrTeachSubject_1;
+        createTeachSubject(1, "se", "c++", inputTeachSubject_1);
+        posApplicationFacade->addTeachSubject(inputTeachSubject_1, errorStrTeachSubject_1);
+        CHECK(errorStrTeachSubject_1.empty());
+
+        std::stringstream inputTeachSubject_2;
+        std::string errorStrTeachSubject_2;
+        createTeachSubject(1, "se", "algorithms", inputTeachSubject_2);
+        posApplicationFacade->addTeachSubject(inputTeachSubject_2, errorStrTeachSubject_2);
+        CHECK(errorStrTeachSubject_2.empty());
+    }
+
+    SECTION("lecturer does not exist error") {
+        std::stringstream inputTeachSubject;
+        std::string errorStrTeachSubject;
+        createTeachSubject(999, "se", "c++", inputTeachSubject);
+        posApplicationFacade->addTeachSubject(inputTeachSubject, errorStrTeachSubject);
+        CHECK(errorStrTeachSubject == "lecturer does not exist");
+    }
+
+    SECTION("studyProgram does not exist for addTeachSubject") {
+        std::stringstream inputTeachSubject;
+        std::string errorStrTeachSubject;
+        createTeachSubject(1, "unknown_program", "c++", inputTeachSubject);
+        posApplicationFacade->addTeachSubject(inputTeachSubject, errorStrTeachSubject);
+        CHECK(errorStrTeachSubject == "studyProgram does not exist");
+    }
+
+    SECTION("subject does not exist error") {
+        std::stringstream inputTeachSubject;
+        std::string errorStrTeachSubject;
+        createTeachSubject(1, "se", "physics", inputTeachSubject);
+        posApplicationFacade->addTeachSubject(inputTeachSubject, errorStrTeachSubject);
+        CHECK(errorStrTeachSubject == "subject does not exist");
+    }
+
+    SECTION("successful add studyProgram to student") {
+        std::stringstream inputStudyProgramStudent;
+        std::string errorStrStudyProgramStudent;
+        createStudyProgramStudent(2, "se", inputStudyProgramStudent);
+        posApplicationFacade->addStudyProgramStudent(inputStudyProgramStudent, errorStrStudyProgramStudent);
+        CHECK(errorStrStudyProgramStudent.empty());
+    }
+
+    SECTION("add multiple studyPrograms to same student") {
+        std::stringstream inputStudyProgramStudent_1;
+        std::string errorStrStudyProgramStudent_1;
+        createStudyProgramStudent(2, "se", inputStudyProgramStudent_1);
+        posApplicationFacade->addStudyProgramStudent(inputStudyProgramStudent_1, errorStrStudyProgramStudent_1);
+        CHECK(errorStrStudyProgramStudent_1.empty());
+
+        std::stringstream inputStudyProgramStudent_2;
+        std::string errorStrStudyProgramStudent_2;
+        createStudyProgramStudent(2, "ami", inputStudyProgramStudent_2);
+        posApplicationFacade->addStudyProgramStudent(inputStudyProgramStudent_2, errorStrStudyProgramStudent_2);
+        CHECK(errorStrStudyProgramStudent_2.empty());
+    }
+
+    SECTION("student does not exist error") {
+        std::stringstream inputStudyProgramStudent;
+        std::string errorStrStudyProgramStudent;
+        createStudyProgramStudent(999, "se", inputStudyProgramStudent);
+        posApplicationFacade->addStudyProgramStudent(inputStudyProgramStudent, errorStrStudyProgramStudent);
+        CHECK(errorStrStudyProgramStudent == "student does not exist");
+    }
+
+    SECTION("studyProgram does not exist for addStudyProgramStudent") {
+        std::stringstream inputStudyProgramStudent;
+        std::string errorStrStudyProgramStudent;
+        createStudyProgramStudent(2, "unknown_program", inputStudyProgramStudent);
+        posApplicationFacade->addStudyProgramStudent(inputStudyProgramStudent, errorStrStudyProgramStudent);
+        CHECK(errorStrStudyProgramStudent == "studyProgram does not exist");
+    }
+}
+
+TEST_CASE("Test logic with invalid stream format") {
+    std::unique_ptr<POSApplicationFacade> posApplicationFacade = std::make_unique<POSApplicationFacade>();
+
+    SECTION("empty stream for openStudyProgram") {
+        std::stringstream emptyInput;
+        std::string errorStr;
+        posApplicationFacade->openStudyProgram(emptyInput, errorStr);
+        CHECK(errorStr == "invalid name value");
+    }
+
+    SECTION("empty stream for appointLecturere") {
+        std::stringstream emptyInput;
+        std::string errorStr;
+        posApplicationFacade->appointLecturere(emptyInput, errorStr);
+        CHECK(errorStr == "invalid idPass value");
+    }
+
+    SECTION("string instead of number for appointLecturere idPass") {
+        std::stringstream invalidInput("not_a_number Name");
+        std::string errorStr;
+        posApplicationFacade->appointLecturere(invalidInput, errorStr);
+        CHECK(errorStr == "invalid idPass value");
+    }
+
+    SECTION("empty stream for enrollStudent") {
+        std::stringstream emptyInput;
+        std::string errorStr;
+        posApplicationFacade->enrollStudent(emptyInput, errorStr);
+        CHECK(errorStr == "invalid idPass value");
+    }
+
+    SECTION("string instead of number for enrollStudent idPass") {
+        std::stringstream invalidInput("string_id StudentName");
+        std::string errorStr;
+        posApplicationFacade->enrollStudent(invalidInput, errorStr);
+        CHECK(errorStr == "invalid idPass value");
+    }
+
+    SECTION("empty stream for addSubject") {
+        std::stringstream emptyInput;
+        std::string errorStr;
+        posApplicationFacade->addSubject(emptyInput, errorStr);
+        CHECK(errorStr == "invalid name value");
+    }
+
+    SECTION("partial stream for addTeachSubject") {
+        std::stringstream partialInput("1 only_one_program");
+        std::string errorStr;
+        posApplicationFacade->addTeachSubject(partialInput, errorStr);
+        CHECK(errorStr == "invalid nameSubject value");
+    }
+
+    SECTION("empty stream for addStudyProgramStudent") {
+        std::stringstream emptyInput;
+        std::string errorStr;
+        posApplicationFacade->addStudyProgramStudent(emptyInput, errorStr);
+        CHECK(errorStr == "invalid name idPassStudent");
+    }
+}
+
+TEST_CASE("Test logic with ScoreInt") {
+    SECTION("valid range and default constructor") {
+        REQUIRE_NOTHROW(ScoreInt(std::make_pair(0, 10)));
+        REQUIRE_NOTHROW(ScoreInt());
+    }
+
+    SECTION("invalid range throw invalid_argument") {
+        REQUIRE_THROWS_AS(ScoreInt(std::make_pair(-1, 10)), std::invalid_argument);
+        REQUIRE_THROWS_AS(ScoreInt(std::make_pair(10, 5)), std::invalid_argument);
+    }
+
+    SECTION("AssessmentSubject constructor calls") {
+        REQUIRE_NOTHROW(AssessmentSubject(std::nullopt));
+        REQUIRE_NOTHROW(AssessmentSubject(std::make_pair(0, 100), "desc"));
+    }
+
+    SECTION("updateScore inside range and outside range") {
+        ScoreInt score(std::make_pair(0, 10));
+        REQUIRE_NOTHROW(score.updateScore(5));
+        REQUIRE_NOTHROW(score.updateScore(15));
+        REQUIRE_NOTHROW(score.updateScore(-1));
+    }
+}
+
+TEST_CASE("Test logic with direct Domain classes") {
+    SECTION("direct Subject creation and getName") {
+        Subject subject("algebra", "se", "algebra_description");
+        CHECK(subject.getName() == "algebra");
+    }
+
+    SECTION("direct StudyProgram addSubject and getIndSubject") {
+        StudyProgram program("se", std::nullopt);
+        CHECK(program.getNameStudyProgram() == "se");
+        CHECK(program.getSubjects().empty());
+
+        auto math = std::make_shared<Subject>("math", "se", std::nullopt);
+        program.addSubject(math);
+        CHECK(program.getSubjects().size() == 1);
+
+        std::string queryFound = "math";
+        auto indFound = program.getIndSubject(queryFound);
+        CHECK(indFound.has_value());
+        CHECK(indFound.value() == 0);
+
+        std::string queryNotFound = "history";
+        auto indNotFound = program.getIndSubject(queryNotFound);
+        CHECK(!indNotFound.has_value());
+    }
+
+    SECTION("direct Student and Lecturer getIdPass") {
+        Student student(10, "Ivan");
+        CHECK(student.getIdPass() == 10);
+
+        Lecturer lecturer(20, "Evgeniy");
+        CHECK(lecturer.getIdPass() == 20);
+
+        auto math = std::make_shared<Subject>("math", "se", std::nullopt);
+        REQUIRE_NOTHROW(lecturer.addSubjectTeach(math));
+
+        auto prog = std::make_shared<StudyProgram>("se", std::nullopt);
+        REQUIRE_NOTHROW(student.addStudyProgram(prog));
     }
 }

@@ -1,258 +1,165 @@
 #include "../include/pos_application_facade.h"
+#include "../include/parser.h"
+
+#include <iostream>
+
+POSApplicationFacade::POSApplicationFacade() :
+        repository_(std::make_shared<InMemoryPOSRepository>()) {}
+
+POSApplicationFacade::POSApplicationFacade(std::shared_ptr<IPOSRepository> repository) :
+        repository_(repository) {}
 
 void POSApplicationFacade::openStudyProgram(std::stringstream& input, std::string& errorStr) {
     std::string name;
-    std::string descriptionStr;
     std::optional<std::string> description;
-    if(!(input >> name)) {
-        errorStr += "invalid name value";
-        return;
+    if(Parser::parseStudyProgram(input, name, description, errorStr)) {
+        openStudyProgram(name, description, errorStr);
     }
-    input >> descriptionStr;
-    if(!descriptionStr.empty()) {
-        description = descriptionStr;
-    }
-
-    if(!checkUniqueNameStudyProgram(name)) {
-        errorStr += "not unique nameStudyProgram";
-        return;
-    }
-    studyPrograms_.push_back(std::make_unique<StudyProgram>(name, description));
 }
 
 void POSApplicationFacade::appointLecturere(std::stringstream& input, std::string& errorStr) {
     int idPass;
     std::string name;
-    if(!(input >> idPass)) {
-        errorStr += "invalid idPass value";
-        return;
+    if(Parser::parsePerson(input, idPass, name, errorStr)) {
+        appointLecturere(idPass, name, errorStr);
     }
-    if(!(input >> name)) {
-        errorStr += "invalid name value";
-        return;
-    }
-
-    if(idPass < 0) {
-        errorStr += "invalid IdPass value(>0)";
-        return;
-    }
-
-    if(!checkUniqueIdPass(idPass)) {
-        errorStr += "not unique idPass";
-        return;
-    }
-
-    lecturers_.push_back(std::make_unique<Lecturer>(idPass, name));
 }
 
 void POSApplicationFacade::enrollStudent(std::stringstream& input, std::string& errorStr) {
     int idPass;
     std::string name;
-    if(!(input >> idPass)) {
-        errorStr += "invalid idPass value";
-        return;
+    if(Parser::parsePerson(input, idPass, name, errorStr)) {
+        enrollStudent(idPass, name, errorStr);
     }
-    if(!(input >> name)) {
-        errorStr += "invalid name value";
-        return;
-    }
-
-    if(!checkUniqueIdPass(idPass)) {
-        errorStr += "not unique idPass";
-        return;
-    }
-
-    students_.push_back(std::make_unique<Student>(idPass, name));
 }
 
 void POSApplicationFacade::addSubject(std::stringstream& input, std::string& errorStr) {
     std::string name;
     std::string nameStudyProgram;
     std::optional<std::string> description;
-    std::string descriptionStr;
-    if(!(input >> name)) {
-        errorStr += "invalid name value";
-        return;
+    if(Parser::parseSubject(input, name, nameStudyProgram, description, errorStr)) {
+        addSubject(name, nameStudyProgram, description, errorStr);
     }
-
-    if(!(input >> nameStudyProgram)) {
-        errorStr += "invalid nameStudyProgram value";
-        return;
-    }
-
-    input >> descriptionStr;
-    description = descriptionStr;
-
-    std::optional<int> indStudyProgam = getIndStudyProgram(nameStudyProgram);
-    if(!indStudyProgam.has_value()) {
-        errorStr += "there is no such nameStudyProgram";
-        return;
-    }
-
-    if(!checkUniqueNameSubject(name, indStudyProgam.value())) {
-        errorStr += "not unique name";
-        return;
-    }
-
-    std::shared_ptr<Subject> subject = std::make_shared<Subject>(Subject(name, nameStudyProgram, description));
-    studyPrograms_[indStudyProgam.value()]->addSubject(subject);
 }
 
 void POSApplicationFacade::addTeachSubject(std::stringstream& input, std::string& errorStr) {
     int idPassLecturer;
     std::string nameStudyProgram;
     std::string nameSubject;
-
-    if(!(input >> idPassLecturer)) {
-        errorStr += "invalid idPassLecturer value";
-        return;
+    if(Parser::parseTeachSubject(input, idPassLecturer, nameStudyProgram, nameSubject, errorStr)) {
+        addTeachSubject(idPassLecturer, nameStudyProgram, nameSubject, errorStr);
     }
-
-    if(!(input >> nameStudyProgram)) {
-        errorStr += "invalid nameStudyProgram value";
-        return;
-    }
-
-    if(!(input >> nameSubject)) {
-        errorStr += "invalid nameSubject value";
-        return;
-    }
-
-    std::optional<int> indLecturer = getIndLecturer(idPassLecturer);
-    if(!indLecturer.has_value()) {
-        errorStr += "lecturer does not exist";
-        return;
-    }
-
-    std::optional<int> indStudyProgram = getIndStudyProgram(nameStudyProgram);
-    if(!indStudyProgram.has_value()) {
-        errorStr += "studyProgram does not exist";
-        return;
-    }
-
-    std::optional<int> indSubject = studyPrograms_[indStudyProgram.value()]->getIndSubject(nameSubject);
-    if(!indSubject.has_value()) {
-        errorStr += "subject does not exist";
-        return;
-    }
-
-    lecturers_[indLecturer.value()]->addSubjectTeach((
-        studyPrograms_[indStudyProgram.value()]->getSubjects())[indSubject.value()]);
 }
 
 void POSApplicationFacade::addStudyProgramStudent(std::stringstream& input, std::string& errorStr) {
     int idPassStudent;
     std::string nameStudyProgram;
-
-    if(!(input >> idPassStudent)) {
-        errorStr += "invalid name idPassStudent";
-        return;
+    if(Parser::parseStudyProgramStudent(input, idPassStudent, nameStudyProgram, errorStr)) {
+        addStudyProgramStudent(idPassStudent, nameStudyProgram, errorStr);
     }
-
-    if(!(input >> nameStudyProgram)) {
-        errorStr += "invalid nameStudyProgram value";
-        return;
-    }
-
-    std::optional<int> indStudent = getIndStudent(idPassStudent);
-    if(!indStudent.has_value()) {
-        errorStr += "student does not exist";
-        return;
-    }
-
-    std::optional<int> indStudyProgram = getIndStudyProgram(nameStudyProgram);
-    if(!indStudyProgram.has_value()) {
-        errorStr += "studyProgram does not exist";
-        return;
-    }
-
-    students_[indStudent.value()]->addStudyProgram(studyPrograms_[indStudyProgram.value()]);
 }
 
-bool POSApplicationFacade::checkUniqueIdPass(int idPass) const {
-    for(const auto &lecturer : lecturers_) {
-        if(lecturer->getIdPass() == idPass) {
-            return false;
-        }
+bool POSApplicationFacade::openStudyProgram(const std::string& name, const std::optional<std::string>& description, std::string& errorStr) {
+    if(repository_->existsStudyProgram(name)) {
+        errorStr += "not unique nameStudyProgram";
+        return false;
     }
-
-    for(const auto &student : students_) {
-        if(student->getIdPass() == idPass) {
-            return false;
-        }
-    }
-
+    repository_->saveStudyProgram(std::make_shared<StudyProgram>(name, description));
     return true;
 }
 
-size_t POSApplicationFacade::getCntSubjectInStudyProgram(std::string&& nameStudyProgram) const {
-    for(const auto&studyProgram : studyPrograms_) {
-        if(studyProgram->getNameStudyProgram() == nameStudyProgram) {
-            return studyProgram->getSubjects().size();
-        }
+bool POSApplicationFacade::appointLecturere(int idPass, const std::string& name, std::string& errorStr) {
+    if(idPass < 0) {
+        errorStr += "invalid IdPass value(>0)";
+        return false;
     }
+    if(repository_->existsLecturer(idPass) || repository_->existsStudent(idPass)) {
+        errorStr += "not unique idPass";
+        return false;
+    }
+    repository_->saveLecturer(std::make_shared<Lecturer>(idPass, name));
+    return true;
+}
 
+bool POSApplicationFacade::enrollStudent(int idPass, const std::string& name, std::string& errorStr) {
+    if(repository_->existsStudent(idPass) || repository_->existsLecturer(idPass)) {
+        errorStr += "not unique idPass";
+        return false;
+    }
+    repository_->saveStudent(std::make_shared<Student>(idPass, name));
+    return true;
+}
+
+bool POSApplicationFacade::addSubject(const std::string& name, const std::string& nameStudyProgram, const std::optional<std::string>& description, std::string& errorStr) {
+    auto program = repository_->findStudyProgram(nameStudyProgram);
+    if(!program) {
+        errorStr += "there is no such nameStudyProgram";
+        return false;
+    }
+    if(program->getIndSubject(name).has_value()) {
+        errorStr += "not unique name";
+        return false;
+    }
+    auto subject = std::make_shared<Subject>(name, nameStudyProgram, description);
+    program->addSubject(subject);
+    return true;
+}
+
+bool POSApplicationFacade::addTeachSubject(int idPassLecturer, const std::string& nameStudyProgram, const std::string& nameSubject, std::string& errorStr) {
+    auto lecturer = repository_->findLecturer(idPassLecturer);
+    if(!lecturer) {
+        errorStr += "lecturer does not exist";
+        return false;
+    }
+    auto program = repository_->findStudyProgram(nameStudyProgram);
+    if(!program) {
+        errorStr += "studyProgram does not exist";
+        return false;
+    }
+    auto indSubject = program->getIndSubject(nameSubject);
+    if(!indSubject.has_value()) {
+        errorStr += "subject does not exist";
+        return false;
+    }
+    lecturer->addSubjectTeach(program->getSubjects()[indSubject.value()]);
+    return true;
+}
+
+bool POSApplicationFacade::addStudyProgramStudent(int idPassStudent, const std::string& nameStudyProgram, std::string& errorStr) {
+    auto student = repository_->findStudent(idPassStudent);
+    if(!student) {
+        errorStr += "student does not exist";
+        return false;
+    }
+    auto program = repository_->findStudyProgram(nameStudyProgram);
+    if(!program) {
+        errorStr += "studyProgram does not exist";
+        return false;
+    }
+    student->addStudyProgram(program);
+    return true;
+}
+
+size_t POSApplicationFacade::getCntSubjectInStudyProgram(const std::string& nameStudyProgram) const {
+    auto program = repository_->findStudyProgram(nameStudyProgram);
+    if(program) {
+        return program->getSubjects().size();
+    }
     return 0;
 }
 
 size_t POSApplicationFacade::getCntLecturers() const {
-    return lecturers_.size();
-}
-
-bool POSApplicationFacade::checkUniqueNameSubject(const std::string& name, int indStudyProgam) const {
-    for(const auto& subject : studyPrograms_[indStudyProgam]->getSubjects()) {
-        if(subject->getName() == name) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-bool POSApplicationFacade::checkUniqueNameStudyProgram(const std::string &name) const {
-    for(const auto &program : studyPrograms_) {
-        if(program->getNameStudyProgram() == name) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-std::optional<int> POSApplicationFacade::getIndLecturer(int idLecturer) const {
-    for(size_t i = 0; i < lecturers_.size(); ++i) {
-        if(lecturers_[i]->getIdPass() == idLecturer) {
-            return i;
-        }
-    }
-
-    return std::nullopt;
-}
-
-std::optional<int> POSApplicationFacade::getIndStudent(int idStudent) const {
-    for(size_t i = 0; i < students_.size(); ++i) {
-        if(students_[i]->getIdPass() == idStudent) {
-            return i;
-        }
-    }
-
-    return std::nullopt;
-}
-
-std::optional<int> POSApplicationFacade::getIndStudyProgram(const std::string& nameStudyProgam) const {
-    for(size_t i = 0; i < studyPrograms_.size(); ++i) {
-        if(studyPrograms_[i]->getNameStudyProgram() == nameStudyProgam) {
-            return static_cast<int>(i);
-        }
-    }
-
-    return std::nullopt;
+    return repository_->getCntLecturers();
 }
 
 void POSApplicationFacade::printStudents() const {
-
+    for(const auto& student : repository_->getAllStudents()) {
+        std::cout << student->getIdPass() << "\n";
+    }
 }
 
 void POSApplicationFacade::printLecturers() const {
-
+    for(const auto& lecturer : repository_->getAllLecturers()) {
+        std::cout << lecturer->getIdPass() << "\n";
+    }
 }
