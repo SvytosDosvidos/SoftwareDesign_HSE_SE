@@ -1,0 +1,35 @@
+#pragma once
+
+#include "pos_application_facade.h"
+
+#include <memory>
+#include <unordered_map>
+#include <sstream>
+#include <functional>
+
+using creator = std::function<void(std::stringstream&, std::string&)>;
+using binder = std::function<void(std::stringstream&, std::string&)>;
+
+class ConsoleApp {
+public:
+    ConsoleApp();
+    explicit ConsoleApp(std::unique_ptr<POSApplicationFacade> facade);
+
+    void init();
+    void run();
+
+    std::string execute(std::stringstream& input);
+
+    void printStudents() const;
+    void printLecturers() const;
+
+    void printCommand() const;
+    void printCommand4Add() const;
+private:
+    void initReportingCommands();
+    std::unique_ptr<POSApplicationFacade> posApplicationFacade_;
+    std::unordered_map<std::string, std::string> mapСreatorPrint_;
+    std::unordered_map<std::string, std::string> mapBinderPrint_;
+    std::unordered_map<std::string, creator> mapCreator_;
+    std::unordered_map<std::string, binder> mapBinder_;
+};
